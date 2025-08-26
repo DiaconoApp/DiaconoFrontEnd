@@ -4,27 +4,64 @@ const validationCEP = async (cep) => {
 
         cep = cep.trim().replace(/\D/g, '');
 
-        if (!(/^\d{8}$/).test(cep)) throw {cep_error: 'CEP Inválido'};
-        
+        if (!(/^\d{8}$/).test(cep)) throw { cep_error: 'CEP Inválido' };
+
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
         const data = await response.json();
 
-        if(data.erro){
+        if (data.erro) {
 
-            throw {cep_error: 'CEP não encontrado'};
+            throw { cep_error: 'CEP não encontrado' };
 
         }
 
         return data;
 
-    }catch(e){
+    } catch (e) {
         console.log(e.cep_error || e);
         return null;
     }
 
+}
 
+
+const transformationName = (string) => {
+
+    const arrayNames = string.trim().replace(/[^a-zA-Z0-9 ]/g, "").split(/\s+/);
+
+    if (arrayNames.length <= 0) {
+        return "Erro: string vazia";
+    }
+
+    const arrayNamesFinal = arrayNames.map(item =>
+        item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+    );
+
+    console.log(arrayNamesFinal.join(" "));
+
+    return arrayNamesFinal.join(" ");
 
 }
 
-validationCEP('0000000').then(console.log);
+const transformationDouble = (double) => {
+
+    if(isNaN(Number(double))){
+
+        console.log(`${double} não é um número`);
+        return `${double} não é um número`;
+    }
+
+    if(Number.isInteger(double)){
+        console.log(`${double} é um inteiro`);
+        return `${double} é um inteiro`;
+    }
+
+    console.log(double.toString().replace(".", ","));
+
+    return double.toString().replace(".", ",");
+
+}
+
+
+transformationDouble(10.3);

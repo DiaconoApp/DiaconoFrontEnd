@@ -4,7 +4,7 @@ const validationCEP = async (cep) => {
 
         cep = cep.trim().replace(/\D/g, '');
 
-        if (!(/^\d{8}$/).test(cep)) throw { cep_error: 'CEP Inválido' };
+        if (!(/^\d{8}$/).test(cep)) throw { cep_error: 'Formato Inválido' };
 
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
 
@@ -15,7 +15,7 @@ const validationCEP = async (cep) => {
             throw { cep_error: 'CEP não encontrado' };
 
         }
-
+        console.log(data);
         return data;
 
     } catch (e) {
@@ -28,7 +28,7 @@ const validationCEP = async (cep) => {
 
 const transformationName = (string) => {
 
-    const arrayNames = string.trim().replace(/[^a-zA-Z0-9 ]/g, "").split(/\s+/);
+    const arrayNames = string.trim().replace(/[^a-zA-Z0]/g, "").split(/\s+/);
 
     if (arrayNames.length <= 0) {
         return "Erro: string vazia";
@@ -64,4 +64,4 @@ const transformationDouble = (double) => {
 }
 
 
-transformationDouble(10.3);
+transformationDouble('1.092');

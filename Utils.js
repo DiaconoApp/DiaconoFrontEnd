@@ -1,3 +1,4 @@
+//Utils CEP
 const validationCEP = async (cep) => {
 
     try {
@@ -25,7 +26,7 @@ const validationCEP = async (cep) => {
 
 }
 
-
+//Utils Nome
 const transformationName = (string) => {
 
     const arrayNames = string.trim().replace(/[^a-zA-Z0]/g, "").split(/\s+/);
@@ -44,6 +45,7 @@ const transformationName = (string) => {
 
 }
 
+//Utils Double
 const transformationDouble = (double) => {
 
     if(isNaN(Number(double))){
@@ -64,4 +66,110 @@ const transformationDouble = (double) => {
 }
 
 
-transformationDouble('1.092');
+transformationDouble(10.3);
+
+//Utils CNPJ
+const validationCNPJ = async (cnpj) => {
+  try {
+    cnpj = cnpj.trim().replace(/\D/g, '');
+
+    if (!(/^\d{14}$/).test(cnpj)) 
+        throw { cnpj_error: 'CNPJ inválido' };
+
+    const resp = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cnpj}`);
+
+    if (!resp.ok) 
+        throw { cnpj_error: `Erro HTTP ${resp.status} no ReceitAWS` };
+
+    const json = await resp.json();
+
+    console.log('Dados via ReceitAWS:', json);
+    return json;
+
+  } catch (e) {
+
+    console.log('ReceitAWS erro:', e.cnpj_error || e);
+    return null;
+  }
+};
+
+
+validationCNPJ('47960950000121')
+    .then((resultado) => console.log(resultado))
+    .catch((err) => console.log(err));
+
+
+//Utils CPF
+function validaCpf(cpf) {
+    if (!isCpf(cpf)) return false;
+
+    var cpfLimpo = cpf.replace(/[^\d]+/g, '');
+    var cpfBase = cpfLimpo.slice(0,9);
+
+    const calcularDigito = () => {
+        var arrayNumeros = Array.from(cpfBase).map(numero => parseInt(numero));
+
+        var cpfMultiplicado = arrayNumeros.map((numero, index) => {
+            if (arrayNumeros.length == 9) return numero * (index + 1);
+
+            return numero * index;
+        });
+
+        var somaCpf = cpfMultiplicado.reduce((acc, num) => acc + num, 0);
+
+        var digitoVerificador = somaCpf % 11;
+        if (digitoVerificador == 10) digitoVerificador = 0;
+
+        return digitoVerificador;
+    }
+
+    const digitoVerificador1 = calcularDigito();
+    cpfBase += digitoVerificador1.toString();
+    
+    const digitoVerificador2 = calcularDigito();
+    cpfBase += digitoVerificador2.toString();
+
+    return cpfBase === cpfLimpo;
+}
+
+function isCpf(cpf) {
+    if (!cpf) return false;
+
+    const regexCpf = /^(\d{11}|\d{3}\.\d{3}\.\d{3}\-\d{2})$/;
+    return regexCpf.test(cpf);
+}
+
+function formatarCpf(cpf) {
+    if (!validaCpf(cpf)) return false;
+
+    var cpfLimpo = cpf.replace(/[^\d]+/g, '');
+
+    if (cpf !== cpfLimpo) return cpfLimpo;
+
+    return cpfLimpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
+//Utils telefone 
+function formatarTelefone(telefone) {
+    if (!isTelefone(telefone)) return false;
+
+    var telefoneLimpo = telefone.replace(/[^\d]+/g, '');
+
+    if (telefone !== telefoneLimpo) return telefoneLimpo;
+
+    switch (telefoneLimpo.length) {
+        case 13:
+            return telefoneLimpo.replace(/(\d{2})(\d{2})(\d{5})(\d{4})/, '+$1 ($2) $3-$4');
+        case 11:
+            return telefoneLimpo.replace(/(\d{2})(\d{5})(\d{4})/, '+55 ($1) $2-$3');
+        case 9:
+            return telefoneLimpo.replace(/(\d{5})(\d{4})/, '+55 (11) $1-$2');
+    }
+}
+
+function isTelefone(telefone) {
+    if (!telefone) return false;
+
+    const regexTelefone = /^([+]?\d{2}?\s)?(\(?\d{2}\)?\s)?(\d{5,9})([-\s])?(\d{4})$/;
+    return regexTelefone.test(telefone);
+}

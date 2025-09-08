@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init-tailwind": "tailwindcss init"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,10 @@
   },
   "homepage": "https://github.com/DiaconoApp/DiaconoFrontEnd#readme",
   "dependencies": {
+    "@tailwindcss/cli": "^4.1.13",
     "dotenv": "^17.2.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.13"
   }
 }

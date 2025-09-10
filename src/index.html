@@ -201,3 +201,35 @@
 </body>
 
 </html>
+<script src="./script.js"></script>
+<script>
+  async function carregarTabela() {
+    const membros = await pegarMembros();
+    console.log(membros); // só para testar
+
+    // Aqui você pode popular sua tabela com os dados
+    const tbody = document.querySelector("tbody");
+    tbody.innerHTML = "";
+
+    membros.forEach(m => {
+      tbody.innerHTML += `
+        <tr class="border-b border-gray-200 even:bg-gray-150">
+          <td class="text-xs font-semibold text-left p-2 border-b border-gray-200 text-gray-700" >${m.id}</td>
+          <td class="text-xs font-semibold text-left p-2 border-b border-gray-200 text-gray-700" >${m.nome}</td>
+          <td class="text-xs font-semibold text-left p-2 border-b border-gray-200 text-gray-700" >${m.email}</td>
+          <td class="text-xs font-semibold text-left p-2 border-b border-gray-200 text-gray-700" >${m.dataNascimento}</td>
+          <td class="text-xs font-semibold text-left p-2 border-b border-gray-200 text-gray-700">
+                                <button class="bg-[#DEE3E9] text-gray-700 border-none py-0.5 px-1 cursor-pointer rounded-md hover:bg-gray-300">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button onclick="removerMembro(${m.id})"" class="bg-[#ea4b4b] text-white border-none py-0.5 px-1 cursor-pointer rounded-md hover:bg-[#e53d3d]">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>   
+                            </td>
+        </tr>
+      `;
+    });
+  }
+
+  carregarTabela();
+</script>

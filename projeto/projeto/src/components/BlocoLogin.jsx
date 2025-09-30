@@ -8,7 +8,7 @@ export function BlocoLogin() {
 
     return (
         <div className={`w-[50%] auto flex flex-col ${Config.corAzulPrincipal} gap-7`}>
-            <span className="font-bold text-3xl">Acesse sua conta</span>
+            <span className={`font-bold text-3xl ${Config.corLetraAzulPrincipal}`}>Acesse sua conta</span>
             <div className="flex flex-col gap-1">
                 <span className={`${Config.corLetraAzulPrincipal}`}>Email</span>
                 <input type="text" placeholder="exemplo@hotmail.com" className={`${Config.input}`} />
@@ -28,7 +28,7 @@ export function BlocoLogin() {
             <button className={`${Config.corFundoAzulPrincipal} text-gray-50 ${Config.arredondarBordaPequena} ${Config.alturaInput}`}>Entrar</button>
             <button className={`bg-blue-100 ${Config.alturaInput} ${Config.cetralizar} gap-2 ${Config.arredondarBordaPequena}`}><FcGoogle className="text-2xl" />Entrar com o Google</button>
             <div className={`flex justify-center gap-1`}>
-                <span>Não tem uma Conta? </span>
+                <span className={`${Config.corLetraAzulPrincipal}`}>Não tem uma Conta? </span>
                 <span className={`text-blue-500 cursor-pointer`}>Cadastre-se</span>
             </div>
         </div>

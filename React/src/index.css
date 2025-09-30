@@ -1,0 +1,18 @@
+@import "tailwindcss";
+/* @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap'); */
+
+@theme {
+    /* CORES */
+    --color-icf-primary-50: #F5F5F5;
+    --color-icf-primary-100: #D9D9D9;
+    --color-icf-primary-200: #A6A6A6;
+    --color-icf-primary-300: #595959;
+    --color-icf-primary-400: #222;
+
+    --color-surface-50: #FCFCFC;
+
+    /* EFEITO SOMBRAS */
+    --shadow-menu-shadow: 0px 16px 44px 0px rgba(0,0,0,0.07);
+
+    /* --font-family-base: 'Jakarta', sans-serif; */
+}

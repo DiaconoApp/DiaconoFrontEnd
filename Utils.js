@@ -25,6 +25,8 @@ const validationCEP = async (cep) => {
     }
 
 }
+ 
+validationCEP('06435040')
 
 //Utils Nome
 const transformationName = (string) => {
@@ -66,7 +68,7 @@ const transformationDouble = (double) => {
 }
 
 
-transformationDouble(10.3);
+// transformationDouble(10.3);
 
 //Utils CNPJ
 const validationCNPJ = async (cnpj) => {
@@ -94,9 +96,9 @@ const validationCNPJ = async (cnpj) => {
 };
 
 
-validationCNPJ('47960950000121')
-    .then((resultado) => console.log(resultado))
-    .catch((err) => console.log(err));
+// validationCNPJ('47960950000121')
+    // .then((resultado) => console.log(resultado))
+    // .catch((err) => console.log(err));
 
 
 //Utils CPF
@@ -172,4 +174,14 @@ function isTelefone(telefone) {
 
     const regexTelefone = /^([+]?\d{2}?\s)?(\(?\d{2}\)?\s)?(\d{5,9})([-\s])?(\d{4})$/;
     return regexTelefone.test(telefone);
+}
+
+//Utils formatar data de nascimento
+function formatarDataNascimentoSimples(data) {
+    // Remove qualquer caractere não numérico
+    const dataLimpa = data.replace(/\D/g, '');
+    // Verifica se tem 8 dígitos
+    if (dataLimpa.length !== 8) return "Formato inválido";
+    // Formata para dd/MM/yyyy
+    return `${dataLimpa.slice(0,2)}/${dataLimpa.slice(2,4)}/${dataLimpa.slice(4)}`;
 }

@@ -1,9 +1,11 @@
 import { FcGoogle } from 'react-icons/fc'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import { useState } from "react"
+import { useNavigate } from 'react-router-dom';
 
 export function FormsLogin() {
     const [mostrarSenha, setMostrarSenha] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <div className="w-100 h-auto flex flex-col gap-8">
@@ -31,7 +33,7 @@ export function FormsLogin() {
                 <button className="bg-[#CEDAEA] h-12 flex items-center justify-center w-full gap-2 rounded-lg font-semibold"><FcGoogle className="text-2xl" />Entrar com o Google</button>
                 <div className="flex justify-center gap-1">
                     <span className="text-diacono-blue-200">Não tem uma Conta? </span>
-                    <span className="text-secondary-200 cursor-pointer">Cadastre-se</span>
+                    <span className="text-secondary-200 cursor-pointer" onClick={() => navigate('/cadastro')}>Cadastre-se</span>
                 </div>
             </div>
         </div>

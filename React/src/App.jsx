@@ -6,6 +6,8 @@ import { Menu } from './components/Menu';
 import { KpiEventos } from './components/KpiEventos';
 import { FormEventos } from './components/FormEventos';
 import { Login } from './components/pages/Login';
+import { Cadastro } from './components/pages/Cadastro';
+import { ModalRecorrente } from './components/atoms/ModalRecorrente';
 
 function App() {
 
@@ -32,6 +34,9 @@ function App() {
         <Router>
           <Routes>
             <Route path="/login" element={<Login/>}/>
+            <Route path="/menu" element={<Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />}/>
+            <Route path="/cadastro" element={<Cadastro/>}></Route>
+            <Route path='/dev' element={<ModalRecorrente/>}></Route>
           </Routes>
         </Router>
       

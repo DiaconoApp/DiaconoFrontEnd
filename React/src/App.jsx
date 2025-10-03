@@ -7,7 +7,7 @@ import { KpiEventos } from './components/KpiEventos';
 import { FormEventos } from './components/FormEventos';
 import { Login } from './components/pages/Login';
 import { Cadastro } from './components/pages/Cadastro';
-import { ModalRecorrente } from './components/atoms/ModalRecorrente';
+import { ModalRecorrente } from './components/molecules/ModalRecorrente';
 
 function App() {
 

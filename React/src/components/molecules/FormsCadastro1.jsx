@@ -1,0 +1,34 @@
+import { InputPadrao } from "../atoms/InputPadrao";
+import { InputSenha } from "../atoms/InputSenha";
+import { EtapasCadastro } from "./EtapasCadastro";
+import { BotaoPadrao } from "../atoms/BotaoPadrao";
+import { BotaoGoogle } from "../atoms/BotaoGoogle";
+import { LinkAcesso } from "../atoms/LinkAcesso";
+import { useNavigate } from "react-router-dom";
+
+export function FormsCadastro1() {
+  const navigate = useNavigate();
+  return (
+    <div className="w-[55%] flex flex-col gap-5">
+      <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
+      <EtapasCadastro />
+      <div className="flex flex-col gap-5">
+        <InputPadrao label="Nome Completo" placeholder="Digite seu nome" />
+        <div className="flex justify-between">
+          <InputPadrao label="Data de Nascimento" type="date" className="text-diacono-blue-200" />
+          <InputPadrao label="CPF" placeholder="Digite seu CPF" />
+        </div>
+        <InputPadrao label="Email" placeholder="Digite seu email" />
+        <div className="flex justify-between">
+          <InputSenha texto="Senha" placeholder="Digite sua senha" />
+          <InputSenha texto="Confirmar Senha" placeholder="Confirme a senha" />
+        </div>
+        <div className='flex flex-col gap-3 items-end'>
+          <BotaoPadrao>Próximo</BotaoPadrao>
+          <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+          <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"}/>
+        </div>
+      </div>
+    </div>
+  );
+}

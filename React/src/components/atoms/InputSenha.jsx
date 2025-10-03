@@ -12,6 +12,7 @@ export function InputSenha(props) {
                     {mostrarSenha ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
                 </button>
             </div>
+            {props.children}
         </div>
     )
 }

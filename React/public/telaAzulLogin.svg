@@ -1,0 +1,39 @@
+<svg width="720" height="900" viewBox="0 0 720 900" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g clip-path="url(#clip0_842_2109)">
+<rect width="720" height="900" fill="#FCFCFC"/>
+<rect width="966" height="1080" fill="#0D2750"/>
+<g style="mix-blend-mode:color-dodge">
+<rect width="720" height="900" fill="url(#pattern0_842_2109)" style="mix-blend-mode:screen"/>
+</g>
+<g clip-path="url(#clip1_842_2109)">
+<g filter="url(#filter0_f_842_2109)">
+<ellipse cx="108.5" cy="796.5" rx="141.5" ry="133.5" fill="#99AFCD"/>
+</g>
+<g filter="url(#filter1_f_842_2109)">
+<ellipse cx="634.5" cy="91.5" rx="141.5" ry="133.5" fill="#99AFCD"/>
+</g>
+</g>
+</g>
+<defs>
+<pattern id="pattern0_842_2109" patternContentUnits="objectBoundingBox" width="0.0311111" height="0.0248889">
+<use xlink:href="#image0_842_2109" transform="scale(0.00111111 0.000888889)"/>
+</pattern>
+<filter id="filter0_f_842_2109" x="-583" y="113" width="1383" height="1367" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="275" result="effect1_foregroundBlur_842_2109"/>
+</filter>
+<filter id="filter1_f_842_2109" x="-57" y="-592" width="1383" height="1367" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="275" result="effect1_foregroundBlur_842_2109"/>
+</filter>
+<clipPath id="clip0_842_2109">
+<rect width="720" height="900" fill="white"/>
+</clipPath>
+<clipPath id="clip1_842_2109">
+<rect width="720" height="900" fill="white"/>
+</clipPath>
+<image id="image0_842_2109" width="28" height="28" preserveAspectRatio="none" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAA7SURBVHgB7c+xDQAgDMTAD3UGBDElgv0CU7wo7AVOjj5m6XX2kqMmc5GZJWP2Q0BAQEBAQEBAQMAfwAtruwV9sud/ugAAAABJRU5ErkJggg=="/>
+</defs>
+</svg>

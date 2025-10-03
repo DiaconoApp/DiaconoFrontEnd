@@ -1,5 +1,4 @@
 @import "tailwindcss";
-/* @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap'); */
 
 @theme {
     /* CORES */
@@ -9,10 +8,17 @@
     --color-icf-primary-300: #595959;
     --color-icf-primary-400: #222;
 
+    --color-diacono-blue-50: #E6EAF2;
+    --color-diacono-blue-100: #BFCDE0;
+    --color-diacono-blue-200: #99AFCD;
+    --color-diacono-blue-300: #103366;
+    --color-diacono-blue-400: #0D2750;
+
+    --color-secondary-200: #1C6FE3;
+
     --color-surface-50: #FCFCFC;
 
     /* EFEITO SOMBRAS */
     --shadow-menu-shadow: 0px 16px 44px 0px rgba(0,0,0,0.07);
 
-    /* --font-family-base: 'Jakarta', sans-serif; */
 }

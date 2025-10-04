@@ -6,7 +6,9 @@ import { Menu } from './components/Menu';
 import { KpiEventos } from './components/KpiEventos';
 import { FormEventos } from './components/FormEventos';
 import { Login } from './components/pages/Login';
-import { Cadastro } from './components/pages/Cadastro';
+import { Cadastro1 } from './components/pages/Cadastro1';
+import { Cadastro2 } from './components/pages/Cadastro2';
+import { Cadastro3 } from './components/pages/Cadastro3';
 import { ModalRecorrente } from './components/molecules/ModalRecorrente';
 
 function App() {
@@ -35,7 +37,9 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login/>}/>
             <Route path="/menu" element={<Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />}/>
-            <Route path="/cadastro" element={<Cadastro/>}></Route>
+            <Route path="/cadastro1" element={<Cadastro1/>}></Route>
+            <Route path="/cadastro2" element={<Cadastro2/>}></Route>
+            <Route path="/cadastro3" element={<Cadastro3/>}></Route>
             <Route path='/dev' element={<ModalRecorrente/>}></Route>
           </Routes>
         </Router>

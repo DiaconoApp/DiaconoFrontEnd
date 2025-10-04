@@ -6,12 +6,12 @@ import { BotaoGoogle } from "../atoms/BotaoGoogle";
 import { LinkAcesso } from "../atoms/LinkAcesso";
 import { useNavigate } from "react-router-dom";
 
-export function FormsCadastro1() {
+export function FormsCadastro2() {
   const navigate = useNavigate();
   return (
     <div className="w-[55%] flex flex-col gap-5">
       <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-      <EtapasCadastro />
+      <EtapasCadastro className1="bg-diacono-blue-400 text-white" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
       <div className="flex flex-col gap-5">
         <InputPadrao label="Nome Completo" placeholder="Digite seu nome" />
         <div className="flex justify-between">
@@ -24,9 +24,12 @@ export function FormsCadastro1() {
           <InputSenha texto="Confirmar Senha" placeholder="Confirme a senha" />
         </div>
         <div className='flex flex-col gap-3 items-end'>
-          <BotaoPadrao>Próximo</BotaoPadrao>
+          <div className="w-full flex gap-40">
+            <BotaoPadrao onClick={() => navigate('/cadastro1')}>Voltar</BotaoPadrao>
+            <BotaoPadrao onClick={() => navigate('/cadastro3')}>Próximo</BotaoPadrao>
+          </div>
           <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-          <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"}/>
+          <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
         </div>
       </div>
     </div>

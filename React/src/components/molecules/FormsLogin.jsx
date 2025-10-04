@@ -21,7 +21,7 @@ export function FormsLogin() {
             <div className='flex flex-col gap-6 items-end'>
                 <BotaoPadrao>Entrar</BotaoPadrao>
                 <BotaoGoogle>Entrar com Google</BotaoGoogle>
-                <LinkAcesso onClick={() => navigate('/cadastro')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
+                <LinkAcesso onClick={() => navigate('/cadastro1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
             </div>
         </div>
     )

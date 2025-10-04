@@ -1,14 +1,14 @@
-import { FormsCadastro1 } from "../molecules/FormsCadastro1";
+import { FormsCadastro2 } from "../molecules/FormsCadastro2";
 import { TelaAzulDiacono } from "../molecules/TelaAzulDiacono";
 
-export function Cadastro() {
+export function Cadastro2() {
     
     return (
         // Div Global
         <div className="flex min-h-screen">
             {/* lado esquero */}
             <div className="w-1/2 flex items-center justify-center">
-                <FormsCadastro1/>
+                <FormsCadastro2/>
             </div>
 
 

@@ -10,6 +10,7 @@ import { Cadastro1 } from './components/pages/Cadastro1';
 import { Cadastro2 } from './components/pages/Cadastro2';
 import { Cadastro3 } from './components/pages/Cadastro3';
 import { ModalRecorrente } from './components/molecules/ModalRecorrente';
+import { ModalExclusao } from './components/molecules/ModalExclusao';
 
 function App() {
 
@@ -32,7 +33,6 @@ function App() {
       />
       </div> */}
       {/* <FormEventos/> */}
-      
         <Router>
           <Routes>
             <Route path="/login" element={<Login/>}/>

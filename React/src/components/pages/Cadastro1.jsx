@@ -13,7 +13,7 @@ export function Cadastro1() {
                     <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
                     <label className="text-diacono-blue-400">Qual a sua igreja?</label>
                     <select className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg h-12 p-3 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]">
-                        <option value="">Selecione uma igreja</option>
+                        <option value="" selected disabled>Selecione uma igreja</option>
                     </select>
                     <BotaoDiacono onClick={() => navigate('/cadastro2')}>Próximo</BotaoDiacono>
                 </div>

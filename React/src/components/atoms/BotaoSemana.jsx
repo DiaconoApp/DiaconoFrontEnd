@@ -28,8 +28,8 @@ export function BotaoSemana() {
                         <button
                             key={semana}
                             onClick={() => toggleItem(semana)}
-                            className={`w-10 h-10 rounded-full border transition 
-                        ${isSelected ? 'bg-icf-primary-300 text-icf-primary-50' : 'bg-icf-100 text-icf-300'}`}
+                            className={`w-10 h-10 rounded-full transition 
+                        ${isSelected ? 'bg-icf-primary-300 text-icf-primary-50' : 'bg-icf-primary-100 text-icf-primary-300'}`}
                         >
                             {letra}
                         </button>
@@ -39,7 +39,7 @@ export function BotaoSemana() {
             <div className='flex flex-col gap-2'>
                 <label className='font-bold text-icf-primary-300'>Ocorre a cada Domingo até</label>
                 <div className='flex gap-7'>
-                    <input type="date" className='text-icf-primary-200 font-semibold text-sm w-30' />
+                    <input type="date" className='text-icf-primary-200 font-semibold text-sm w-30 focus:outline-none border-b-2 border-b-icf-primary-50 focus:border-b-icf-primary-100' />
                     <button className='text-icf-primary-200 font-semibold text-sm flex items-center gap-1'>Remover a data do término <FiX></FiX></button>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import { InputPadrao } from "../atoms/InputPadrao";
 import { EtapasCadastro } from "./EtapasCadastro";
-import { BotaoPadrao } from "../atoms/BotaoPadrao";
+import { BotaoDiacono } from "../atoms/BotaoDiacono";
 import { BotaoGoogle } from "../atoms/BotaoGoogle";
 import { LinkAcesso } from "../atoms/LinkAcesso";
 import { useNavigate } from "react-router-dom";
@@ -28,10 +28,10 @@ export function FormsCadastro3() {
                 <div className='flex flex-col gap-3 items-end'>
                     <div className="w-full flex justify-between gap-10">
                         <div className="w-[30%]">
-                            <BotaoPadrao onClick={() => navigate('/cadastro2')}>Voltar</BotaoPadrao>
+                            <BotaoDiacono onClick={() => navigate('/cadastro2')}>Voltar</BotaoDiacono>
                         </div>
                         <div className="w-[50%]">
-                            <BotaoPadrao onClick={() => navigate('/cadastro3')}>Finalizar cadastro</BotaoPadrao>
+                            <BotaoDiacono onClick={() => navigate('/cadastro3')}>Finalizar cadastro</BotaoDiacono>
                         </div>
                     </div>
                     <BotaoGoogle>Entrar com o Google</BotaoGoogle>

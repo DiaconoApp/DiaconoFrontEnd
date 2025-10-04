@@ -1,14 +1,53 @@
 import { FiX } from "react-icons/fi";
+import { FiRepeat } from "react-icons/fi";
+import { BotaoSemana } from "../atoms/BotaoSemana";
+import { BotaoIcf } from "../atoms/BotaoIcf"
 
 export function ModalRecorrente() {
     return (
         <body className="bg-blue-400 flex items-center justify-center h-screen">
-            <div className="border rounded w-120 h-80">
-                <div className="border flex items-center justify-between p-4">
-                    <span className="font-bold text-2xl">Repetir</span>
-                    <button className="text-x hover:text-white hover:bg-black rounded">
-                        <FiX></FiX>
-                    </button>
+            <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-140 h-100">
+                <div className="w-[90%] flex flex-col gap-4">
+                    <div className="flex items-center justify-between pt-7">
+                        <span className="font-bold text-2xl">Repetir</span>
+                        <button className="text-xl hover:text-white hover:bg-icf-primary-400 rounded">
+                            <FiX></FiX>
+                        </button>
+                    </div>
+                    <div className="border border-icf-primary-100"></div>
+                    <div className="flex flex-col gap-6">
+                        <div className="flex items-center gap-7">
+                            <label className="text-icf-primary-400">Iniciar</label>
+                            <input type="date" className="border-b border-b-icf-primary-50 text-icf-primary-300 focus:outline-none focus:border-b-icf-primary-100" />
+                        </div>
+                        <div className="flex items-center gap-5">
+                            <div className="flex items-center gap-4">
+                                <FiRepeat className="text-lg text-icf-primary-400" />
+                                <label className="text-icf-primary-300">Repetir a cada</label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <select className="text-icf-primary-300 rounded-[2px] p-2 bg-icf-primary-100">
+                                    <option value="1">1</option>
+                                </select>
+                                <select className="text-icf-primary-300 rounded-[2px] p-2 bg-icf-primary-100">
+                                    <option value="semana">Semana</option>
+                                    <option value="dia">Dia</option>
+                                    <option value="mes">Mês</option>
+                                    <option value="ano">Ano</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex justify-center items-center">
+                            <BotaoSemana />
+                        </div>
+                        <div className="flex justify-center gap-6">
+                            <div className="w-[75%] flex gap-4">
+                                <BotaoIcf className="bg-icf-primary-400">Salvar</BotaoIcf>
+                                <BotaoIcf className="bg-icf-primary-200">Descartar</BotaoIcf>
+                                <button className="rounded-lg h-10 w-full border border-icf-primary-200 text-icf-primary-200">Remover</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </body>

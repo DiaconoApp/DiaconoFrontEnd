@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { BotaoPadrao } from "../atoms/BotaoPadrao";
+import { BotaoDiacono } from "../atoms/BotaoDiacono";
 import { TelaAzulDiacono } from "../molecules/TelaAzulDiacono";
 
 export function Cadastro1() {
@@ -15,7 +15,7 @@ export function Cadastro1() {
                     <select className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg h-12 p-3 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]">
                         <option value="">Selecione uma igreja</option>
                     </select>
-                    <BotaoPadrao onClick={() => navigate('/cadastro2')}>Próximo</BotaoPadrao>
+                    <BotaoDiacono onClick={() => navigate('/cadastro2')}>Próximo</BotaoDiacono>
                 </div>
             </div>
 

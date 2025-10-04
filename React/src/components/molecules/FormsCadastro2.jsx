@@ -1,7 +1,7 @@
 import { InputPadrao } from "../atoms/InputPadrao";
 import { InputSenha } from "../atoms/InputSenha";
 import { EtapasCadastro } from "./EtapasCadastro";
-import { BotaoPadrao } from "../atoms/BotaoPadrao";
+import { BotaoDiacono } from "../atoms/BotaoDiacono";
 import { BotaoGoogle } from "../atoms/BotaoGoogle";
 import { LinkAcesso } from "../atoms/LinkAcesso";
 import { useNavigate } from "react-router-dom";
@@ -25,8 +25,8 @@ export function FormsCadastro2() {
         </div>
         <div className='flex flex-col gap-3 items-end'>
           <div className="w-full flex gap-40">
-            <BotaoPadrao onClick={() => navigate('/cadastro1')}>Voltar</BotaoPadrao>
-            <BotaoPadrao onClick={() => navigate('/cadastro3')}>Próximo</BotaoPadrao>
+            <BotaoDiacono onClick={() => navigate('/cadastro1')}>Voltar</BotaoDiacono>
+            <BotaoDiacono onClick={() => navigate('/cadastro3')}>Próximo</BotaoDiacono>
           </div>
           <BotaoGoogle>Entrar com o Google</BotaoGoogle>
           <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />

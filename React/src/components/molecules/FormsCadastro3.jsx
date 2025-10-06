@@ -1,4 +1,4 @@
-import { InputPadrao } from "../atoms/InputPadrao";
+import { InputDiacono } from "../atoms/InputDiacono";
 import { EtapasCadastro } from "./EtapasCadastro";
 import { BotaoDiacono } from "../atoms/BotaoDiacono";
 import { BotaoGoogle } from "../atoms/BotaoGoogle";
@@ -14,16 +14,16 @@ export function FormsCadastro3() {
             <div className="flex flex-col gap-5">
                 <label className="font-semibold text-diacono-blue-400">Endereço</label>
                 <div className="flex justify-between">
-                    <InputPadrao label="CEP" placeholder="Digite seu CEP" />
-                    <InputPadrao label="Rua/Avenida" placeholder="Ex: Rua Japão" />
+                    <InputDiacono label="CEP" placeholder="Digite seu CEP" />
+                    <InputDiacono label="Rua/Avenida" placeholder="Ex: Rua Japão" />
                 </div>
                 <div className="flex justify-between">
-                    <InputPadrao label="Bairro" placeholder="Digite sua senha" />
-                    <InputPadrao label="Cidade" placeholder="Confirme a senha" />
+                    <InputDiacono label="Bairro" placeholder="Digite sua senha" />
+                    <InputDiacono label="Cidade" placeholder="Confirme a senha" />
                 </div>
                 <div className="flex justify-between">
-                    <InputPadrao label="CEP" placeholder="Digite seu CEP" />
-                    <InputPadrao label="Rua/Avenida" placeholder="Ex: Rua Japão" />
+                    <InputDiacono label="CEP" placeholder="Digite seu CEP" />
+                    <InputDiacono label="Rua/Avenida" placeholder="Ex: Rua Japão" />
                 </div>
                 <div className='flex flex-col gap-3 items-end'>
                     <div className="w-full flex justify-between gap-10">

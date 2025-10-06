@@ -1,4 +1,4 @@
-import { InputPadrao } from "../atoms/InputPadrao";
+import { InputDiacono } from "../atoms/InputDiacono";
 import { InputSenha } from "../atoms/InputSenha";
 import { EtapasCadastro } from "./EtapasCadastro";
 import { BotaoDiacono } from "../atoms/BotaoDiacono";
@@ -13,12 +13,12 @@ export function FormsCadastro2() {
       <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
       <EtapasCadastro className1="bg-diacono-blue-400 text-white" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
       <div className="flex flex-col gap-5">
-        <InputPadrao label="Nome Completo" placeholder="Digite seu nome" />
+        <InputDiacono label="Nome Completo" placeholder="Digite seu nome" />
         <div className="flex justify-between">
-          <InputPadrao label="Data de Nascimento" type="date" className="text-diacono-blue-200" />
-          <InputPadrao label="CPF" placeholder="Digite seu CPF" />
+          <InputDiacono label="Data de Nascimento" type="date" className="text-diacono-blue-200" />
+          <InputDiacono label="CPF" placeholder="Digite seu CPF" />
         </div>
-        <InputPadrao label="Email" placeholder="Digite seu email" />
+        <InputDiacono label="Email" placeholder="Digite seu email" />
         <div className="flex justify-between">
           <InputSenha texto="Senha" placeholder="Digite sua senha" />
           <InputSenha texto="Confirmar Senha" placeholder="Confirme a senha" />

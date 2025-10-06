@@ -1,7 +1,7 @@
-import { FiX } from "react-icons/fi";
 import { FiRepeat } from "react-icons/fi";
 import { BotaoSemana } from "../atoms/BotaoSemana";
 import { BotaoIcf } from "../atoms/BotaoIcf"
+import { TituloModal } from "../atoms/TituloModal";
 
 export function ModalRecorrente() {
     const numeros = [1,2,3,4,5,6,7,8,9,10]
@@ -9,12 +9,7 @@ export function ModalRecorrente() {
         <body className="bg-blue-400 flex items-center justify-center h-screen">
             <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
                 <div className="w-[90%] flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
-                        <span className="font-bold text-2xl">Repetir</span>
-                        <button className="text-xl hover:text-white hover:bg-icf-primary-400 rounded">
-                            <FiX></FiX>
-                        </button>
-                    </div>
+                    <TituloModal titulo={"Repetir"}/>
                     <div className="border border-icf-primary-50"></div>
                     <div className="flex flex-col gap-6">
                         <div className="flex items-center gap-7">

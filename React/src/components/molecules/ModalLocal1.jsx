@@ -23,14 +23,10 @@ export function ModalLocal1() {
                     <input type="checkbox" className="accent-icf-primary-400" />
                     <label className="text-icf">Favoritar Endereço</label>
                 </div>
-                <div className="flex flex-col gap-6">
-                    <div className="flex justify-center gap-6">
-                        <div className="w-full flex justify-end gap-4">
-                            <div className="w-[60%] flex gap-5">
-                                <BotaoIcf className="bg-icf-primary-400">Salvar</BotaoIcf>
-                                <BotaoIcf className="bg-icf-primary-200">Cancelar</BotaoIcf>
-                            </div>
-                        </div>
+                <div className="w-full flex justify-end gap-4">
+                    <div className="w-[60%] flex gap-5">
+                        <BotaoIcf className="bg-icf-primary-400">Salvar</BotaoIcf>
+                        <BotaoIcf className="bg-icf-primary-200">Cancelar</BotaoIcf>
                     </div>
                 </div>
             </div>

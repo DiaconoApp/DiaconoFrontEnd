@@ -12,6 +12,7 @@ import { Cadastro3 } from './components/pages/Cadastro3';
 import { ModalRecorrente } from './components/molecules/ModalRecorrente';
 import { ModalExclusao } from './components/molecules/ModalExclusao';
 import { ModalLocal1 } from './components/molecules/ModalLocal1';
+import { ModalLocal2 } from './components/molecules/ModalLocal2';
 
 function App() {
 
@@ -41,7 +42,7 @@ function App() {
             <Route path="/cadastro1" element={<Cadastro1/>}></Route>
             <Route path="/cadastro2" element={<Cadastro2/>}></Route>
             <Route path="/cadastro3" element={<Cadastro3/>}></Route>
-            <Route path='/dev' element={<ModalLocal1/>}></Route>
+            <Route path='/dev' element={<ModalLocal2/>}></Route>
           </Routes>
         </Router>
       

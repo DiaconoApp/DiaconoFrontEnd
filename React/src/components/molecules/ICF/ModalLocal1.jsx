@@ -1,8 +1,10 @@
 import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
 import { TituloModal } from "../../atoms/ICF/TituloModal";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
+import { useNavigate } from "react-router-dom";
 
 export function ModalLocal1() {
+    const navigate = useNavigate();
     return (
         <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
             <div className="w-[90%] flex flex-col gap-4">
@@ -25,7 +27,7 @@ export function ModalLocal1() {
                 </div>
                 <div className="w-full flex justify-end gap-4">
                     <div className="w-[60%] flex gap-5">
-                        <BotaoIcf className="bg-icf-primary-400">Salvar</BotaoIcf>
+                        <BotaoIcf className="bg-icf-primary-400" onClick={() => navigate('/ModalLocal2')}>Salvar</BotaoIcf>
                         <BotaoIcf className="bg-icf-primary-200">Cancelar</BotaoIcf>
                     </div>
                 </div>

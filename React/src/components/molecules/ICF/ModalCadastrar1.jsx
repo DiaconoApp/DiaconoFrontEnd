@@ -3,8 +3,10 @@ import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { InputSenhaIcf } from "../../atoms/ICF/InputSenhaIcf";
 import { TituloModal } from "../../atoms/ICF/TituloModal";
 import { EtapasCadastro } from "../Global/EtapasCadastro";
+import { useNavigate } from "react-router-dom";
 
 export function ModalCadastrar1() {
+    const navigate = useNavigate();
     return (
         <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
             <div className="w-[90%] flex flex-col gap-4">
@@ -23,7 +25,7 @@ export function ModalCadastrar1() {
                 </div>
                 <div className="w-full flex justify-center gap-25">
                     <div className="w-[30%]">
-                        <BotaoIcf className="bg-icf-primary-400 flex items-center justify-center gap-2">Próximo</BotaoIcf>
+                        <BotaoIcf className="bg-icf-primary-400 flex items-center justify-center gap-2" onClick={() => navigate('/ModalCadastrar2')}>Próximo</BotaoIcf>
                     </div>
                 </div>
             </div>

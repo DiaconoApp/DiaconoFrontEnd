@@ -1,7 +1,7 @@
 import { FiRepeat } from "react-icons/fi";
-import { BotaoSemana } from "../atoms/BotaoSemana";
-import { BotaoIcf } from "../atoms/BotaoIcf"
-import { TituloModal } from "../atoms/TituloModal";
+import { BotaoSemana } from "../../atoms/ICF/BotaoSemana";
+import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
+import { TituloModal } from "../../atoms/ICF/TituloModal";
 
 export function ModalRecorrente() {
     const numeros = [1,2,3,4,5,6,7,8,9,10]

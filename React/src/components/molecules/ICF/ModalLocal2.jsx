@@ -1,6 +1,6 @@
-import { BotaoIcf } from "../atoms/BotaoIcf"
-import { TituloModal } from "../atoms/TituloModal";
-import { EnderecosSalvos } from "../atoms/EnderecosSalvos";
+import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
+import { TituloModal } from "../../atoms/ICF/TituloModal";
+import { EnderecosSalvos } from "../../atoms/ICF/EnderecosSalvos";
 
 export function ModalLocal2() {
     return (
@@ -8,7 +8,7 @@ export function ModalLocal2() {
             <div className="w-[90%] flex flex-col gap-4">
                 <TituloModal titulo={"Endereços Salvos"} />
                 <div className="border border-icf-primary-50"></div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 overflow-y-auto max-h-35">
                     <EnderecosSalvos titulo={"Igreja ICF"} endereco={"Rua estonia, 1469"}/>
                 </div>
                 <div className="w-full flex justify-between gap-25">

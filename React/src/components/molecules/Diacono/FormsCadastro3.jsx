@@ -1,8 +1,8 @@
-import { InputDiacono } from "../atoms/InputDiacono";
-import { EtapasCadastro } from "./EtapasCadastro";
-import { BotaoDiacono } from "../atoms/BotaoDiacono";
-import { BotaoGoogle } from "../atoms/BotaoGoogle";
-import { LinkAcesso } from "../atoms/LinkAcesso";
+import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
+import { EtapasCadastro } from "../Global/EtapasCadastro";
+import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
+import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
+import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
 import { useNavigate } from "react-router-dom";
 
 export function FormsCadastro3() {
@@ -10,7 +10,7 @@ export function FormsCadastro3() {
     return (
         <div className="w-[55%] flex flex-col gap-5">
             <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-            <EtapasCadastro className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-400 text-white"/>
+            <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-400 text-white"/>
             <div className="flex flex-col gap-5">
                 <label className="font-semibold text-diacono-blue-400">Endereço</label>
                 <div className="flex justify-between">

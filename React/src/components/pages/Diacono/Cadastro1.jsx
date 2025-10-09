@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { BotaoDiacono } from "../atoms/BotaoDiacono";
-import { TelaAzulDiacono } from "../molecules/TelaAzulDiacono";
+import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
+import { TelaAzulDiacono } from "../../molecules/Diacono/TelaAzulDiacono";
 
 export function Cadastro1() {
     const navigate = useNavigate();

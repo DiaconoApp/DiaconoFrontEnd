@@ -1,8 +1,8 @@
-import { InputDiacono } from '../atoms/InputDiacono'
-import { InputSenha } from '../atoms/InputSenha';
-import { BotaoDiacono } from '../atoms/BotaoDiacono';
-import { BotaoGoogle } from '../atoms/BotaoGoogle';
-import { LinkAcesso } from '../atoms/LinkAcesso';
+import { InputDiacono } from '../../atoms/Diacono/InputDiacono'
+import { InputSenhaDiacono } from '../../atoms/Diacono/InputSenhaDiacono';
+import { BotaoDiacono } from '../../atoms/Diacono/BotaoDiacono';
+import { BotaoGoogle } from '../../atoms/Global/BotaoGoogle';
+import { LinkAcesso } from '../../atoms/Global/LinkAcesso';
 import { useNavigate } from "react-router-dom";
 
 export function FormsLogin() {
@@ -12,11 +12,11 @@ export function FormsLogin() {
             <span className="font-bold text-[28px] text-diacono-blue-400">Acesse sua conta</span>
             <div className='flex flex-col gap-6'>
                 <InputDiacono label={"Email"} placeholder={"exemplo@hotmail.com"} />
-                <InputSenha texto={"Senha"} placeholder={"Digite sua senha"}>
+                <InputSenhaDiacono texto={"Senha"} placeholder={"Digite sua senha"}>
                     <div className='flex justify-end'>
                         <span className="cursor-pointer flex text-diacono-blue-200">Esqueci minha senha</span>
                     </div>
-                </InputSenha>
+                </InputSenhaDiacono>
             </div>
             <div className='flex flex-col gap-6 items-end'>
                 <BotaoDiacono>Entrar</BotaoDiacono>

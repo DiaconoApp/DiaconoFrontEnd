@@ -5,14 +5,15 @@ import { useState } from 'react'
 import { Menu } from './components/Menu';
 import { KpiEventos } from './components/KpiEventos';
 import { FormEventos } from './components/FormEventos';
-import { Login } from './components/pages/Login';
-import { Cadastro1 } from './components/pages/Cadastro1';
-import { Cadastro2 } from './components/pages/Cadastro2';
-import { Cadastro3 } from './components/pages/Cadastro3';
-import { ModalRecorrente } from './components/molecules/ModalRecorrente';
-import { ModalExclusao } from './components/molecules/ModalExclusao';
-import { ModalLocal1 } from './components/molecules/ModalLocal1';
-import { ModalLocal2 } from './components/molecules/ModalLocal2';
+import { Login } from './components/pages/Diacono/Login';
+import { Cadastro1 } from './components/pages/Diacono/Cadastro1';
+import { Cadastro2 } from './components/pages/Diacono/Cadastro2';
+import { Cadastro3 } from './components/pages/Diacono/Cadastro3';
+import { ModalRecorrente } from './components/molecules/ICF/ModalRecorrente';
+import { ModalExclusao } from './components/molecules/ICF/ModalExclusao';
+import { ModalLocal1 } from './components/molecules/ICF/ModalLocal1';
+import { ModalLocal2 } from './components/molecules/ICF/ModalLocal2';
+import { ModalCadastrar1 } from './components/molecules/Diacono/ModalCadastrar1';
 
 function App() {
 
@@ -42,7 +43,7 @@ function App() {
             <Route path="/cadastro1" element={<Cadastro1/>}></Route>
             <Route path="/cadastro2" element={<Cadastro2/>}></Route>
             <Route path="/cadastro3" element={<Cadastro3/>}></Route>
-            <Route path='/dev' element={<ModalLocal2/>}></Route>
+            <Route path='/dev' element={<ModalCadastrar1/>}></Route>
           </Routes>
         </Router>
       

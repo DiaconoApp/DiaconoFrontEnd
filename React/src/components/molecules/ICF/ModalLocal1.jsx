@@ -1,6 +1,6 @@
-import { BotaoIcf } from "../atoms/BotaoIcf"
-import { TituloModal } from "../atoms/TituloModal";
-import { InputIcf } from "../atoms/InputIcf";
+import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
+import { TituloModal } from "../../atoms/ICF/TituloModal";
+import { InputIcf } from "../../atoms/ICF/InputIcf";
 
 export function ModalLocal1() {
     return (

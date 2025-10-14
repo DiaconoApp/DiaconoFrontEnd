@@ -16,6 +16,7 @@ import { ModalLocal2 } from './components/molecules/ICF/ModalLocal2';
 import { ModalCadastrar1 } from './components/molecules/ICF/ModalCadastrar1';
 import { ModalCadastrar2 } from './components/molecules/ICF/ModalCadastrar2';
 import { ModalExclusaoRecorrencia } from './components/molecules/ICF/ModalExclusaoRecorrencia';
+import { ModalVisualizarEvento } from './components/molecules/ICF/ModalVisualizarEvento';
 
 function App() {
 
@@ -45,11 +46,7 @@ function App() {
             <Route path="/cadastro1" element={<Cadastro1/>}></Route>
             <Route path="/cadastro2" element={<Cadastro2/>}></Route>
             <Route path="/cadastro3" element={<Cadastro3/>}></Route>
-            <Route path="/ModalCadastrar1" element={<ModalCadastrar1/>}></Route>
-            <Route path="/ModalCadastrar2" element={<ModalCadastrar2/>}></Route>
-            <Route path="/ModalLocal1" element={<ModalLocal1/>}></Route>
-            <Route path="/ModalLocal2" element={<ModalLocal2/>}></Route>
-            <Route path='/dev' element={<ModalExclusaoRecorrencia/>}></Route>
+            <Route path='/dev' element={<ModalVisualizarEvento/>}></Route>
           </Routes>
         </Router>
       

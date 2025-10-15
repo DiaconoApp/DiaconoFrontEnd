@@ -10,6 +10,18 @@ import { Cadastro } from './components/pages/Cadastro';
 import { ModalRecorrente } from './components/molecules/ModalRecorrente';
 // import Calendario from './components/molecules/Calendario';
 import { Eventos } from './components/pages/Eventos';
+import { Login } from './components/pages/Diacono/Login';
+import { Cadastro1 } from './components/pages/Diacono/Cadastro1';
+import { Cadastro2 } from './components/pages/Diacono/Cadastro2';
+import { Cadastro3 } from './components/pages/Diacono/Cadastro3';
+import { ModalRecorrente } from './components/molecules/ICF/ModalRecorrente';
+import { ModalExclusao } from './components/molecules/ICF/ModalExclusao';
+import { ModalLocal1 } from './components/molecules/ICF/ModalLocal1';
+import { ModalLocal2 } from './components/molecules/ICF/ModalLocal2';
+import { ModalCadastrar1 } from './components/molecules/ICF/ModalCadastrar1';
+import { ModalCadastrar2 } from './components/molecules/ICF/ModalCadastrar2';
+import { ModalExclusaoRecorrencia } from './components/molecules/ICF/ModalExclusaoRecorrencia';
+import { ModalVisualizarEvento } from './components/molecules/ICF/ModalVisualizarEvento';
 
 function App() {
 
@@ -32,7 +44,6 @@ function App() {
       />
       </div> */}
       {/* <FormEventos/> */}
-      
         <Router>
           <Routes>
             <Route path="/login" element={<Login/>}/>
@@ -40,6 +51,10 @@ function App() {
             <Route path="/cadastro" element={<Cadastro/>}></Route>
             <Route path='/dev' element={<ModalRecorrente/>}></Route>
             <Route path='/eventos' element={<Eventos/>}></Route>
+            <Route path="/cadastro1" element={<Cadastro1/>}></Route>
+            <Route path="/cadastro2" element={<Cadastro2/>}></Route>
+            <Route path="/cadastro3" element={<Cadastro3/>}></Route>
+            <Route path='/dev' element={<ModalVisualizarEvento/>}></Route>
           </Routes>
         </Router>
       

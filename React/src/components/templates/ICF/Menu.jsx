@@ -1,6 +1,6 @@
 // import { useState } from 'react';
-import { ItemMenuLateral } from './ItemMenuLateral';
-import { ItemMenuTopo } from './ItemMenuTopo';
+import { ItemMenuLateral } from '../../molecules/ICF/ItemMenuLateral';
+import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
 
 export function Menu({menuAberto, setMenuAberto}) {
 

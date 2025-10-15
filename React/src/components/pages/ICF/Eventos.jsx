@@ -1,6 +1,6 @@
-import { Menu } from "../Menu";
-import { KpiEventos } from "../KpiEventos";
-import { Calendario } from "../molecules/Calendario";
+import { Menu } from "../../templates/ICF/Menu";
+import { Kpi } from "../../molecules/ICF/Kpi";
+import { Calendario } from "../../templates/ICF/Calendario";
 import { useState } from "react";
 
 export function Eventos() {
@@ -11,9 +11,9 @@ export function Eventos() {
             <Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />
             <div className={`grid grid-cols-3 gap-5  mt-15 p-6 transition-all duration-300
             ${espacamento}`}>
-                <KpiEventos imagem="calendario" className="flex-1" />
-                <KpiEventos imagem="calendario" className="flex-1" />
-                <KpiEventos imagem="calendario" className="flex-1" />
+                <Kpi imagem="calendario" className="flex-1" />
+                <Kpi imagem="calendario" className="flex-1" />
+                <Kpi imagem="calendario" className="flex-1" />
             </div>
             <div className={`${espacamento} px-6`}>
                 <Calendario className="h-100 w-100" />

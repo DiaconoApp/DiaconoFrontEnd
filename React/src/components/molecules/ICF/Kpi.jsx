@@ -1,4 +1,4 @@
-export function KpiEventos(imagem){
+export function Kpi(imagem){
     return(
         <div className="bg-white p-4 rounded-lg flex gap-2 items-center">
             <div className="p-3 bg-icf-primary-50 rounded-sm">

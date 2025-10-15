@@ -5,6 +5,11 @@ import { useState } from 'react'
 import { Menu } from './components/Menu';
 import { KpiEventos } from './components/KpiEventos';
 import { FormEventos } from './components/FormEventos';
+import { Login } from './components/pages/Login';
+import { Cadastro } from './components/pages/Cadastro';
+import { ModalRecorrente } from './components/molecules/ModalRecorrente';
+// import Calendario from './components/molecules/Calendario';
+import { Eventos } from './components/pages/Eventos';
 import { Login } from './components/pages/Diacono/Login';
 import { Cadastro1 } from './components/pages/Diacono/Cadastro1';
 import { Cadastro2 } from './components/pages/Diacono/Cadastro2';
@@ -43,6 +48,9 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login/>}/>
             <Route path="/menu" element={<Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />}/>
+            <Route path="/cadastro" element={<Cadastro/>}></Route>
+            <Route path='/dev' element={<ModalRecorrente/>}></Route>
+            <Route path='/eventos' element={<Eventos/>}></Route>
             <Route path="/cadastro1" element={<Cadastro1/>}></Route>
             <Route path="/cadastro2" element={<Cadastro2/>}></Route>
             <Route path="/cadastro3" element={<Cadastro3/>}></Route>

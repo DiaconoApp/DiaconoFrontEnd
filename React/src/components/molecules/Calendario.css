@@ -1,0 +1,21 @@
+.fc-toolbar-title {
+  /* text-transform: capitalize;  */
+}
+
+.fc-col-header-cell {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #595959;
+  /* text-transform: capitalize; */
+}
+
+.fc-daygrid-day {
+  /* height: 110px; aumenta altura */
+}
+
+.fc-daygrid-day-number {
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: 4px;
+  color: #3F3F3F;
+}

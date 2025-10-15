@@ -10,10 +10,10 @@ export function Menu({menuAberto, setMenuAberto}) {
             <div className='border-b-[0.5px] border-icf-primary-100 h-15 w-full bg-white fixed z-0'>
                 <div className='flex justify-end items-center content-center gap-4 h-full pr-4.5 relative z-20'>
                     <ItemMenuTopo
-                        imagem="calendario"
+                        imagem="iconeNotificacao"
                     />
                     <ItemMenuTopo
-                        imagem="calendario"
+                        imagem="iconePerfil"
                     />
                     <div className='flex flex-col items-center'>
                         <span className='text-sm font-bold text-icf-primary-400'>João Souza</span>
@@ -49,36 +49,36 @@ export function Menu({menuAberto, setMenuAberto}) {
                     </li>
                     <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Escalas" : false}
+                            imagem="iconeEscala"
                             href="teste"
                         />
                     </li>
                     <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Membros" : false}
+                            imagem="iconeGrupo"
                             href="teste"
                         />
                     </li>
                       <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Ministérios" : false}
+                            imagem="iconeTerra"
                             href="teste"
                         />
                     </li>
                     <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Financeiro" : false}
+                            imagem="iconeFinanceiro"
                             href="teste"
                         />
                     </li>
                     <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Dashboard" : false}
+                            imagem="iconeDash"
                             href="teste"
                         />
                     </li>
@@ -87,15 +87,15 @@ export function Menu({menuAberto, setMenuAberto}) {
                 <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"}`}>
                     <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Configurações" : false}
+                            imagem="iconeConfig"
                             href="teste"
                         />
                     </li>
                     <li>
                         <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
+                            label={menuAberto ? "Sair" : false}
+                            imagem="iconeSair"
                             href="teste"
                         />
                     </li>

@@ -1,5 +1,5 @@
 //Utils CEP
-const validationCEP = async (cep) => {
+export const validationCEP = async (cep) => {
 
     try {
 
@@ -26,10 +26,9 @@ const validationCEP = async (cep) => {
 
 }
  
-validationCEP('06435040')
 
 //Utils Nome
-const transformationName = (string) => {
+export const transformationName = (string) => {
 
     const arrayNames = string.trim().replace(/[^a-zA-Z0]/g, "").split(/\s+/);
 
@@ -48,7 +47,7 @@ const transformationName = (string) => {
 }
 
 //Utils Double
-const transformationDouble = (double) => {
+export const transformationDouble = (double) => {
 
     if(isNaN(Number(double))){
 
@@ -71,7 +70,7 @@ const transformationDouble = (double) => {
 // transformationDouble(10.3);
 
 //Utils CNPJ
-const validationCNPJ = async (cnpj) => {
+export const validationCNPJ = async (cnpj) => {
   try {
     cnpj = cnpj.trim().replace(/\D/g, '');
 
@@ -102,7 +101,7 @@ const validationCNPJ = async (cnpj) => {
 
 
 //Utils CPF
-function validaCpf(cpf) {
+export function validaCpf(cpf) {
     if (!isCpf(cpf)) return false;
 
     var cpfLimpo = cpf.replace(/[^\d]+/g, '');
@@ -134,14 +133,14 @@ function validaCpf(cpf) {
     return cpfBase === cpfLimpo;
 }
 
-function isCpf(cpf) {
+export function isCpf(cpf) {
     if (!cpf) return false;
 
     const regexCpf = /^(\d{11}|\d{3}\.\d{3}\.\d{3}\-\d{2})$/;
     return regexCpf.test(cpf);
 }
 
-function formatarCpf(cpf) {
+export function formatarCpf(cpf) {
     if (!validaCpf(cpf)) return false;
 
     var cpfLimpo = cpf.replace(/[^\d]+/g, '');
@@ -152,7 +151,7 @@ function formatarCpf(cpf) {
 }
 
 //Utils telefone 
-function formatarTelefone(telefone) {
+export function formatarTelefone(telefone) {
     if (!isTelefone(telefone)) return false;
 
     var telefoneLimpo = telefone.replace(/[^\d]+/g, '');
@@ -169,7 +168,7 @@ function formatarTelefone(telefone) {
     }
 }
 
-function isTelefone(telefone) {
+export function isTelefone(telefone) {
     if (!telefone) return false;
 
     const regexTelefone = /^([+]?\d{2}?\s)?(\(?\d{2}\)?\s)?(\d{5,9})([-\s])?(\d{4})$/;
@@ -177,7 +176,7 @@ function isTelefone(telefone) {
 }
 
 //Utils formatar data de nascimento
-function formatarDataNascimentoSimples(data) {
+export function formatarDataNascimentoSimples(data) {
     // Remove qualquer caractere não numérico
     const dataLimpa = data.replace(/\D/g, '');
     // Verifica se tem 8 dígitos

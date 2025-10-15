@@ -1,0 +1,77 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "nome": "João Silva",
+      "email": "joao@example.com",
+      "senha": "123456"
+    },
+    {
+      "fkIgreja": 1,
+      "nome": "Izael",
+      "nascimento": "2002-10-24",
+      "cpf": "48243578889",
+      "email": "izael@gmail.com",
+      "senha": "izael123",
+      "confirmarSenha": "izael123",
+      "cep": "09220608",
+      "rua": "Rua ibatiba",
+      "bairro": "Vila Metalúrgica",
+      "cidade": "Santo André",
+      "numero": "123",
+      "complemento": "casa 138",
+      "id": 2
+    },
+    {
+      "fkIgreja": 1,
+      "nome": "Joaovitor",
+      "nascimento": "2002-10-24",
+      "cpf": "48243578889",
+      "email": "joao@gmail.com",
+      "senha": "joao123",
+      "confirmarSenha": "joao123",
+      "cep": "09220608",
+      "rua": "Rua Ibatiba",
+      "bairro": "Vila Metalúrgica",
+      "cidade": "Santo André",
+      "numero": "123",
+      "complemento": "casa 138",
+      "uf": "SP",
+      "id": 3
+    }
+  ],
+  "igrejas": [
+    {
+      "id": 1,
+      "nome": "ICF - Igreja Cristã da Família"
+    },
+    {
+      "id": 2,
+      "nome": "Paróquia Matriz de Santo André"
+    },
+    {
+      "id": 3,
+      "nome": "Santuário do Senhor do Bonfim"
+    },
+    {
+      "id": 4,
+      "nome": "Igreja Nossa Senhora de Fátima"
+    },
+    {
+      "id": 5,
+      "nome": "Além do Véu Santo André"
+    },
+    {
+      "id": 6,
+      "nome": "Paróquia Nossa Senhora da Salete"
+    },
+    {
+      "id": 7,
+      "nome": "Paróquia Nossa Senhora do Paraíso"
+    },
+    {
+      "id": 8,
+      "nome": "Paróquia Santa Terezinha"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 export function KpiEventos(imagem){
     return(
-        <div className="bg-white p-6 rounded-lg flex gap-2 items-center">
+        <div className="bg-white p-4 rounded-lg flex gap-2 items-center">
             <div className="p-3 bg-icf-primary-50 rounded-sm">
                  <img src={`./calendario.svg`} alt="" className='h-5 w-5'/>     
             </div>

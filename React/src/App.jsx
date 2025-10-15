@@ -8,6 +8,8 @@ import { FormEventos } from './components/FormEventos';
 import { Login } from './components/pages/Login';
 import { Cadastro } from './components/pages/Cadastro';
 import { ModalRecorrente } from './components/molecules/ModalRecorrente';
+// import Calendario from './components/molecules/Calendario';
+import { Eventos } from './components/pages/Eventos';
 
 function App() {
 
@@ -37,6 +39,7 @@ function App() {
             <Route path="/menu" element={<Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />}/>
             <Route path="/cadastro" element={<Cadastro/>}></Route>
             <Route path='/dev' element={<ModalRecorrente/>}></Route>
+            <Route path='/eventos' element={<Eventos/>}></Route>
           </Routes>
         </Router>
       

@@ -6,7 +6,7 @@ import { Cadastro1 } from "./components/pages/Diacono/Cadastro/Cadastro1";
 import { Cadastro2 } from "./components/pages/Diacono/Cadastro/Cadastro2";
 import { Cadastro3 } from "./components/pages/Diacono/Cadastro/Cadastro3";
 import { ModalVisualizarEvento } from "./components/molecules/ICF/ModalVisualizarEvento";
-import { Menu } from "./components/Menu";
+import { Menu } from "./components/templates/ICF/Menu";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export function AppRoutes() {

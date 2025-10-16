@@ -20,7 +20,7 @@ export function FormsLogin() {
         setLoading(true);
         try {
             await login(email, senha); 
-            navigate("/menu");
+            navigate("/eventos");
         } catch {
             setErro("Email ou senha inválidos");
         } finally {

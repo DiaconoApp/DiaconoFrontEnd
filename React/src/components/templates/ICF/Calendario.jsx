@@ -170,12 +170,9 @@ export function Calendario() {
             }
             className="px-8 py-3 rounded bg-icf-primary-400 text-xs text-white flex gap-2"
           >
-            <span>Adicionar</span>
-            <img
-              className="w-2"
-              src="/public/adicao.svg"
-              alt="icone de adição"
-            />
+            <span>Adicionar Evento</span>
+            <span>+</span>
+            
           </button>
         </div>
       </div>

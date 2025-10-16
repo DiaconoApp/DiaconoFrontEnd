@@ -8,6 +8,7 @@ import { Cadastro3 } from "./components/pages/Diacono/Cadastro/Cadastro3";
 import { ModalVisualizarEvento } from "./components/molecules/ICF/ModalVisualizarEvento";
 import { Menu } from "./components/templates/ICF/Menu";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { Eventos } from "./components/pages/ICF/Eventos";
 
 export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
@@ -52,6 +53,15 @@ export function AppRoutes() {
             errorElement: <div>Error</div>,
         },
         { path: "/dev", element: <ModalVisualizarEvento />, errorElement: <div>Error</div> },
+        {
+            path: "/eventos",
+            element: (
+                <ProtectedRoute>
+                    <Eventos />
+                </ProtectedRoute>
+            ),
+            errorElement: <div>Error</div>,
+        },
     ]);
 
     return <RouterProvider router={routes} />;

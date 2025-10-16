@@ -73,5 +73,23 @@
       "id": 8,
       "nome": "Paróquia Santa Terezinha"
     }
+  ],
+  "eventosMes": [
+    {
+      "idExterno": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "nome": "string",
+      "data": "2025-10-16",
+      "horaInicio": {
+        "hour": 0,
+        "minute": 0,
+        "second": 0,
+        "nano": 0
+      }
+    },
+    {
+      "totalSemana": 4,
+      "totalMes": 3,
+      "totalAno": 2
+    }
   ]
 }

@@ -1,5 +1,5 @@
 import { FormsLogin } from '../../molecules/Diacono/FormsLogin'
-import { TelaAzulDiacono } from '../../molecules/Diacono/TelaAzulDiacono';
+import { TelaAzulDiacono } from '../../templates/Diacono/TelaAzulDiacono';
 
 export function Login() {
   return (

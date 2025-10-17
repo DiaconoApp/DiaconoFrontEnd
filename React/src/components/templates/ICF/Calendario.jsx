@@ -141,7 +141,7 @@ export function Calendario() {
             className="px-2 py-1 rounded w-6 h-6"
           >
             <img
-              src="/public/seta.png"
+              src="/seta.png"
               alt="icone de seta, apontada para a esquerda"
             />
           </button>
@@ -151,7 +151,7 @@ export function Calendario() {
             className="px-2 py-1 rounded rotate-180"
           >
             <img
-              src="/public/seta.png"
+              src="/seta.png"
               alt="icone de seta, apontada para a direita"
             />
           </button>

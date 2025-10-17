@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { BotaoDiacono } from "../../../atoms/Diacono/BotaoDiacono";
-import { TelaAzulDiacono } from "../../../molecules/Diacono/TelaAzulDiacono";
+import { TelaAzulDiacono } from "../../../templates/Diacono/TelaAzulDiacono";
 import { useEffect } from "react";
 import { useState } from "react";
 import api from '../../../../provider/api'

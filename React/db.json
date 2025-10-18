@@ -91,5 +91,388 @@
       "totalMes": 3,
       "totalAno": 2
     }
+  ],
+  "membros": [
+    {
+      "idExterno": "a1b2c3d4-e5f6-7890-abcd-1234567890ab",
+      "nome": "Mariana Alves",
+      "email": "mariana.alves@email.com",
+      "celular": "(11) 91234-5678",
+      "dataNascimento": "1995-03-14",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Ministério do Louvor"
+        },
+        {
+          "nomeMinisterio": "Intercessão"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "b2c3d4e5-f6a7-8901-bcde-2345678901bc",
+      "nome": "Carlos Silva",
+      "email": "carlos.silva@email.com",
+      "celular": "(21) 99876-5432",
+      "dataNascimento": "1988-07-22",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Recepção"
+        }
+      ],
+      "status": "INATIVO"
+    },
+    {
+      "idExterno": "222c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "333c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "77c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "66c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "55c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "44c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "33c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "22c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "11c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "7c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "c63d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "5c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "4c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "3c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "002c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "0001c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "6671c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "77771c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "7771c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "88881c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "8881c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "Ana Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "ATIVO"
+    },
+    {
+      "idExterno": "881c3d4e5f6-a7b8-9012-cdef-3456789012cd",
+      "nome": "João Paula",
+      "email": "ana.paula@email.com",
+      "celular": "(31) 98765-4321",
+      "dataNascimento": "2000-11-05",
+      "ministerios": [
+        {
+          "nomeMinisterio": "Infantil"
+        },
+        {
+          "nomeMinisterio": "Louvor"
+        }
+      ],
+      "status": "INATIVO"
+    }
   ]
 }

@@ -1,16 +1,55 @@
 import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
 import { InputBuscar } from "../../atoms/ICF/InputBuscar";
 import { SelectIcf } from "../../atoms/ICF/SelectIcf";
-import { LiinhaMembro } from "../../molecules/ICF/LinhaMembro";
-import { useState } from "react";
+import { LinhaMembro } from "../../molecules/ICF/LinhaMembro";
+import { useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { ModalCadastrar1 } from "../../molecules/ICF/ModalCadastrar1";
 import { ModalCadastrar2 } from "../../molecules/ICF/ModalCadastrar2";
+import api from "../../../provider/api"
 
 export function ListaMembros() {
     const [filtroSelecionado, setFiltroSelecionado] = useState("todos");
     const [mostrarModal, setMostrarModal] = useState(false);
     const [etapaCadastro, setEtapaCadastro] = useState(1);
+    const [membros, setMembros] = useState([]);
+    const [paginaAtual, setPaginaAtual] = useState(1);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+    const [buscaTexto, setBuscaTexto] = useState("");
+
+    const formatarStatus = (texto) => {
+        if (!texto) return "";
+        return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
+    };
+
+    const statusMap = {
+        ativos: "ATIVO",
+        inativos: "INATIVO"
+    };
+
+    useEffect(() => {
+        let url = `/membros?_page=${paginaAtual}&_limit=10`;
+
+        if (buscaTexto.trim() !== "") {
+            url += `&q=${encodeURIComponent(buscaTexto.trim())}`;
+        }
+
+        if (filtroSelecionado !== "todos") {
+            const statusFiltrado = statusMap[filtroSelecionado];
+            if (statusFiltrado) {
+                url += `&status=${statusFiltrado}`;
+            }
+        }
+
+        api.get(url)
+            .then((res) => {
+                setMembros(res.data);
+                const total = parseInt(res.headers["x-total-count"], 10);
+                setTotalPaginas(Math.ceil(total / 10));
+            })
+            .catch((err) => console.error("Erro ao buscar usuários:", err));
+    }, [paginaAtual, filtroSelecionado, buscaTexto]);
+
 
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
@@ -21,16 +60,16 @@ export function ListaMembros() {
             </div>
             <div className="flex items-center gap-3 justify-end">
                 <div className="w-full">
-                    <InputBuscar placeholder="Buscar por nome, email, ou celular" />
+                    <InputBuscar placeholder="Buscar por nome, email, ou celular" value={buscaTexto} onChange={(e) => { setPaginaAtual(1); setBuscaTexto(e.target.value) }} />
                 </div>
                 <span className="font-medium text-icf-primary-400">Status:</span>
                 <div className="flex gap-4">
                     {["todos", "ativos", "inativos"].map((filtro) => (
                         <button
                             key={filtro}
-                            onClick={() => setFiltroSelecionado(filtro)}
+                            onClick={() => { setPaginaAtual(1); setFiltroSelecionado(filtro) }}
                             className={`px-6 py-2 rounded-lg text-sm font-medium
-                             ${filtroSelecionado === filtro
+                                ${filtroSelecionado === filtro
                                     ? "bg-icf-primary-400 text-white"
                                     : "text-icf-primary-200 border border-icf-primary-200 hover:bg-icf-primary-50"}`}>
                             {filtro.charAt(0).toUpperCase() + filtro.slice(1)}
@@ -46,10 +85,12 @@ export function ListaMembros() {
                 <ul className="flex flex-col gap-1 w-full">
                     <li className="grid grid-cols-7 bg-icf-primary-100 text-icf-primary-400 font-bold p-4">
                         {["Nome", "Email", "Celular", "Data Nascimento", "Ministério", "Status"].map((label) => (
-                            <span>{label}</span>
+                            <span key={label}>{label}</span>
                         ))}
                     </li>
-                    <LiinhaMembro nome="Mariana Alves" email="marianaalves@gmail.com" celular="(11)91234-5678" nascimento="20/10/2002" ministério="Ministério de Louvor" qtdMinistério="4" status="Ativo" key="1" />
+                    {membros.map((membro) => (
+                        <LinhaMembro key={membro.idExterno} nome={membro.nome} email={membro.email} celular={membro.celular} nascimento={new Date(membro.dataNascimento).toLocaleDateString("pt-BR")} ministério={membro.ministerios?.[0]?.nomeMinisterio || "Nenhum"} qtdMinistério={membro.ministerios?.length || 0} status={formatarStatus(membro.status)} />
+                    ))}
                 </ul>
             </div>
             {mostrarModal && (
@@ -68,6 +109,27 @@ export function ListaMembros() {
                     )}
                 </div>
             )}
+            <div className="flex gap-2 justify-center mt-4">
+                {paginaAtual > 1 && (
+                    <button
+                        onClick={() => setPaginaAtual((prev) => prev - 1)}
+                        className="px-4 py-2 bg-gray-200 rounded"
+                    >
+                        Anterior
+                    </button>
+                )}
+
+                <span>Página {paginaAtual}</span>
+
+                {paginaAtual < totalPaginas && (
+                    <button
+                        onClick={() => setPaginaAtual((prev) => prev + 1)}
+                        className="px-4 py-2 bg-gray-200 rounded"
+                    >
+                        Próxima
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

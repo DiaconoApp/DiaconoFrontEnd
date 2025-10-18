@@ -4,15 +4,19 @@ import { SelectIcf } from "../../atoms/ICF/SelectIcf";
 import { LiinhaMembro } from "../../molecules/ICF/LinhaMembro";
 import { useState } from "react";
 import { FiFilter } from "react-icons/fi";
+import { ModalCadastrar1 } from "../../molecules/ICF/ModalCadastrar1";
+import { ModalCadastrar2 } from "../../molecules/ICF/ModalCadastrar2";
 
 export function ListaMembros() {
     const [filtroSelecionado, setFiltroSelecionado] = useState("todos");
+    const [mostrarModal, setMostrarModal] = useState(false);
+    const [etapaCadastro, setEtapaCadastro] = useState(1);
 
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
             <div className="w-full flex justify-end">
                 <div className="w-[15%]">
-                    <BotaoIcf className="bg-icf-primary-400">Cadastrar Membro +</BotaoIcf>
+                    <BotaoIcf className="bg-icf-primary-400" onClick={() => { setMostrarModal(true); setEtapaCadastro(1) }}>Cadastrar Membro +</BotaoIcf>
                 </div>
             </div>
             <div className="flex items-center gap-3 justify-end">
@@ -48,7 +52,22 @@ export function ListaMembros() {
                     <LiinhaMembro nome="Mariana Alves" email="marianaalves@gmail.com" celular="(11)91234-5678" nascimento="20/10/2002" ministério="Ministério de Louvor" qtdMinistério="4" status="Ativo" key="1" />
                 </ul>
             </div>
+            {mostrarModal && (
+                <div className="fixed inset-0 flex justify-center items-center z-50">
+                    {etapaCadastro === 1 && (
+                        <ModalCadastrar1
+                            onClose={() => setMostrarModal(false)}
+                            onNext={() => setEtapaCadastro(2)}
+                        />
+                    )}
+                    {etapaCadastro === 2 && (
+                        <ModalCadastrar2
+                            onClose={() => { setMostrarModal(false) }}
+                            onBack={() => { setEtapaCadastro(1) }}
+                        />
+                    )}
+                </div>
+            )}
         </div>
-
     );
 }

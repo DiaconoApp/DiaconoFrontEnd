@@ -1,11 +1,11 @@
 import { FiX } from "react-icons/fi";
 
-export function TituloModal(props) {
+export function TituloModal({titulo, onClick = ""}) {
     return (
         <div className="flex items-center justify-between">
-            <span className="font-bold text-2xl">{props.titulo}</span>
+            <span className="font-bold text-2xl">{titulo}</span>
             <button className="text-xl hover:text-white hover:bg-icf-primary-400 rounded">
-                <FiX></FiX>
+                <FiX onClick={onClick}></FiX>
             </button>
         </div>
     )

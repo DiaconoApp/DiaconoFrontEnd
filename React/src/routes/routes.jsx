@@ -14,12 +14,15 @@ import { ListaMembros } from "../components/templates/ICF/ListaMembros";
 import { InputBuscar } from "../components/atoms/ICF/InputBuscar";
 import { SelectIcf } from "../components/atoms/ICF/SelectIcf";
 import { Membros } from "../components/pages/ICF/Membros";
+import {ModalCadastrar1} from "../components/molecules/ICF/ModalCadastrar1"
+import {FormEventos} from "../components/molecules/ICF/FormEventos"
+import {ModalRecorrente} from "../components/molecules/ICF/ModalRecorrente"
 
 export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
 
     const routes = createBrowserRouter([
-        { path: "/dev", element: <ListaMembros/>, errorElement: <div>Error</div> },
+        { path: "/dev", element: <ModalVisualizarEvento/>, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
         {
             path: "/cadastro1",

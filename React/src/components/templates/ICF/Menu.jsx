@@ -1,8 +1,10 @@
 // import { useState } from 'react';
 import { ItemMenuLateral } from '../../molecules/ICF/ItemMenuLateral';
 import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
+import { useNavigate } from 'react-router-dom';
 
-export function Menu({menuAberto, setMenuAberto}) {
+export function Menu({ menuAberto, setMenuAberto }) {
+    const navigate = useNavigate();
 
     return (
         <nav className='fixed top-0 left-0'>
@@ -29,7 +31,7 @@ export function Menu({menuAberto, setMenuAberto}) {
                 <div className='flex justify-center items-center gap-1.5 pb-4 py-3'>
                     <img src="/logoICF.png" alt="Logo da Igreja Cristã da Familia" />
                     {menuAberto && (
-                        <img src="/LogotipoICF.png" alt="Logotipo da Cristã da Familia, contendo o nome e o slogan 'Formando Jesus em Nós'"/>
+                        <img src="/LogotipoICF.png" alt="Logotipo da Cristã da Familia, contendo o nome e o slogan 'Formando Jesus em Nós'" />
                     )}
                 </div>
                 <button onClick={() => setMenuAberto(!menuAberto)}
@@ -39,67 +41,67 @@ export function Menu({menuAberto, setMenuAberto}) {
                     <img src="/seta.png" alt="icone de seta" />
                 </button>
                 <div className='gap-6 flex flex-col'>
-                <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"}`}>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Calendário" : false}
-                            imagem="calendario"
-                            href="teste"
-                        />
-                    </li>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Escalas" : false}
-                            imagem="iconeEscala"
-                            href="teste"
-                        />
-                    </li>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Membros" : false}
-                            imagem="iconeGrupo"
-                            href="teste"
-                        />
-                    </li>
-                      <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Ministérios" : false}
-                            imagem="iconeTerra"
-                            href="teste"
-                        />
-                    </li>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Financeiro" : false}
-                            imagem="iconeFinanceiro"
-                            href="teste"
-                        />
-                    </li>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Dashboard" : false}
-                            imagem="iconeDash"
-                            href="teste"
-                        />
-                    </li>
-                </ul>
-                <hr className='border border-icf-primary-100'/>
-                <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"}`}>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Configurações" : false}
-                            imagem="iconeConfig"
-                            href="teste"
-                        />
-                    </li>
-                    <li>
-                        <ItemMenuLateral
-                            label={menuAberto ? "Sair" : false}
-                            imagem="iconeSair"
-                            href="teste"
-                        />
-                    </li>
-                </ul>
+                    <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"} cursor-pointer`}>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Calendário" : false}
+                                imagem="calendario"
+                                onClick={() => navigate('/eventos')}
+                            />
+                        </li>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Escalas" : false}
+                                imagem="iconeEscala"
+                                href="teste"
+                            />
+                        </li>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Membros" : false}
+                                imagem="iconeGrupo"
+                                onClick={() => navigate('/membros')}
+                            />
+                        </li>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Ministérios" : false}
+                                imagem="iconeTerra"
+                                href="teste"
+                            />
+                        </li>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Financeiro" : false}
+                                imagem="iconeFinanceiro"
+                                href="teste"
+                            />
+                        </li>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Dashboard" : false}
+                                imagem="iconeDash"
+                                href="teste"
+                            />
+                        </li>
+                    </ul>
+                    <hr className='border border-icf-primary-100' />
+                    <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"} cursor-pointer`}>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Configurações" : false}
+                                imagem="iconeConfig"
+                                href="teste"
+                            />
+                        </li>
+                        <li>
+                            <ItemMenuLateral
+                                label={menuAberto ? "Sair" : false}
+                                imagem="iconeSair"
+                                href="teste"
+                            />
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>

@@ -88,9 +88,11 @@ export function ListaMembros() {
                             <span key={label}>{label}</span>
                         ))}
                     </li>
-                    {membros.map((membro) => (
+                    {membros.length == 0 ? (
+                        <li className="text-center p-4 text-icf-primary-400">Nenhum membro encontrado</li>
+                    ) : (membros.map((membro) => (
                         <LinhaMembro key={membro.idExterno} nome={membro.nome} email={membro.email} celular={membro.celular} nascimento={new Date(membro.dataNascimento).toLocaleDateString("pt-BR")} ministério={membro.ministerios?.[0]?.nomeMinisterio || "Nenhum"} qtdMinistério={membro.ministerios?.length || 0} status={formatarStatus(membro.status)} />
-                    ))}
+                    )))}
                 </ul>
             </div>
             {mostrarModal && (
@@ -109,11 +111,11 @@ export function ListaMembros() {
                     )}
                 </div>
             )}
-            <div className="flex gap-2 justify-center mt-4">
+            <div className="flex items-center gap-5 justify-center mt-4">
                 {paginaAtual > 1 && (
                     <button
                         onClick={() => setPaginaAtual((prev) => prev - 1)}
-                        className="px-4 py-2 bg-gray-200 rounded"
+                        className="px-4 py-2 bg-icf-primary-200 text-icf-primary-400 rounded"
                     >
                         Anterior
                     </button>
@@ -124,7 +126,7 @@ export function ListaMembros() {
                 {paginaAtual < totalPaginas && (
                     <button
                         onClick={() => setPaginaAtual((prev) => prev + 1)}
-                        className="px-4 py-2 bg-gray-200 rounded"
+                        className="px-4 py-2 bg-icf-primary-200 text-icf-primary-400 rounded"
                     >
                         Próxima
                     </button>

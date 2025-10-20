@@ -6,7 +6,7 @@ import { LinkAcesso } from '../../atoms/Global/LinkAcesso';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSpinner } from "react-icons/fa";
-import { login } from '../../../services/authService';
+import { login } from '../../../services/login';
 
 export function FormsLogin() {
     const [email, setEmail] = useState("");

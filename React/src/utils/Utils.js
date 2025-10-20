@@ -183,9 +183,9 @@ export function formatarTelefone(telefone) {
         case 13:
             return telefoneLimpo.replace(/(\d{2})(\d{2})(\d{5})(\d{4})/, '+$1 ($2) $3-$4');
         case 11:
-            return telefoneLimpo.replace(/(\d{2})(\d{5})(\d{4})/, '+55 ($1) $2-$3');
+            return telefoneLimpo.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
         case 9:
-            return telefoneLimpo.replace(/(\d{5})(\d{4})/, '+55 (11) $1-$2');
+            return telefoneLimpo.replace(/(\d{5})(\d{4})/, '(11) $1-$2');
     }
 }
 

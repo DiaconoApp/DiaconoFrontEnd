@@ -9,13 +9,24 @@ import { ModalCadastrar2 } from "../../molecules/ICF/ModalCadastrar2";
 import api from "../../../provider/api"
 
 export function ListaMembros() {
-    const [filtroSelecionado, setFiltroSelecionado] = useState("todos");
     const [mostrarModal, setMostrarModal] = useState(false);
     const [etapaCadastro, setEtapaCadastro] = useState(1);
+
     const [membros, setMembros] = useState([]);
+    
+    const [filtroSelecionado, setFiltroSelecionado] = useState("todos");
+    const [buscaTexto, setBuscaTexto] = useState("");
+    const [ministerioSelecionado, setMinisterioSelecionado] = useState("Todos");
+
     const [paginaAtual, setPaginaAtual] = useState(1);
     const [totalPaginas, setTotalPaginas] = useState(1);
-    const [buscaTexto, setBuscaTexto] = useState("");
+
+    const resetarFiltros = () => {
+        setBuscaTexto("");
+        setFiltroSelecionado("todos");
+        setMinisterioSelecionado("Todos");
+        setPaginaAtual(1);
+    };
 
     const formatarStatus = (texto) => {
         if (!texto) return "";
@@ -28,27 +39,67 @@ export function ListaMembros() {
     };
 
     useEffect(() => {
-        let url = `/membros?_page=${paginaAtual}&_limit=10`;
-
-        if (buscaTexto.trim() !== "") {
-            url += `&q=${encodeURIComponent(buscaTexto.trim())}`;
-        }
-
-        if (filtroSelecionado !== "todos") {
-            const statusFiltrado = statusMap[filtroSelecionado];
-            if (statusFiltrado) {
-                url += `&status=${statusFiltrado}`;
-            }
-        }
+        let url = `/membros`;
 
         api.get(url)
             .then((res) => {
-                setMembros(res.data);
-                const total = parseInt(res.headers["x-total-count"], 10);
+                let membrosFiltrados = res.data;
+
+                // 🔹 Filtro por ministério
+                if (ministerioSelecionado !== "Todos") {
+                    membrosFiltrados = membrosFiltrados.filter((membro) =>
+                        membro.ministerios?.some((m) => m.nomeMinisterio === ministerioSelecionado)
+                    );
+                }
+
+                // 🔹 Filtro por status
+                if (filtroSelecionado !== "todos") {
+                    const statusFiltrado = statusMap[filtroSelecionado];
+                    membrosFiltrados = membrosFiltrados.filter((membro) =>
+                        membro.status === statusFiltrado
+                    );
+                }
+
+                // 🔹 Filtro por texto (nome, email, celular)
+                if (buscaTexto.trim() !== "") {
+                    const textoBusca = buscaTexto.trim().toLowerCase();
+                    membrosFiltrados = membrosFiltrados.filter((membro) =>
+                        membro.nome.toLowerCase().includes(textoBusca) ||
+                        membro.email.toLowerCase().includes(textoBusca) ||
+                        membro.celular.toLowerCase().includes(textoBusca)
+                    );
+                }
+
+                // 🔹 Paginação manual
+                const total = membrosFiltrados.length;
                 setTotalPaginas(Math.ceil(total / 10));
+
+                const inicio = (paginaAtual - 1) * 10;
+                const fim = inicio + 10;
+                setMembros(membrosFiltrados.slice(inicio, fim));
             })
-            .catch((err) => console.error("Erro ao buscar usuários:", err));
-    }, [paginaAtual, filtroSelecionado, buscaTexto]);
+            .catch((err) => {
+                if (err.response?.status === 404) {
+                    setMembros([]);
+                } else {
+                    console.error("Erro ao buscar usuários:", err);
+                }
+            });
+    }, [paginaAtual, filtroSelecionado, buscaTexto, ministerioSelecionado]);
+
+
+    // Listar os ministérios no select
+    const [options, setOptions] = useState([]);
+    useEffect(() => {
+        api.get("/ministerios")
+            .then((res) => setOptions(res.data))
+            .catch((err) => console.error("Erro ao carregar opções de ministérios:", err))
+    }, []);
+
+    const handleSelectChange = (nome) => {
+        setPaginaAtual(1);
+        setMinisterioSelecionado(nome);
+    };
 
 
     return (
@@ -76,9 +127,9 @@ export function ListaMembros() {
                         </button>
                     ))}
                 </div>
-                <FiFilter className="text-4xl" />
+                <FiFilter className="text-4xl cursor-pointer" onClick={resetarFiltros} />
                 <div className="w-[40%]">
-                    <SelectIcf />
+                    <SelectIcf options={options} onChange={handleSelectChange} value={ministerioSelecionado} />
                 </div>
             </div>
             <div className="flex justify-end">

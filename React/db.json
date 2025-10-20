@@ -101,7 +101,7 @@
       "dataNascimento": "1995-03-14",
       "ministerios": [
         {
-          "nomeMinisterio": "Ministério do Louvor"
+          "nomeMinisterio": "Louvor"
         },
         {
           "nomeMinisterio": "Intercessão"
@@ -473,6 +473,24 @@
         }
       ],
       "status": "INATIVO"
+    }
+  ],
+  "ministerios": [
+    {
+      "id": 1,
+      "nomeMinisterio": "Louvor"
+    },
+    {
+      "id": 2,
+      "nomeMinisterio": "Intercessão"
+    },
+    {
+      "id": 3,
+      "nomeMinisterio": "Recepção"
+    },
+    {
+      "id": 4,
+      "nomeMinisterio": "Infantil"
     }
   ]
 }

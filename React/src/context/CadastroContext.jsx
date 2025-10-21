@@ -9,6 +9,7 @@ export function CadastroProvider({ children }) {
     nascimento: "",
     cpf: "",
     email: "",
+    celular: "",
     senha: "",
     confirmarSenha: "",
     cep: "",
@@ -17,8 +18,6 @@ export function CadastroProvider({ children }) {
     cidade: "",
     numero: "",
     complemento: "",
-    uf: "",
-    // outros campos...
   });
 
   return (

@@ -30,12 +30,12 @@ export const validationCEP = async (cep) => {
 //Utils Nome
 export const transformationName = (string) => {
     if (!string || string.trim() === "") {
-        return "Erro: string vazia";
+        return "";
     }
 
     const arrayNames = string
         .trim()
-        .replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ\s]/g, "") 
+        .replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ\s]/g, "")
         .split(/\s+/);
 
     const arrayNamesFinal = arrayNames.map(
@@ -49,15 +49,15 @@ export const transformationName = (string) => {
 };
 
 //Utils Senha
-export const validatePassword = (password) => {
-    if (!password || password.length < 8) {
+export const validatePassword = (senha) => {
+    if (!senha || senha.length < 8) {
         return "A senha deve ter pelo menos 8 caracteres.";
     }
 
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+    const hasUpperCase = /[A-Z]/.test(senha);
+    const hasLowerCase = /[a-z]/.test(senha);
+    const hasNumber = /[0-9]/.test(senha);
+    const hasSpecialChar = /[^A-Za-z0-9]/.test(senha);
 
     if (!hasUpperCase) return "A senha deve conter pelo menos uma letra maiúscula.";
     if (!hasLowerCase) return "A senha deve conter pelo menos uma letra minúscula.";
@@ -65,6 +65,16 @@ export const validatePassword = (password) => {
     if (!hasSpecialChar) return "A senha deve conter pelo menos um caractere especial.";
 
     return "Senha válida!";
+};
+
+export const getRequisitoSenha = (senha) => {
+    return {
+        tamanhoMinimo: senha.length >= 8,
+        letraMaiuscula: /[A-Z]/.test(senha),
+        letraMinuscula: /[a-z]/.test(senha),
+        numero: /[0-9]/.test(senha),
+        caractereEspecial: /[^A-Za-z0-9]/.test(senha),
+    };
 };
 
 //Utils Double

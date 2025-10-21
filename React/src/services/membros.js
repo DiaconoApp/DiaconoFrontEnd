@@ -23,3 +23,36 @@ export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", stat
         return { content: [], totalPages: 1 };
     }
 };
+
+export const cadastrarMembro = async (dados) => {
+    try {
+        const payload = {
+            fkIgreja: "550e8400-e29b-41d4-a716-446655440000",
+            nome: dados.nome,
+            cpf: dados.cpf,
+            nascimento: typeof dados.nascimento === "string"
+                ? dados.nascimento
+                : dados.nascimento.toISOString().slice(0, 10),
+            email: dados.email.trim(),
+            celular: dados.celular,
+            senha: dados.senha,
+            idExternoMinisterios: dados.idExternoMinisterios || [],
+            cargo: dados.cargo || "",
+            membroEnderecoDTO: {
+                cep: dados.cep,
+                bairro: dados.bairro,
+                cidade: dados.cidade,
+                rua: dados.rua,
+                estado: dados.estado,
+                numero: dados.numero,
+                complemento: dados.complemento || "",
+            },
+        };
+
+        const res = await api.post("/membros", payload);
+        return res.data;
+    } catch (err) {
+        console.error("Erro ao cadastrar membro:", err);
+        throw err;
+    }
+};

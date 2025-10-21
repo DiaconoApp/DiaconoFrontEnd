@@ -9,46 +9,36 @@ import { ModalVisualizarEvento } from "../components/molecules/ICF/ModalVisualiz
 import { Menu } from "../components/templates/ICF/Menu";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Eventos } from "../components/pages/ICF/Eventos";
-import { TituloPagina } from "../components/atoms/ICF/TituloPagina";
-import { ListaMembros } from "../components/templates/ICF/ListaMembros";
-import { InputBuscar } from "../components/atoms/ICF/InputBuscar";
-import { SelectIcf } from "../components/atoms/ICF/SelectIcf";
 import { Membros } from "../components/pages/ICF/Membros";
-import {ModalCadastrar1} from "../components/molecules/ICF/ModalCadastrar1"
-import {FormEventos} from "../components/molecules/ICF/FormEventos"
-import {ModalRecorrente} from "../components/molecules/ICF/ModalRecorrente"
+import { Outlet } from "react-router-dom";
+
+// Wrapper para rotas que compartilham o CadastroProvider
+function CadastroWrapper() {
+    return (
+        <CadastroProvider>
+            <Outlet />
+        </CadastroProvider>
+    );
+}
+
 
 export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
 
     const routes = createBrowserRouter([
-        { path: "/dev", element: <ModalVisualizarEvento/>, errorElement: <div>Error</div> },
+        { path: "/dev", element: <ModalVisualizarEvento />, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
+
+        // Agrupa rotas que usam CadastroProvider
         {
-            path: "/cadastro1",
-            element: (
-                <CadastroProvider>
-                    <Cadastro1 />
-                </CadastroProvider>
-            ),
-            errorElement: <div>Error</div>,
-        },
-        {
-            path: "/cadastro2",
-            element: (
-                <CadastroProvider>
-                    <Cadastro2 />
-                </CadastroProvider>
-            ),
-            errorElement: <div>Error</div>,
-        },
-        {
-            path: "/cadastro3",
-            element: (
-                <CadastroProvider>
-                    <Cadastro3 />
-                </CadastroProvider>
-            ),
+            path: "/",
+            element: <CadastroWrapper />,
+            children: [
+                { path: "cadastro1", element: <Cadastro1 /> },
+                { path: "cadastro2", element: <Cadastro2 /> },
+                { path: "cadastro3", element: <Cadastro3 /> },
+                { path: "membros", element: <Membros /> },
+            ],
             errorElement: <div>Error</div>,
         },
 
@@ -63,24 +53,9 @@ export function AppRoutes() {
         },
         {
             path: "/eventos",
-            element: (
-                // <ProtectedRoute>
-                <Eventos/>
-                // </ProtectedRoute>
-            ),
+            element: <Eventos />,
             errorElement: <div>Error</div>,
         },
-        {
-            path: "/membros",
-            element: (
-                // <ProtectedRoute>
-                <Membros/>
-                // </ProtectedRoute>
-            ),
-            errorElement: <div>Error</div>,
-        },
-
-        
     ]);
 
     return <RouterProvider router={routes} />;

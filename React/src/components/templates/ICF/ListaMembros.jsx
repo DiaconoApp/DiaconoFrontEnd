@@ -10,9 +10,14 @@ import { buscarMinisterios } from "../../../services/ministerios";
 import { buscarMembros } from "../../../services/membros";
 import { transformationName } from "../../../utils/Utils";
 import { formatarTelefone } from "../../../utils/Utils";
+import { cadastrarMembro } from "../../../services/membros";
+import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
+import { useCadastro } from "../../../context/CadastroContext";
 
 export function ListaMembros() {
+    const { validarCamposObrigatorios } = useValidacaoCadastro();
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [etapaCadastro, setEtapaCadastro] = useState(1);
 
     const [membros, setMembros] = useState([]);
 
@@ -24,6 +29,8 @@ export function ListaMembros() {
     const [statusSelecionado, setStatusSelecionado] = useState("todos");
     const [fkMinisterio, setFkMinisterio] = useState("");
 
+    const { dadosCadastro, setDadosCadastro } = useCadastro();
+
     const resetarFiltros = () => {
         setBuscaTexto("");
         setStatusSelecionado("todos");
@@ -31,7 +38,6 @@ export function ListaMembros() {
         setPaginaAtual(0);
     };
 
-    const [etapaCadastro, setEtapaCadastro] = useState(1);
 
     const formatarStatus = (status) => {
         if (!status) return "";
@@ -49,19 +55,33 @@ export function ListaMembros() {
         return email.trim().toLowerCase();
     };
 
-    useEffect(() => {
-        const statusFormatado = adaptarStatus(statusSelecionado);
-
-        buscarMembros({
+    const montarFiltros = () => {
+        const filtros = {
             pagina: paginaAtual,
             tamanho: tamanhoPagina,
             busca: buscaTexto,
-            status: statusFormatado,
             fkMinisterio,
-        }).then((res) => {
-            setMembros(res.content || []);
-            setTotalPaginas(res.totalPages || 1);
-        });
+        };
+        const statusFormatado = adaptarStatus(statusSelecionado);
+        if (statusFormatado) filtros.status = statusFormatado;
+        return filtros;
+    };
+
+    const carregarMembros = () => {
+        buscarMembros(montarFiltros())
+            .then((res) => {
+                setMembros(res.content || []);
+                setTotalPaginas(res.totalPages || 1);
+            })
+            .catch((err) => {
+                console.error("Erro ao buscar membros:", err);
+                setMembros([]);
+                setTotalPaginas(1);
+            });
+    };
+
+    useEffect(() => {
+        carregarMembros();
     }, [paginaAtual, buscaTexto, statusSelecionado, tamanhoPagina, fkMinisterio]);
 
     // Listar os ministérios no select
@@ -69,6 +89,27 @@ export function ListaMembros() {
     useEffect(() => {
         buscarMinisterios().then(setOptions);
     }, []);
+
+    const handleFinalizarCadastro = async () => {
+        const erros = validarCamposObrigatorios(dadosCadastro);
+        if (erros.length > 0) {
+            alert("Erro no cadastro:\n" + erros.join("\n"));
+            return;
+        }
+
+        try {
+            await cadastrarMembro(dadosCadastro);
+            alert("Membro cadastrado com sucesso!");
+            setMostrarModal(false);
+            setEtapaCadastro(1);
+            setPaginaAtual(0);
+            setDadosCadastro({});
+        } catch (err) {
+            alert("Erro ao cadastrar membro. Verifique os dados e tente novamente.");
+            console.error(err);
+        }
+    };
+
 
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
@@ -106,6 +147,8 @@ export function ListaMembros() {
 
                 <div className="w-[40%]">
                     <SelectIcf
+                        opt1={<option value="">Todos os ministérios</option>}
+                        opt2={<option value="null">Nenhum</option>}
                         options={options}
                         value={fkMinisterio}
                         onChange={(val) => { setPaginaAtual(0); setFkMinisterio(val); }}
@@ -141,9 +184,21 @@ export function ListaMembros() {
             </div>
 
             {mostrarModal && (
-                <div className="fixed inset-0 flex justify-center items-center z-50">
-                    {etapaCadastro === 1 && <ModalCadastrar1 onClose={() => setMostrarModal(false)} onNext={() => setEtapaCadastro(2)} />}
-                    {etapaCadastro === 2 && <ModalCadastrar2 onClose={() => setMostrarModal(false)} onBack={() => setEtapaCadastro(1)} />}
+                <div className="fixed inset-0 flex justify-center items-center bg-black/40 z-50">
+                    {etapaCadastro === 1 &&
+                        <ModalCadastrar1
+                            onClose={() => setMostrarModal(false)}
+                            onNext={(dadosEtapa1) => {
+                                setDadosCadastro((prev) => ({ ...prev, ...dadosEtapa1 })); 
+                                setEtapaCadastro(2);
+                            }}
+                        />}
+                    {etapaCadastro === 2 &&
+                        <ModalCadastrar2
+                            onClose={() => setMostrarModal(false)}
+                            onBack={() => setEtapaCadastro(1)}
+                            onSubmit={handleFinalizarCadastro}
+                        />}
                 </div>
             )}
 

@@ -2,11 +2,10 @@ import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
 import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { TituloModal } from "../../atoms/ICF/TituloModal";
 import { EtapasCadastro } from "../Global/EtapasCadastro";
-import { useState } from "react";
-import { buscarMinisterios } from "../../../services/ministerios";
-import { useEffect } from "react";
-import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { SelectIcf } from "../../atoms/ICF/SelectIcf";
+import { useEffect, useState } from "react";
+import { buscarMinisterios } from "../../../services/ministerios";
+import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { useCadastro } from "../../../context/CadastroContext";
 
 export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
@@ -22,15 +21,12 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
         buscarMinisterios().then(setOptions);
     }, []);
 
-    const handleSubmit = () => {
-        onSubmit(dadosCadastro);
-    };
-
-
+    
+    
     const handleChange = (campo, valor) => {
         setDadosCadastro((prev) => ({ ...prev, [campo]: valor }));
     };
-
+    
     const { buscarEnderecoPorCep } = useValidacaoCadastro();
     const handleCepChange = async (cep) => {
         handleChange("cep", cep);
@@ -44,7 +40,11 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
             }
         }
     };
-
+    
+    const handleSubmit = () => {
+        onSubmit(dadosCadastro);
+    };
+    
     return (
         <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
             <div className="flex flex-col gap-3">

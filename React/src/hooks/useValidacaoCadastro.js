@@ -36,8 +36,7 @@ export function useValidacaoCadastro() {
 
         return erros;
     };
-
-
+ 
     return {
         validarNome,
         validarCpf,

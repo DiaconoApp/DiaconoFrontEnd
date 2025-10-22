@@ -78,7 +78,7 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         ...prev,
                         confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
                     }));
-                } 
+                }
                 break;
 
             case "confirmarSenha":
@@ -109,15 +109,12 @@ export function ModalCadastrar1({ onClose, onNext }) {
                     className1="bg-icf-primary-200 text-icf-primary-300"
                     className2="bg-icf-primary-100 text-icf-primary-300"
                 />
-                <div className="w-full">
-                    <InputIcf
-                        label="Nome Completo"
-                        value={dadosCadastro.nome}
-                        onChange={(e) => handleChange("nome", e.target.value)}
-                        onBlur={() => handleBlur("nome")}
-                    />
-                    {erros.nome && <div className="text-red-500 text-sm mt-1">{erros.nome}</div>}
-                </div>
+                <InputIcf
+                    label="Nome Completo"
+                    value={dadosCadastro.nome}
+                    onChange={(e) => handleChange("nome", e.target.value)}
+                    onBlur={() => handleBlur("nome")}
+                />
                 <div className="flex gap-14">
                     <div className="w-full">
                         <InputIcf

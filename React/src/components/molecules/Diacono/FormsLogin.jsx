@@ -45,7 +45,7 @@ export function FormsLogin() {
                     {erro && <span className='text-icf-primary-400'>{erro}</span>}
                     <BotaoDiacono disabled={loading}>{loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}</BotaoDiacono>
                     <BotaoGoogle>Entrar com Google</BotaoGoogle>
-                    <LinkAcesso onClick={() => navigate('/cadastro1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
+                    <LinkAcesso onClick={() => navigate('/cadastro/etapa1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
                 </div>
             </div>
         </form>

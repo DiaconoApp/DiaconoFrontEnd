@@ -20,18 +20,18 @@ export function Cadastro1() {
             return;
         }
 
-        navigate("/cadastro2");
+        navigate("/cadastro/etapa2");
     };
 
     useEffect(() => {
-        api.get('/igrejas')
+        api.get('/register')
             .then(response => setListaIgrejas(response.data))
             .catch(() => console.log('Erro ao listar igrejas'))
         console.log("Igrejas carregadas:", listaIgrejas);
     }, [])
 
     const handleChange = (e) => {
-        setDadosCadastro({ ...dadosCadastro, fkIgreja: parseInt(e.target.value) });
+        setDadosCadastro({ ...dadosCadastro, fkIgreja: e.target.value });
     };
 
     return (
@@ -43,7 +43,7 @@ export function Cadastro1() {
                     <select value={dadosCadastro.fkIgreja} onChange={handleChange} className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg h-10 p-2 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]">
                         <option value="" disabled>Selecione uma igreja</option>
                         {listaIgrejas.map(igreja => (
-                            <option key={igreja.id} value={igreja.id}>{igreja.nome}</option>
+                            <option key={igreja.idExterno} value={igreja.idExterno}>{igreja.nome}</option>
                         ))}
                     </select>
                     <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>

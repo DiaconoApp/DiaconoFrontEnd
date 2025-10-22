@@ -179,7 +179,7 @@ export function FormsCadastro2() {
         </div>
         <div className='flex flex-col gap-3 items-end'>
           <div className="w-full flex gap-40">
-            <BotaoDiacono onClick={() => navigate('/cadastro1')}>Voltar</BotaoDiacono>
+            <BotaoDiacono onClick={() => navigate('/cadastro/etapa1')}>Voltar</BotaoDiacono>
             <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
           </div>
           <BotaoGoogle>Entrar com o Google</BotaoGoogle>

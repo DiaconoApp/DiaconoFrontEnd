@@ -29,7 +29,6 @@ export function useValidacaoCadastro() {
         if (!dados.email) erros.push("Email é obrigatório");
         if (!dados.senha) erros.push("Senha é obrigatória");
         if (dados.senha !== dados.confirmarSenha) erros.push("Senhas não coincidem");
-        if (!dados.ministerios) erros.push("Ministério é obrigatório");
         if (!dados.cargo) erros.push("Cargo é obrigatório");
         if (!dados.cep || !dados.rua || !dados.bairro || !dados.cidade || !dados.numero) {
             erros.push("Endereço completo é obrigatório");

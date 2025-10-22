@@ -104,6 +104,8 @@ export function ListaMembros() {
             setEtapaCadastro(1);
             setPaginaAtual(0);
             setDadosCadastro({});
+
+            carregarMembros();
         } catch (err) {
             alert("Erro ao cadastrar membro. Verifique os dados e tente novamente.");
             console.error(err);

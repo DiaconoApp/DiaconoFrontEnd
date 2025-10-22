@@ -12,6 +12,7 @@ export function CadastroProvider({ children }) {
     celular: "",
     senha: "",
     confirmarSenha: "",
+    cargo: "MEMBRO",
     cep: "",
     rua: "",
     bairro: "",

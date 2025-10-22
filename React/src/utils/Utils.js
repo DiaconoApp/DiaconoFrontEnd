@@ -67,16 +67,6 @@ export const validatePassword = (senha) => {
     return "Senha válida!";
 };
 
-export const getRequisitoSenha = (senha) => {
-    return {
-        tamanhoMinimo: senha.length >= 8,
-        letraMaiuscula: /[A-Z]/.test(senha),
-        letraMinuscula: /[a-z]/.test(senha),
-        numero: /[0-9]/.test(senha),
-        caractereEspecial: /[^A-Za-z0-9]/.test(senha),
-    };
-};
-
 //Utils Double
 export const transformationDouble = (double) => {
 
@@ -195,7 +185,7 @@ export function formatarTelefone(telefone) {
         case 11:
             return telefoneLimpo.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
         case 9:
-            return telefoneLimpo.replace(/(\d{5})(\d{4})/, '(11) $1-$2');
+            return telefoneLimpo.replace(/(d{2})(\d{5})(\d{4})/, '($1) $2-$3');
     }
 }
 
@@ -214,4 +204,13 @@ export function formatarDataNascimentoSimples(data) {
     if (dataLimpa.length !== 8) return "Formato inválido";
     // Formata para dd/MM/yyyy
     return `${dataLimpa.slice(0, 2)}/${dataLimpa.slice(2, 4)}/${dataLimpa.slice(4)}`;
+}
+
+export function validaEmail(email) {
+    if (!email) return false;
+
+    const emailLimpo = email.trim().toLowerCase();
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(emailLimpo);
 }

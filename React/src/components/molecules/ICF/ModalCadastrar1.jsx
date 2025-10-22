@@ -5,7 +5,7 @@ import { InputSenhaIcf } from "../../atoms/ICF/InputSenhaIcf";
 import { TituloModal } from "../../atoms/ICF/TituloModal";
 import { EtapasCadastro } from "../Global/EtapasCadastro";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
-import { formatarCpf } from "../../../utils/Utils";
+import { formatarCpf, formatarTelefone, isTelefone, validaEmail } from "../../../utils/Utils";
 import { useCadastro } from "../../../context/CadastroContext";
 
 export function ModalCadastrar1({ onClose, onNext }) {
@@ -15,10 +15,6 @@ export function ModalCadastrar1({ onClose, onNext }) {
 
     const handleChange = (campo, valor) => {
         let novoValor = valor;
-
-        if (campo === "nome") {
-            novoValor = validarNome(valor);
-        }
 
         if (campo === "cpf") {
             const cpfValido = validarCpf(valor);
@@ -34,6 +30,68 @@ export function ModalCadastrar1({ onClose, onNext }) {
         }
 
         setDadosCadastro((prev) => ({ ...prev, [campo]: novoValor }));
+    };
+
+    const handleBlur = (campo) => {
+        const valor = dadosCadastro[campo];
+
+        switch (campo) {
+            case "nome":
+                const nomeCorrigido = validarNome(valor);
+                setDadosCadastro((prev) => ({ ...prev, nome: nomeCorrigido }));
+                break;
+
+            case "cpf":
+                const cpfValido = validarCpf(valor);
+                setErros((prev) => ({
+                    ...prev,
+                    cpf: cpfValido ? undefined : "CPF inválido",
+                }));
+                break;
+
+            case "email":
+                const emailValido = validaEmail(valor);
+                setErros((prev) => ({
+                    ...prev,
+                    email: emailValido ? undefined : "Email inválido",
+                }));
+                break;
+
+            case "celular":
+                const celularValido = isTelefone(valor);
+                setErros((prev) => ({
+                    ...prev,
+                    celular: celularValido ? undefined : "Celular inválido",
+                }));
+                break;
+
+            case "senha":
+                const senhaValida = valor?.length >= 8;
+                setErros((prev) => ({
+                    ...prev,
+                    senha: senhaValida ? undefined : "Senha muito curta",
+                }));
+                const confirmarSenha = dadosCadastro.confirmarSenha;
+                if (confirmarSenha) {
+                    const senhasConferem = valor === confirmarSenha;
+                    setErros((prev) => ({
+                        ...prev,
+                        confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
+                    }));
+                } 
+                break;
+
+            case "confirmarSenha":
+                const senhasConferem = valor === dadosCadastro.senha;
+                setErros((prev) => ({
+                    ...prev,
+                    confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
+                }));
+                break;
+
+            default:
+                break;
+        }
     };
 
     const handleAvancar = () => {
@@ -55,7 +113,10 @@ export function ModalCadastrar1({ onClose, onNext }) {
                     <InputIcf
                         label="Nome Completo"
                         value={dadosCadastro.nome}
-                        onChange={(e) => handleChange("nome", e.target.value)} />
+                        onChange={(e) => handleChange("nome", e.target.value)}
+                        onBlur={() => handleBlur("nome")}
+                    />
+                    {erros.nome && <div className="text-red-500 text-sm mt-1">{erros.nome}</div>}
                 </div>
                 <div className="flex gap-14">
                     <div className="w-full">
@@ -63,6 +124,7 @@ export function ModalCadastrar1({ onClose, onNext }) {
                             label="CPF"
                             value={formatarCpf(dadosCadastro.cpf) || dadosCadastro.cpf}
                             onChange={(e) => handleChange("cpf", e.target.value)}
+                            onBlur={() => handleBlur("cpf")}
                         />
                         {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
                     </div>
@@ -71,7 +133,8 @@ export function ModalCadastrar1({ onClose, onNext }) {
                             label="Data de Nascimento"
                             type="date"
                             value={dadosCadastro.nascimento}
-                            onChange={(e) => handleChange("nascimento", e.target.value)} />
+                            onChange={(e) => handleChange("nascimento", e.target.value)}
+                        />
                     </div>
                 </div>
                 <div className="flex gap-14">
@@ -79,13 +142,19 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         <InputIcf
                             label="Email"
                             value={dadosCadastro.email}
-                            onChange={(e) => handleChange("email", e.target.value)} />
+                            onChange={(e) => handleChange("email", e.target.value)}
+                            onBlur={() => handleBlur("email")}
+                        />
+                        {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
                     </div>
                     <div className="w-full">
                         <InputIcf
                             label="Celular"
-                            value={dadosCadastro.celular}
-                            onChange={(e) => handleChange("celular", e.target.value)} />
+                            value={formatarTelefone(dadosCadastro.celular) || dadosCadastro.celular}
+                            onChange={(e) => handleChange("celular", e.target.value)}
+                            onBlur={() => handleBlur("celular")}
+                        />
+                        {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
                     </div>
                 </div>
                 <div className="flex gap-14">
@@ -94,16 +163,18 @@ export function ModalCadastrar1({ onClose, onNext }) {
                             texto="Senha"
                             value={dadosCadastro.senha}
                             onChange={(e) => handleChange("senha", e.target.value)}
+                            onBlur={() => handleBlur("senha")}
                         />
-
+                        {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
                     </div>
                     <div className="w-full">
                         <InputSenhaIcf
                             texto="Confirmar Senha"
                             value={dadosCadastro.confirmarSenha}
                             onChange={(e) => handleChange("confirmarSenha", e.target.value)}
+                            onBlur={() => handleBlur("confirmarSenha")}
                         />
-
+                        {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
                     </div>
                 </div>
                 <div className="w-full flex justify-center gap-25">

@@ -47,11 +47,11 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
 
     return (
         <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-            <div className="w-[90%] flex flex-col gap-3">
+            <div className="flex flex-col gap-3">
                 <TituloModal titulo={"Cadastrar Novo Membro"} onClick={onClose} />
                 <div className="border border-icf-primary-50"></div>
                 <EtapasCadastro corLinha="border-[#D9D9D9]" corTexto="text-icf-primary-400" className1="bg-icf-primary-100 text-icf-primary-300" className2="bg-icf-primary-200 text-icf-primary-300" />
-                <div className=" flex items-center gap-14">
+                <div className="flex justify-between">
                     <SelectIcf
                         opt1={<option value="">Nenhum</option>}
                         label="Ministério"
@@ -67,17 +67,20 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
                         onChange={(valor) => handleChange("cargo", valor)}
                     />
                 </div>
-                <InputIcf
-                    label="CEP"
-                    value={dadosCadastro.cep}
-                    onChange={(e) => handleCepChange(e.target.value)}
-                />
-                <InputIcf
-                    label="Rua/Avenida"
-                    value={dadosCadastro.rua}
-                    onChange={(e) => handleChange("rua", e.target.value)}
-                    disabled={!!dadosCadastro.rua}
-                />
+                <div className="flex gap-14">
+
+                    <InputIcf
+                        label="CEP"
+                        value={dadosCadastro.cep}
+                        onChange={(e) => handleCepChange(e.target.value)}
+                    />
+                    <InputIcf
+                        label="Rua/Avenida"
+                        value={dadosCadastro.rua}
+                        onChange={(e) => handleChange("rua", e.target.value)}
+                        disabled={!!dadosCadastro.rua}
+                    />
+                </div>
                 <div className=" flex gap-14">
                     <InputIcf
                         label="Bairro"
@@ -100,7 +103,7 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
                         value={dadosCadastro.complemento}
                         onChange={(e) => handleChange("complemento", e.target.value)} />
                 </div>
-                <div className="w-full flex justify-center">
+                <div className="w-full flex justify-center mt-3">
                     <div className="w-[90%] flex gap-10">
                         <BotaoIcf
                             className="bg-icf-primary-200 flex items-center justify-center gap-2"

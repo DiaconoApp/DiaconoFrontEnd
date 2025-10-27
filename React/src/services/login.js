@@ -8,12 +8,15 @@ export const login = async (email, senha) => {
     const token = response.data.acessToken;
     if (!token) throw new Error("Token não retornado pelo servidor");
 
-    localStorage.setItem("token", token);
-
+    
     let payload = null;
     try { payload = jwtDecode(token); } catch (e) { }
-
+    
     console.log("login payload:", payload);
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("nome", payload.nome);
+    localStorage.setItem("cargo", payload.scope);
 
     return { token, payload, user: response.data.user ?? response.data ?? payload };
 

@@ -1,11 +1,21 @@
-// import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ItemMenuLateral } from '../../molecules/ICF/ItemMenuLateral';
 import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../services/login';
-
+import { transformationName } from '../../../utils/Utils';
 export function Menu({ menuAberto, setMenuAberto }) {
     const navigate = useNavigate();
+    const [nome, setNome] = useState("");
+    const [cargo, setCargo] = useState("");
+
+    useEffect(() => {
+        const nomeSalvo = localStorage.getItem("nome");
+        if (nomeSalvo) setNome(nomeSalvo);
+
+        const cargoSalvo = localStorage.getItem("cargo");
+        if (cargoSalvo) setCargo(cargoSalvo);
+    }, []);
 
     return (
         <nav className='fixed top-0 left-0'>
@@ -18,9 +28,9 @@ export function Menu({ menuAberto, setMenuAberto }) {
                     <ItemMenuTopo
                         imagem="iconePerfil"
                     />
-                    <div className='flex flex-col items-center'>
-                        <span className='text-sm font-bold text-icf-primary-400'>João Souza</span>
-                        <span className='text-[10px] text-icf-primary-300 font-light tracking-[0.5px]' >Administrador</span>
+                    <div className='flex flex-col'>
+                        <span className='text-sm font-bold text-icf-primary-400'>{transformationName(nome)}</span>
+                        <span className='text-[10px] text-icf-primary-300 font-light tracking-[0.5px]'>{transformationName(cargo)}</span>
                     </div>
                 </div>
             </div>

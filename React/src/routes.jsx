@@ -8,6 +8,11 @@ import { Cadastro3 } from "./components/pages/Diacono/Cadastro/Cadastro3";
 import { ModalVisualizarEvento } from "./components/molecules/ICF/ModalVisualizarEvento";
 import { Menu } from "./components/templates/ICF/Menu";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { EscalaResumo } from "./components/molecules/ICF/EscalaResumo";
+import { FormEventos } from "./components/molecules/ICF/FormEventos";
+import { Eventos } from "./components/pages/ICF/Eventos";
+import { ModalExclusao } from "./components/molecules/ICF/ModalExclusao";
+import { ModalLocal2 } from "./components/molecules/ICF/ModalLocal2";
 
 export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
@@ -51,7 +56,11 @@ export function AppRoutes() {
             ),
             errorElement: <div>Error</div>,
         },
-        { path: "/dev", element: <ModalVisualizarEvento />, errorElement: <div>Error</div> },
+        { path: "/dev", element: <ModalLocal2 />, errorElement: <div>Error</div> },
+        { path: "/eventos", element: <Eventos />, errorElement: <div>Error</div> },
+        { path: "/eventos/novo", element: <FormEventos />, errorElement: <div>Error</div> },
+        { path: "/eventos/editar/:id", element: <FormEventos />, errorElement: <div>Error</div> }
+        
     ]);
 
     return <RouterProvider router={routes} />;

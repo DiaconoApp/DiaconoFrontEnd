@@ -1,7 +1,7 @@
 {
   "usuarios": [
     {
-      "id": 1,
+      "id": "1",
       "nome": "João Silva",
       "email": "joao@example.com",
       "senha": "123456"
@@ -20,7 +20,7 @@
       "cidade": "Santo André",
       "numero": "123",
       "complemento": "casa 138",
-      "id": 2
+      "id": "2"
     },
     {
       "fkIgreja": 1,
@@ -37,41 +37,98 @@
       "numero": "123",
       "complemento": "casa 138",
       "uf": "SP",
-      "id": 3
+      "id": "3"
     }
   ],
   "igrejas": [
     {
-      "id": 1,
+      "id": "1",
       "nome": "ICF - Igreja Cristã da Família"
     },
     {
-      "id": 2,
+      "id": "2",
       "nome": "Paróquia Matriz de Santo André"
     },
     {
-      "id": 3,
+      "id": "3",
       "nome": "Santuário do Senhor do Bonfim"
     },
     {
-      "id": 4,
+      "id": "4",
       "nome": "Igreja Nossa Senhora de Fátima"
     },
     {
-      "id": 5,
+      "id": "5",
       "nome": "Além do Véu Santo André"
     },
     {
-      "id": 6,
+      "id": "6",
       "nome": "Paróquia Nossa Senhora da Salete"
     },
     {
-      "id": 7,
+      "id": "7",
       "nome": "Paróquia Nossa Senhora do Paraíso"
     },
     {
-      "id": 8,
+      "id": "8",
       "nome": "Paróquia Santa Terezinha"
+    }
+  ],
+  "eventos": [
+    {
+      "id": "1",
+      "titulo": "Culto de Jovens",
+      "dataInicio": "2025-10-07",
+      "horaInicio": "18:00",
+      "horaFim": "19:30",
+      "local": "Igreja",
+      "descricao": "Reunião de louvor e adoração",
+      "localId": "1"
+    },
+    {
+      "id": "2",
+      "titulo": "Reunião de equipe",
+      "dataInicio": "2025-10-05",
+      "horaInicio": "14:00",
+      "horaFim": "16:00",
+      "local": "Sala 2",
+      "descricao": "Planejamento de eventos do mês"
+    },
+    {
+      "id": "1761073368611",
+      "titulo": "Teste4",
+      "publico": "jovens",
+      "dataInicio": "2025-10-22",
+      "horaInicio": "16:06",
+      "horaFim": "16:07",
+      "valor": "0",
+      "localId": "1",
+      "descricao": "testestestestestestes4",
+      "escala": "musica"
+    }
+  ],
+  "locais": [
+    {
+      "id": "1",
+      "apelido": "Igreja TESTE",
+      "cep": "09220608",
+      "rua": "Rua Estonia",
+      "bairro": "Vila Metalúrgica",
+      "cidade": "Santo André",
+      "numero": "1469",
+      "complemento": "Sala 1",
+      "favorito": true
+    },
+    {
+      "id": "68ed94ad-5566-4190-9ea3-2a03e9c2ad61",
+      "apelido": "",
+      "cep": "",
+      "rua": "",
+      "bairro": "",
+      "cidade": "",
+      "numero": "",
+      "complemento": "",
+      "favorito": false
     }
   ]
 }

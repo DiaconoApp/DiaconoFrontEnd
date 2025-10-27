@@ -17,8 +17,11 @@
     --color-secondary-200: #1C6FE3;
 
     --color-surface-50: #FCFCFC;
+    --color-warning-200: #F2AB53;
 
     /* EFEITO SOMBRAS */
     --shadow-menu-shadow: 0px 16px 44px 0px rgba(0,0,0,0.07);
+
+    --tracking-default: -0.6px;
 
 }

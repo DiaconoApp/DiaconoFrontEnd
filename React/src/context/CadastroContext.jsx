@@ -9,16 +9,16 @@ export function CadastroProvider({ children }) {
     nascimento: "",
     cpf: "",
     email: "",
+    celular: "",
     senha: "",
     confirmarSenha: "",
+    cargo: "MEMBRO",
     cep: "",
     rua: "",
     bairro: "",
     cidade: "",
     numero: "",
     complemento: "",
-    uf: "",
-    // outros campos...
   });
 
   return (

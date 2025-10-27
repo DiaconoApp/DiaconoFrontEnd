@@ -25,37 +25,58 @@ export const validationCEP = async (cep) => {
     }
 
 }
- 
+
 
 //Utils Nome
 export const transformationName = (string) => {
-
-    const arrayNames = string.trim().replace(/[^a-zA-Z0]/g, "").split(/\s+/);
-
-    if (arrayNames.length <= 0) {
-        return "Erro: string vazia";
+    if (!string || string.trim() === "") {
+        return "";
     }
 
-    const arrayNamesFinal = arrayNames.map(item =>
-        item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+    const arrayNames = string
+        .trim()
+        .replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ\s]/g, "")
+        .split(/\s+/);
+
+    const arrayNamesFinal = arrayNames.map(
+        item => item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
     );
 
-    console.log(arrayNamesFinal.join(" "));
+    const resultado = arrayNamesFinal.join(" ");
+    console.log(resultado);
 
-    return arrayNamesFinal.join(" ");
+    return resultado;
+};
 
-}
+//Utils Senha
+export const validatePassword = (senha) => {
+    if (!senha || senha.length < 8) {
+        return "A senha deve ter pelo menos 8 caracteres.";
+    }
+
+    const hasUpperCase = /[A-Z]/.test(senha);
+    const hasLowerCase = /[a-z]/.test(senha);
+    const hasNumber = /[0-9]/.test(senha);
+    const hasSpecialChar = /[^A-Za-z0-9]/.test(senha);
+
+    if (!hasUpperCase) return "A senha deve conter pelo menos uma letra maiúscula.";
+    if (!hasLowerCase) return "A senha deve conter pelo menos uma letra minúscula.";
+    if (!hasNumber) return "A senha deve conter pelo menos um número.";
+    if (!hasSpecialChar) return "A senha deve conter pelo menos um caractere especial.";
+
+    return "Senha válida!";
+};
 
 //Utils Double
 export const transformationDouble = (double) => {
 
-    if(isNaN(Number(double))){
+    if (isNaN(Number(double))) {
 
         console.log(`${double} não é um número`);
         return `${double} não é um número`;
     }
 
-    if(Number.isInteger(double)){
+    if (Number.isInteger(double)) {
         console.log(`${double} é um inteiro`);
         return `${double} é um inteiro`;
     }
@@ -71,33 +92,33 @@ export const transformationDouble = (double) => {
 
 //Utils CNPJ
 export const validationCNPJ = async (cnpj) => {
-  try {
-    cnpj = cnpj.trim().replace(/\D/g, '');
+    try {
+        cnpj = cnpj.trim().replace(/\D/g, '');
 
-    if (!(/^\d{14}$/).test(cnpj)) 
-        throw { cnpj_error: 'CNPJ inválido' };
+        if (!(/^\d{14}$/).test(cnpj))
+            throw { cnpj_error: 'CNPJ inválido' };
 
-    const resp = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cnpj}`);
+        const resp = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cnpj}`);
 
-    if (!resp.ok) 
-        throw { cnpj_error: `Erro HTTP ${resp.status} no ReceitAWS` };
+        if (!resp.ok)
+            throw { cnpj_error: `Erro HTTP ${resp.status} no ReceitAWS` };
 
-    const json = await resp.json();
+        const json = await resp.json();
 
-    console.log('Dados via ReceitAWS:', json);
-    return json;
+        console.log('Dados via ReceitAWS:', json);
+        return json;
 
-  } catch (e) {
+    } catch (e) {
 
-    console.log('ReceitAWS erro:', e.cnpj_error || e);
-    return null;
-  }
+        console.log('ReceitAWS erro:', e.cnpj_error || e);
+        return null;
+    }
 };
 
 
 // validationCNPJ('47960950000121')
-    // .then((resultado) => console.log(resultado))
-    // .catch((err) => console.log(err));
+// .then((resultado) => console.log(resultado))
+// .catch((err) => console.log(err));
 
 
 //Utils CPF
@@ -105,7 +126,7 @@ export function validaCpf(cpf) {
     if (!isCpf(cpf)) return false;
 
     var cpfLimpo = cpf.replace(/[^\d]+/g, '');
-    var cpfBase = cpfLimpo.slice(0,9);
+    var cpfBase = cpfLimpo.slice(0, 9);
 
     const calcularDigito = () => {
         var arrayNumeros = Array.from(cpfBase).map(numero => parseInt(numero));
@@ -126,7 +147,7 @@ export function validaCpf(cpf) {
 
     const digitoVerificador1 = calcularDigito();
     cpfBase += digitoVerificador1.toString();
-    
+
     const digitoVerificador2 = calcularDigito();
     cpfBase += digitoVerificador2.toString();
 
@@ -162,9 +183,9 @@ export function formatarTelefone(telefone) {
         case 13:
             return telefoneLimpo.replace(/(\d{2})(\d{2})(\d{5})(\d{4})/, '+$1 ($2) $3-$4');
         case 11:
-            return telefoneLimpo.replace(/(\d{2})(\d{5})(\d{4})/, '+55 ($1) $2-$3');
+            return telefoneLimpo.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
         case 9:
-            return telefoneLimpo.replace(/(\d{5})(\d{4})/, '+55 (11) $1-$2');
+            return telefoneLimpo.replace(/(d{2})(\d{5})(\d{4})/, '($1) $2-$3');
     }
 }
 
@@ -182,5 +203,14 @@ export function formatarDataNascimentoSimples(data) {
     // Verifica se tem 8 dígitos
     if (dataLimpa.length !== 8) return "Formato inválido";
     // Formata para dd/MM/yyyy
-    return `${dataLimpa.slice(0,2)}/${dataLimpa.slice(2,4)}/${dataLimpa.slice(4)}`;
+    return `${dataLimpa.slice(0, 2)}/${dataLimpa.slice(2, 4)}/${dataLimpa.slice(4)}`;
+}
+
+export function validaEmail(email) {
+    if (!email) return false;
+
+    const emailLimpo = email.trim().toLowerCase();
+
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(emailLimpo);
 }

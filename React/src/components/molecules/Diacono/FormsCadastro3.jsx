@@ -5,35 +5,34 @@ import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
 import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
-import api from "../../../provider/api";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
+import api from "../../../provider/api";
 
 export function FormsCadastro3() {
     const navigate = useNavigate();
     const { dadosCadastro, setDadosCadastro } = useCadastro();
-    const { buscarEnderecoPorCep } = useValidacaoCadastro();
 
-    const handleChange = (campo) => (e) => {
-        setDadosCadastro({ ...dadosCadastro, [campo]: e.target.value });
+    const handleChange = (campo, valor) => {
+        setDadosCadastro((prev) => ({ ...prev, [campo]: valor }));
     };
 
-    const handleCepBlur = async () => {
-        const endereco = await buscarEnderecoPorCep(dadosCadastro.cep);
-        if (endereco) {
-            setDadosCadastro({ ...dadosCadastro, ...endereco });
+    const { buscarEnderecoPorCep } = useValidacaoCadastro();
+    const handleCepChange = async (cep) => {
+        handleChange("cep", cep);
+        if (cep.length === 8) {
+            const endereco = await buscarEnderecoPorCep(cep);
+            if (endereco) {
+                handleChange("rua", endereco.rua);
+                handleChange("bairro", endereco.bairro);
+                handleChange("cidade", endereco.cidade);
+                handleChange("estado", endereco.uf);
+            }
         }
     };
 
     const handleSubmit = () => {
-        const camposObrigatorios = ["cep", "rua", "bairro", "cidade", "numero"];
-        const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
-        if (camposVazios.length > 0) {
-            alert("Preencha todos os campos de endereço antes de finalizar.");
-            return;
-        }
-
-        api.post("/usuarios", dadosCadastro)
+        api.post("/register", dadosCadastro)
             .then(() => {
                 alert("Cadastro concluído com sucesso!");
                 navigate("/login");
@@ -43,6 +42,8 @@ export function FormsCadastro3() {
             });
     };
 
+
+
     return (
         <div className="w-[55%] flex flex-col gap-5">
             <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
@@ -51,48 +52,49 @@ export function FormsCadastro3() {
                 <label className="font-semibold text-diacono-blue-400">Endereço</label>
                 <div className="flex justify-between">
                     <InputDiacono
-                        value={dadosCadastro.cep}
-                        onChange={handleChange("cep")}
-                        onBlur={handleCepBlur}
                         label="CEP"
-                        placeholder="Digite seu CEP" />
+                        placeholder="Digite seu CEP"
+                        value={dadosCadastro.cep}
+                        onChange={(e) => handleCepChange(e.target.value)}
+                    />
                     <InputDiacono
-                        value={dadosCadastro.rua}
-                        onChange={handleChange("rua")}
                         label="Rua/Avenida"
                         placeholder="Ex: Rua Japão"
-                        disabled={!!dadosCadastro.rua} />
+                        value={dadosCadastro.rua}
+                        onChange={(e) => handleChange("rua", e.target.value)}
+                        disabled={!!dadosCadastro.rua}
+                    />
                 </div>
                 <div className="flex justify-between">
                     <InputDiacono
-                        value={dadosCadastro.bairro}
-                        onChange={handleChange("bairro")}
                         label="Bairro"
-                        placeholder="Digite seu bairro" 
-                        disabled={!!dadosCadastro.bairro}/>
+                        placeholder="Digite seu bairro"
+                        value={dadosCadastro.bairro}
+                        onChange={(e) => handleChange("bairro", e.target.value)}
+                        disabled={!!dadosCadastro.bairro} />
                     <InputDiacono
-                        value={dadosCadastro.cidade}
-                        onChange={handleChange("cidade")}
                         label="Cidade"
-                        placeholder="Digite sua cidade" 
-                        disabled={!!dadosCadastro.cidade}/>
+                        placeholder="Digite sua cidade"
+                        value={dadosCadastro.cidade}
+                        onChange={(e) => handleChange("cidade", e.target.value)}
+                        disabled={!!dadosCadastro.cidade} />
                 </div>
                 <div className="flex justify-between">
                     <InputDiacono
-                        value={dadosCadastro.numero}
-                        onChange={handleChange("numero")}
                         label="Número"
-                        placeholder="Digite o número" />
+                        placeholder="Digite o número"
+                        value={dadosCadastro.numero}
+                        onChange={(e) => handleChange("numero", e.target.value)} />
                     <InputDiacono
-                        value={dadosCadastro.complemento}
-                        onChange={handleChange("complemento")}
                         label="Complemento"
-                        placeholder="Digite o complemento" />
+                        placeholder="Digite o complemento"
+                        value={dadosCadastro.complemento}
+                        onChange={(e) => handleChange("complemento", e.target.value)} />
                 </div>
                 <div className='flex flex-col gap-3 items-end'>
                     <div className="w-full flex justify-between gap-10">
                         <div className="w-[30%]">
-                            <BotaoDiacono onClick={() => navigate('/cadastro2')}>Voltar</BotaoDiacono>
+                            <BotaoDiacono onClick={() => navigate('/cadastro/etapa2')}>Voltar</BotaoDiacono>
                         </div>
                         <div className="w-[50%]">
                             <BotaoDiacono onClick={handleSubmit}>Finalizar cadastro</BotaoDiacono>

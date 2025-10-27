@@ -6,7 +6,7 @@ import { LinkAcesso } from '../../atoms/Global/LinkAcesso';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSpinner } from "react-icons/fa";
-import { login } from '../../../services/authService';
+import { login } from '../../../services/login';
 
 export function FormsLogin() {
     const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ export function FormsLogin() {
         setLoading(true);
         try {
             await login(email, senha); 
-            navigate("/menu");
+            navigate("/eventos");
         } catch {
             setErro("Email ou senha inválidos");
         } finally {
@@ -45,7 +45,7 @@ export function FormsLogin() {
                     {erro && <span className='text-icf-primary-400'>{erro}</span>}
                     <BotaoDiacono disabled={loading}>{loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}</BotaoDiacono>
                     <BotaoGoogle>Entrar com Google</BotaoGoogle>
-                    <LinkAcesso onClick={() => navigate('/cadastro1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
+                    <LinkAcesso onClick={() => navigate('/cadastro/etapa1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
                 </div>
             </div>
         </form>

@@ -1,5 +1,5 @@
 import { FormsCadastro2 } from "../../../molecules/Diacono/FormsCadastro2";
-import { TelaAzulDiacono } from "../../../molecules/Diacono/TelaAzulDiacono";
+import { TelaAzulDiacono } from "../../../templates/Diacono/TelaAzulDiacono";
 
 export function Cadastro2() {
     

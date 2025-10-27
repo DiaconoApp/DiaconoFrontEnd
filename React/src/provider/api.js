@@ -1,13 +1,19 @@
 import axios from "axios";
 
-const api = axios.create({
-    baseURL:import.meta.env.VITE_API_URL
-})  
+let baseURL;
+if (import.meta.env.VITE_API_IP === undefined || import.meta.env.VITE_API_PORT === undefined) {
+  baseURL = "/api";
+} else {
+  baseURL = `http://${import.meta.env.VITE_API_IP}:${import.meta.env.VITE_API_PORT}`;
+}
 
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem("token");
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
+const api = axios.create({ baseURL });
+
+
+// api.interceptors.request.use(config => {
+//   const token = localStorage.getItem("token");
+//   if (token) config.headers.Authorization = `Bearer ${token}`;
+//   return config;
+// });
 
 export default api;

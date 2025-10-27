@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
-export function InputSenhaDiacono({ texto, placeholder, className = "", value, onChange, children }) {
+export function InputSenhaDiacono({ texto, placeholder, className = "", value, onChange, children, ...props }) {
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
@@ -14,6 +14,7 @@ export function InputSenhaDiacono({ texto, placeholder, className = "", value, o
           value={value}
           onChange={onChange}
           className={`text-diacono-blue-400 border border-diacono-blue-100 rounded-lg h-10 p-5 focus:outline-none focus:border-diacono-blue-200 focus:border-3 w-full text-[14px] ${className}`}
+          {...props}
         />
         <button
           type="button"

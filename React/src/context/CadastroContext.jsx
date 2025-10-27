@@ -6,9 +6,9 @@ export function CadastroProvider({ children }) {
   const [dadosCadastro, setDadosCadastro] = useState({
     fkIgreja: "",
     nome: "",
-    nascimento: "",
+    dataNascimento: "",
     cpf: "",
-    email: "",
+    email: "", 
     celular: "",
     senha: "",
     confirmarSenha: "",

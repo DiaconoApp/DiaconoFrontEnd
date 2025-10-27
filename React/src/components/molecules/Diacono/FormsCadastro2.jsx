@@ -119,8 +119,8 @@ export function FormsCadastro2() {
             label="Data de Nascimento"
             type="date"
             className="text-diacono-blue-200"
-            value={dadosCadastro.nascimento}
-            onChange={(e) => handleChange("nascimento", e.target.value)}
+            value={dadosCadastro.dataNascimento}
+            onChange={(e) => handleChange("dataNascimento", e.target.value)}
           />
           <div>
             <InputDiacono

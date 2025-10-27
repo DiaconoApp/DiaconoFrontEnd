@@ -31,7 +31,6 @@ export function FormsCadastro3() {
     };
 
     const handleSubmit = () => {
-
         api.post("/register", dadosCadastro)
             .then(() => {
                 alert("Cadastro concluído com sucesso!");

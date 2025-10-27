@@ -43,7 +43,6 @@ export const transformationName = (string) => {
     );
 
     const resultado = arrayNamesFinal.join(" ");
-    console.log(resultado);
 
     return resultado;
 };

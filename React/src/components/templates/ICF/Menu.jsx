@@ -2,6 +2,7 @@
 import { ItemMenuLateral } from '../../molecules/ICF/ItemMenuLateral';
 import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
 import { useNavigate } from 'react-router-dom';
+import { logout } from '../../../services/login';
 
 export function Menu({ menuAberto, setMenuAberto }) {
     const navigate = useNavigate();
@@ -98,7 +99,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
                             <ItemMenuLateral
                                 label={menuAberto ? "Sair" : false}
                                 imagem="iconeSair"
-                                href="teste"
+                                onClick={logout}
                             />
                         </li>
                     </ul>

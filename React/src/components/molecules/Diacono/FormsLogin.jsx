@@ -19,9 +19,10 @@ export function FormsLogin() {
         e.preventDefault();
         setLoading(true);
         try {
-            await login(email, senha); 
-            navigate("/eventos");
-        } catch {
+            await login(email, senha);
+            navigate("/membros");
+        } catch (err) {
+            console.error("Erro no login:", err);
             setErro("Email ou senha inválidos");
         } finally {
             setLoading(false);
@@ -30,24 +31,22 @@ export function FormsLogin() {
 
 
     return (
-        <form onSubmit={handleSubmit}>
-            <div className="w-100 h-auto flex flex-col gap-8">
-                <span className="font-bold text-[28px] text-diacono-blue-400">Acesse sua conta</span>
-                <div className='flex flex-col gap-6'>
-                    <InputDiacono label={"Email"} placeholder={"exemplo@hotmail.com"} value={email} onChange={e => setEmail(e.target.value)} />
-                    <InputSenhaDiacono texto={"Senha"} placeholder={"Digite sua senha"} value={senha} onChange={e => setSenha(e.target.value)}>
-                        <div className='flex justify-end'>
-                            <span className="cursor-pointer flex text-diacono-blue-200">Esqueci minha senha</span>
-                        </div>
-                    </InputSenhaDiacono>
-                </div>
-                <div className='flex flex-col gap-6'>
-                    {erro && <span className='text-icf-primary-400'>{erro}</span>}
-                    <BotaoDiacono disabled={loading}>{loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}</BotaoDiacono>
-                    <BotaoGoogle>Entrar com Google</BotaoGoogle>
-                    <LinkAcesso onClick={() => navigate('/cadastro/etapa1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
-                </div>
+        <div className="w-100 h-auto flex flex-col gap-8">
+            <span className="font-bold text-[28px] text-diacono-blue-400">Acesse sua conta</span>
+            <div className='flex flex-col gap-6'>
+                <InputDiacono label={"Email"} placeholder={"exemplo@hotmail.com"} value={email} onChange={e => setEmail(e.target.value)} />
+                <InputSenhaDiacono texto={"Senha"} placeholder={"Digite sua senha"} value={senha} onChange={e => setSenha(e.target.value)}>
+                    <div className='flex justify-end'>
+                        <span className="cursor-pointer flex text-diacono-blue-200">Esqueci minha senha</span>
+                    </div>
+                </InputSenhaDiacono>
             </div>
-        </form>
+            <div className='flex flex-col gap-6'>
+                {erro && <span className='text-icf-primary-400'>{erro}</span>}
+                <BotaoDiacono onClick={handleSubmit} disabled={loading}>{loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}</BotaoDiacono>
+                <BotaoGoogle>Entrar com Google</BotaoGoogle>
+                <LinkAcesso onClick={() => navigate('/cadastro/etapa1')} label={"Não tem uma conta?"} link={"Cadastre-se"} />
+            </div>
+        </div>
     )
 }

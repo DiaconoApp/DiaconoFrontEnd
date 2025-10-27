@@ -37,18 +37,19 @@ export function AppRoutes() {
                 { path: "cadastro/etapa1", element: <Cadastro1 /> },
                 { path: "cadastro/etapa2", element: <Cadastro2 /> },
                 { path: "cadastro/etapa3", element: <Cadastro3 /> },
-                { path: "membros", element: <Membros /> },
+                {
+                    path: "membros", element: (
+                        <ProtectedRoute>
+                            <Membros />
+                        </ProtectedRoute>)
+                },
             ],
             errorElement: <div>Error</div>,
         },
 
         {
             path: "/menu",
-            element: (
-                <ProtectedRoute>
-                    <Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />
-                </ProtectedRoute>
-            ),
+            element: <Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />,
             errorElement: <div>Error</div>,
         },
         {

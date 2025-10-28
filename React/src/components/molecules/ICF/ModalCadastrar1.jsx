@@ -129,8 +129,8 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         <InputIcf
                             label="Data de Nascimento"
                             type="date"
-                            value={dadosCadastro.nascimento}
-                            onChange={(e) => handleChange("nascimento", e.target.value)}
+                            value={dadosCadastro.dataNascimento} 
+                            onChange={(e) => handleChange("dataNascimento", e.target.value)}
                         />
                     </div>
                 </div>

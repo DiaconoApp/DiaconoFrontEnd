@@ -30,9 +30,9 @@ export const cadastrarMembro = async (dados) => {
             fkIgreja: dados.fkIgreja,
             nome: dados.nome,
             cpf: dados.cpf,
-            nascimento: typeof dados.nascimento === "string"
-                ? dados.nascimento
-                : dados.nascimento.toISOString().slice(0, 10),
+            nascimento: typeof dados.dataNascimento === "string"
+                ? dados.dataNascimento
+                : dados.dataNascimento.toISOString().slice(0, 10),
             email: dados.email.trim(),
             celular: dados.celular,
             senha: dados.senha,

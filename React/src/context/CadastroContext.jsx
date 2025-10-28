@@ -4,7 +4,7 @@ const CadastroContext = createContext();
 
 export function CadastroProvider({ children }) {
   const [dadosCadastro, setDadosCadastro] = useState({
-    fkIgreja: "",
+    fkIgreja: "550e8400-e29b-41d4-a716-446655440000",
     nome: "",
     dataNascimento: "",
     cpf: "",

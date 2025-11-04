@@ -10,7 +10,7 @@ import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone, validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
 
-export function FormsCadastro2() {
+export function FormsCadastro2() { 
   const navigate = useNavigate();
   const { dadosCadastro, setDadosCadastro } = useCadastro();
   const [erros, setErros] = useState({});

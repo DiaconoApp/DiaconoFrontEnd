@@ -10,7 +10,7 @@ export function Cadastro1() {
     const [listaIgrejas, setListaIgrejas] = useState([]);
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const navigate = useNavigate();
-
+  
     const handleAvancar = () => {
         const camposObrigatorios = ["fkIgreja"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);

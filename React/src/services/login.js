@@ -31,6 +31,6 @@ export const login = async (email, senha) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("token");
+  localStorage.clear();
   window.location.reload();
 };

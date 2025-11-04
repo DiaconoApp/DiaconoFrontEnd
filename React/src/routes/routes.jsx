@@ -37,7 +37,7 @@ export function AppRoutes() {
                 { path: "cadastro/etapa1", element: <Cadastro1 /> },
                 { path: "cadastro/etapa2", element: <Cadastro2 /> },
                 { path: "cadastro/etapa3", element: <Cadastro3 /> },
-                {
+                { 
                     path: "membros", element: (
                         <ProtectedRoute>
                             <Membros />
@@ -54,7 +54,11 @@ export function AppRoutes() {
         },
         {
             path: "/eventos",
-            element: <Eventos />,
+            element: (
+                <ProtectedRoute>
+                    <Eventos />
+                </ProtectedRoute>
+            ),
             errorElement: <div>Error</div>,
         },
     ]);

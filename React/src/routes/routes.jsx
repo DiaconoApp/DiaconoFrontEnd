@@ -11,6 +11,8 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { Eventos } from "../components/pages/ICF/Eventos";
 import { Membros } from "../components/pages/ICF/Membros";
 import { Outlet } from "react-router-dom";
+import { Escalas } from "../components/pages/ICF/Escalas";
+import { ModalGerenciarEscala } from "../components/molecules/ICF/ModalGerenciarEscala";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -26,7 +28,7 @@ export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
 
     const routes = createBrowserRouter([
-        { path: "/dev", element: <ModalVisualizarEvento />, errorElement: <div>Error</div> },
+        { path: "/dev", element: <ModalGerenciarEscala />, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
@@ -58,6 +60,15 @@ export function AppRoutes() {
                 <ProtectedRoute>
                     <Eventos />
                 </ProtectedRoute>
+            ),
+            errorElement: <div>Error</div>,
+        },
+        {
+            path: "/escalas",
+            element: (
+                // <ProtectedRoute>
+                    <Escalas />
+                // </ProtectedRoute>
             ),
             errorElement: <div>Error</div>,
         },

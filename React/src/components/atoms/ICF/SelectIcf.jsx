@@ -1,4 +1,4 @@
-export function SelectIcf({ onChange, className = "", options = [], value, label, opt1, opt2 }) {
+export function SelectIcf({ onChange, className = "", options = [], value, label, opt1, opt2, opt3 }) {
     return (
         <div className={`flex flex-col gap-1 ${className}`}>
             {label}
@@ -9,6 +9,7 @@ export function SelectIcf({ onChange, className = "", options = [], value, label
             >
                 {opt1}
                 {opt2}
+                {opt3}
                 {options.map((opt) => (
                     <option key={opt.idExterno} value={opt.idExterno}>
                         {opt.nome}

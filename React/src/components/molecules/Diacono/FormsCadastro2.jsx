@@ -117,7 +117,7 @@ export function FormsCadastro2() {
         <div className="flex justify-between">
           <InputDiacono
             label="Data de Nascimento"
-            type="date"
+            type="date" 
             className="text-diacono-blue-200"
             value={dadosCadastro.dataNascimento}
             onChange={(e) => handleChange("dataNascimento", e.target.value)}

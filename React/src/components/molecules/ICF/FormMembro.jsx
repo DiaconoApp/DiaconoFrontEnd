@@ -143,7 +143,6 @@ export function FormMembro({ fecharFormulario }) {
             setAbrirForm(false);
             setDadosCadastro({});
 
-            carregarMembros();
         } catch (err) {
             alert("Erro ao cadastrar membro. Verifique os dados e tente novamente.");
             console.error(err);

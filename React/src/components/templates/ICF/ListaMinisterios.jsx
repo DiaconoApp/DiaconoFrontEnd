@@ -5,11 +5,24 @@ import { FiFilter } from "react-icons/fi";
 import { LinhaMinisterio } from "../../molecules/ICF/LinhaMinisterio";
 import { SelectIcf } from "../../atoms/ICF/SelectIcf";
 import { ModalMinisterio } from "../../molecules/ICF/ModalMinisterio";
+import { buscarMinisterios } from "../../../services/ministerios";
+import { safeFormatDate, transformationName } from "../../../utils/Utils";
 
 export function ListaMinisterios() {
     const [modalAberto, setModalAberto] = useState(false);
     const [modoEdicao, setModoEdicao] = useState(false);
     const [ministerioSelecionado, setMinisterioSelecionado] = useState(null);
+
+    const [ministerios, setMinisterios] = useState([]);
+
+    const [buscaTexto, setBuscaTexto] = useState("");
+    const [statusSelecionado, setStatusSelecionado] = useState("todos");
+
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+    const [tamanhoPagina] = useState(6);
+
+    var governo = true;
 
     const abrirModalCriar = () => {
         setModoEdicao(false);
@@ -22,61 +35,52 @@ export function ListaMinisterios() {
         setModalAberto(true);
     };
 
-    const [ministerios, setMinisterios] = useState([]);
-    const [buscaTexto, setBuscaTexto] = useState("");
-    const [statusSelecionado, setStatusSelecionado] = useState("todos");
-    const [paginaAtual, setPaginaAtual] = useState(0);
-    const [tamanhoPagina] = useState(5);
-
-    // --- MOCK DE DADOS ---
-    const dadosMock = [
-        { id: 1, nome: "Louvor", lider: "Maria Silva", status: "Ativo", dataCriacao: "01/02/2023" },
-        { id: 2, nome: "Intercessão", lider: "João Pereira", status: "Ativo", dataCriacao: "15/04/2023" },
-        { id: 3, nome: "Dança", lider: "Ana Souza", status: "Inativo", dataCriacao: "20/08/2022" },
-        { id: 4, nome: "Teatro", lider: "Lucas Costa", status: "Ativo", dataCriacao: "09/01/2024" },
-        { id: 5, nome: "Mídia", lider: "Carla Dias", status: "Ativo", dataCriacao: "11/03/2023" },
-        { id: 6, nome: "Recepção", lider: "Paulo Henrique", status: "Inativo", dataCriacao: "25/07/2022" },
-        { id: 7, nome: "Infantil", lider: "Laura Ramos", status: "Ativo", dataCriacao: "03/06/2023" },
-    ];
-
-    // --- FILTRAGEM E PAGINAÇÃO ---
-    useEffect(() => {
-        let filtrados = dadosMock;
-
-        if (buscaTexto) {
-            filtrados = filtrados.filter((m) =>
-                m.nome.toLowerCase().includes(buscaTexto.toLowerCase())
-            );
-        }
-
-        if (statusSelecionado !== "todos") {
-            filtrados = filtrados.filter(
-                (m) => m.status.toLowerCase() === statusSelecionado.toLowerCase()
-            );
-        }
-
-        const inicio = paginaAtual * tamanhoPagina;
-        const fim = inicio + tamanhoPagina;
-
-        setMinisterios(filtrados.slice(inicio, fim));
-    }, [buscaTexto, statusSelecionado, paginaAtual]);
-
     const resetarFiltros = () => {
         setBuscaTexto("");
         setStatusSelecionado("todos");
         setPaginaAtual(0);
     };
 
-    const totalPaginas = Math.ceil(
-        dadosMock.filter(
-            (m) =>
-                (statusSelecionado === "todos" ||
-                    m.status.toLowerCase() === statusSelecionado.toLowerCase()) &&
-                (!buscaTexto || m.nome.toLowerCase().includes(buscaTexto.toLowerCase()))
-        ).length / tamanhoPagina
-    );
+    const formatarStatus = (status) => {
+        if (!status) return "";
+        return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+    };
 
-    var governo = false;
+    const adaptarStatus = (status) => {
+        const s = status.trim().toLowerCase();
+        if (s === "ativo" || s === "ativos") return "ATIVO";
+        if (s === "inativo" || s === "inativos") return "INATIVO";
+        return "";
+    };
+
+    const montarFiltros = () => {
+        const filtros = {
+            pagina: paginaAtual,
+            tamanho: tamanhoPagina,
+            busca: buscaTexto,
+        };
+        const statusFormatado = adaptarStatus(statusSelecionado);
+        if (statusFormatado) filtros.status = statusFormatado;
+        return filtros;
+    };
+
+    const carregarMinisterios = () => {
+        buscarMinisterios(montarFiltros())
+            .then((res) => {
+                setMinisterios(Array.isArray(res) ? res : []);
+                setTotalPaginas(1);
+            })
+            .catch((err) => {
+                console.error("Erro ao buscar ministerios:", err);
+                setMinisterios([]);
+                setTotalPaginas(1);
+            });
+    };
+
+    useEffect(() => {
+        carregarMinisterios();
+    }, [paginaAtual, buscaTexto, statusSelecionado, tamanhoPagina]);
+
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
             {/* Botão */}
@@ -118,9 +122,9 @@ export function ListaMinisterios() {
                         <SelectIcf
                             opt1={<option value="">Todos os ministérios</option>}
                             opt2={<option value="null">Nenhum</option>}
-                        // options={options}
-                        // value={fkMinisterio}
-                        // onChange={(val) => { setPaginaAtual(0); setFkMinisterio(val); }}
+                            // options={options}
+                            // value={fkMinisterio}
+                            // onChange={(val) => { setPaginaAtual(0); setIdFiltroMinisterio(val); }}
                         />
                     </div>
                 )
@@ -141,12 +145,12 @@ export function ListaMinisterios() {
                     ) : (
                         ministerios.map((m) => (
                             <LinhaMinisterio
-                                key={m.id}
+                                key={m.idExterno}
                                 nome={m.nome}
-                                lider={m.lider}
-                                status={m.status}
+                                lider={transformationName(m.nomeLider)}
+                                status={formatarStatus(m.status)}
                                 onEditar={() => abrirModalEditar(m)}
-                                dataCriacao={m.dataCriacao}
+                                dataCriacao={safeFormatDate(m.dataCriacao)}
                             />
                         ))
                     )}
@@ -181,8 +185,10 @@ export function ListaMinisterios() {
                         tipo={modoEdicao ? "editar" : "criar"}
                         ministerio={ministerioSelecionado}
                         onSalvar={(dados) => {
-                            console.log("Salvando:", dados);
+                            resetarFiltros();
+                            carregarMinisterios();
                             setModalAberto(false);
+                            setPaginaAtual(0);
                         }}
                         onCancelar={() => setModalAberto(false)}
                     />

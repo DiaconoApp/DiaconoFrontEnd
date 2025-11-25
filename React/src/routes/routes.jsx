@@ -13,6 +13,7 @@ import { Membros } from "../components/pages/ICF/Membros";
 import { Outlet } from "react-router-dom";
 import { Escalas } from "../components/pages/ICF/Escalas";
 import { ModalGerenciarEscala } from "../components/molecules/ICF/ModalGerenciarEscala";
+import { Ministerios } from "../components/pages/ICF/Ministerios";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -66,9 +67,18 @@ export function AppRoutes() {
         {
             path: "/escalas",
             element: (
-                // <ProtectedRoute>
+                <ProtectedRoute>
                     <Escalas />
-                // </ProtectedRoute>
+                </ProtectedRoute>
+            ),
+            errorElement: <div>Error</div>,
+        },
+        {
+            path: "/ministerios",
+            element: (
+                <ProtectedRoute>
+                    <Ministerios />
+                </ProtectedRoute>
             ),
             errorElement: <div>Error</div>,
         },

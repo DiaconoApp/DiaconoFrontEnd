@@ -5,7 +5,7 @@ import { LinhaMembro } from "../../molecules/ICF/LinhaMembro";
 import { useEffect, useState } from "react";
 import { FiFilter } from "react-icons/fi";
 import { buscarMinisterios } from "../../../services/ministerios";
-import { transformationName, formatarTelefone } from "../../../utils/Utils";
+import { transformationName, formatarTelefone, safeFormatDate } from "../../../utils/Utils";
 import { FormMembro } from "../../molecules/ICF/FormMembro";
 import { buscarMembros } from "../../../services/membros";
 
@@ -22,12 +22,6 @@ export function ListaMembros() {
     const [buscaTexto, setBuscaTexto] = useState("");
     const [statusSelecionado, setStatusSelecionado] = useState("todos");
     const [fkMinisterio, setFkMinisterio] = useState("");
-
-    const safeFormatDate = (dateStr) => {
-        if (!dateStr) return "";            // evita erro quando for null/undefined
-        const ymd = dateStr.split("T")[0]; // remove time se vier ISO
-        return ymd.split("-").reverse().join("/");
-    };
 
     const resetarFiltros = () => {
         setBuscaTexto("");
@@ -91,7 +85,7 @@ export function ListaMembros() {
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
             {abrirForm ? (
-                <FormMembro fecharFormulario={() => setAbrirForm(false)} />
+                <FormMembro fecharFormulario={() => {setAbrirForm(false);  carregarMembros();}} />
             ) : (
                 <>
 

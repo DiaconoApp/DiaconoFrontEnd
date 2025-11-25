@@ -7,7 +7,7 @@ import { ListaMinisterioMembro } from "../../templates/ICF/ListaMinisterioMembro
 export function Ministerios() {
     const [menuAberto, setMenuAberto] = useState(true);
     var espacamento = menuAberto ? "ml-70" : "ml-24.5";
-    let     governo = false
+    let governo = true
 
     return (
         <div className='bg-[#F6F7F9] flex flex-col h-screen w-full pb-6'>
@@ -18,7 +18,6 @@ export function Ministerios() {
             </div>
             <div className={`${espacamento} px-6`}>
                 {governo ? <ListaMinisterios /> : <ListaMinisterioMembro />}
-
             </div>
         </div>
     );

@@ -14,7 +14,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
         { label: "Calendário", imagem: "calendario", onClick: () => navigate('/eventos') },
         { label: "Escalas", imagem: "iconeEscala" },
         { label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
-        { label: "Ministérios", imagem: "iconeTerra" },
+        { label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
         { label: "Financeiro", imagem: "iconeFinanceiro" },
         { label: "Dashboard", imagem: "iconeDash" },
     ];

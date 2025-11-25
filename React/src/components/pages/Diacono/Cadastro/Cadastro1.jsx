@@ -5,12 +5,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import api from '../../../../provider/api'
 import { useCadastro } from "../../../../context/CadastroContext";
+import { BotaoGoogle } from "../../../atoms/Global/BotaoGoogle";
+import { LinkAcesso } from "../../../atoms/Global/LinkAcesso";
 
 export function Cadastro1() {
     const [listaIgrejas, setListaIgrejas] = useState([]);
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const navigate = useNavigate();
-  
+
     const handleAvancar = () => {
         const camposObrigatorios = ["fkIgreja"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
@@ -47,6 +49,10 @@ export function Cadastro1() {
                         ))}
                     </select>
                     <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
+                    <div className='flex flex-col gap-3 items-end'>
+                        <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+                        <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
+                    </div>
                 </div>
             </div>
             <div className="w-1/2 flex items-center justify-center bg-[url('/telaAzulLogin.svg')] bg-cover bg-center">

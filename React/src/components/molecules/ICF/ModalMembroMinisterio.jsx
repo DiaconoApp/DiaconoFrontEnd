@@ -22,10 +22,10 @@ export function ModalMembroMinisterio({onCancelar}) {
                 <li className="text-center p-4 text-icf-primary-400">Nenhum membro encontrado</li>
             ) : (
                 membros.map((m) => (
-                    <OpcaoSelecionar key={m.id} nome={m.nome} tituloBotao={"Adicioanar"} />
+                    <OpcaoSelecionar key={m.id} nome={m.nome} tituloBotao={"Adicionar"} />
                 ))
             )}
-            <OpcaoSelecionar nome={"Ricardo Belarmino"} tituloBotao={"Adicioanar"} />
+            <OpcaoSelecionar nome={"Ricardo Belarmino"} tituloBotao={"Adicionar"} />
             <div className="py-4">
                 <BotaoIcf className="bg-icf-primary-400" onClick={onCancelar} > Confirmar</BotaoIcf>
             </div>

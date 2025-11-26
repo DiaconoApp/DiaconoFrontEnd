@@ -10,7 +10,7 @@ import { FormMembro } from "../../molecules/ICF/FormMembro";
 import { buscarMembros } from "../../../services/membros";
 
 export function ListaMembros() {
-    
+
     const [abrirForm, setAbrirForm] = useState(false);
 
     const [membros, setMembros] = useState([]);
@@ -79,13 +79,14 @@ export function ListaMembros() {
     // Listar os ministérios no select
     const [options, setOptions] = useState([]);
     useEffect(() => {
-        buscarMinisterios().then(setOptions);
+        buscarMinisterios({})
+            .then((res) => setOptions(res.content || []));
     }, []);
 
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
             {abrirForm ? (
-                <FormMembro fecharFormulario={() => {setAbrirForm(false);  carregarMembros();}} />
+                <FormMembro fecharFormulario={() => { setAbrirForm(false); carregarMembros(); }} />
             ) : (
                 <>
 

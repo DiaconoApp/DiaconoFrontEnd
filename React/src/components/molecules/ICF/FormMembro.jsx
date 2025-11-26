@@ -12,7 +12,7 @@ export function FormMembro({ fecharFormulario }) {
     const { validarNome, validarCpf, validarCamposObrigatorios } = useValidacaoCadastro();
 
     const [dadosCadastro, setDadosCadastro] = useState({
-        fkIgreja: "550e8400-e29b-41d4-a716-446655440000",
+        fkIgreja: localStorage.getItem("fk_igreja"),
         nome: "",
         dataNascimento: "",
         cpf: "",
@@ -20,6 +20,7 @@ export function FormMembro({ fecharFormulario }) {
         celular: "",
         senha: "",
         confirmarSenha: "",
+        idExternoMinisterios: "",
         cargo: "MEMBRO",
         cep: "",
         rua: "",
@@ -31,7 +32,8 @@ export function FormMembro({ fecharFormulario }) {
 
     const [options, setOptions] = useState([]);
     useEffect(() => {
-        buscarMinisterios().then(setOptions);
+        buscarMinisterios({})
+            .then((res) => setOptions(res.content || []));
     }, []);
 
     const { buscarEnderecoPorCep } = useValidacaoCadastro();
@@ -129,7 +131,8 @@ export function FormMembro({ fecharFormulario }) {
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        if (e && e.preventDefault) e.preventDefault();
 
         const erros = validarCamposObrigatorios(dadosCadastro);
         if (erros.length > 0) {
@@ -140,9 +143,28 @@ export function FormMembro({ fecharFormulario }) {
         try {
             await cadastrarMembro(dadosCadastro);
             alert("Membro cadastrado com sucesso!");
-            setAbrirForm(false);
-            setDadosCadastro({});
 
+            if (typeof fecharFormulario === "function") fecharFormulario(false);
+
+            // resetar dados para o estado inicial (não para um objeto vazio)
+            setDadosCadastro({
+                fkIgreja: localStorage.getItem("fk_igreja"),
+                nome: "",
+                dataNascimento: "",
+                cpf: "",
+                email: "",
+                celular: "",
+                senha: "",
+                confirmarSenha: "",
+                idExternoMinisterios: "",
+                cargo: "MEMBRO",
+                cep: "",
+                rua: "",
+                bairro: "",
+                cidade: "",
+                numero: "",
+                complemento: "",
+            });
         } catch (err) {
             alert("Erro ao cadastrar membro. Verifique os dados e tente novamente.");
             console.error(err);
@@ -238,8 +260,8 @@ export function FormMembro({ fecharFormulario }) {
                                 opt1={<option value="">Nenhum</option>}
                                 label="Ministério"
                                 options={options}
-                                value={dadosCadastro.ministerios}
-                                onChange={(valor) => handleChange("ministerios", valor)}
+                                value={dadosCadastro.idExternoMinisterios}
+                                onChange={(valor) => handleChange("idExternoMinisterios", valor)}
                             />
                         </div>
 

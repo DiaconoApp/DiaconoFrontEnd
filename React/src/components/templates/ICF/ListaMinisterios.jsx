@@ -67,8 +67,8 @@ export function ListaMinisterios() {
     const carregarMinisterios = () => {
         buscarMinisterios(montarFiltros())
             .then((res) => {
-                setMinisterios(Array.isArray(res) ? res : []);
-                setTotalPaginas(1);
+                setMinisterios(res.content || []);
+                setTotalPaginas(res.totalPages || 1);
             })
             .catch((err) => {
                 console.error("Erro ao buscar ministerios:", err);
@@ -154,7 +154,7 @@ export function ListaMinisterios() {
                             />
                         ))
                     )}
-                </ul>
+                </ul> 
             </div>
 
             {/* Paginação */}

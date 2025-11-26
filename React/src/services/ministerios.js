@@ -1,6 +1,7 @@
 import api from "../provider/api";
 
-export const buscarMinisterios = async ({ pagina = 0, tamanho = 10, busca = "", status = "" }) => {
+export const buscarMinisterios = async (params = {}) => {
+  const { pagina = 0, tamanho = 10, busca = "", status = "" } = params;
   try {
     let url = `/api/v1/ministerios/governo?page=${pagina}&size=${tamanho}`;
 
@@ -42,7 +43,7 @@ export const atualizarMinisterio = async ({ dados, idMinisterio }) => {
     const payload = {
       idLider: dados.idLider,
       nome: dados.nome,
-      status: dados.status?.toUpperCase(), 
+      status: dados.status?.toUpperCase(),
     };
 
     const res = await api.patch(`/api/v1/ministerios/governo/${idMinisterio}`, payload);

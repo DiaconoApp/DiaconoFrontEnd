@@ -10,7 +10,7 @@ import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone, validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
 
-export function FormsCadastro2() { 
+export function FormsCadastro2() {
   const navigate = useNavigate();
   const { dadosCadastro, setDadosCadastro } = useCadastro();
   const [erros, setErros] = useState({});
@@ -98,6 +98,14 @@ export function FormsCadastro2() {
   };
 
   const handleAvancar = () => {
+    const camposObrigatorios = ["nome", "dataNascimento", "cpf", "email", "celular", "senha", "confirmarSenha"];
+    const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
+
+    if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
+      alert("Preencha todos os campos corretamente para continuar.");
+      return;
+    }
+
     navigate("/cadastro/etapa3");
   };
 
@@ -108,7 +116,7 @@ export function FormsCadastro2() {
       <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-400 text-white" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
       <div className="flex flex-col gap-5">
         <InputDiacono
-          label="Nome Completo"
+          label="Nome Completo *"
           placeholder="Digite seu nome"
           value={dadosCadastro.nome}
           onChange={(e) => handleChange("nome", e.target.value)}
@@ -116,15 +124,15 @@ export function FormsCadastro2() {
         />
         <div className="flex justify-between">
           <InputDiacono
-            label="Data de Nascimento"
-            type="date" 
+            label="Data de Nascimento *"
+            type="date"
             className="text-diacono-blue-200"
             value={dadosCadastro.dataNascimento}
             onChange={(e) => handleChange("dataNascimento", e.target.value)}
           />
           <div>
             <InputDiacono
-              label="CPF"
+              label="CPF *"
               placeholder="Digite seu CPF"
               value={formatarCpf(dadosCadastro.cpf) || dadosCadastro.cpf}
               onChange={(e) => handleChange("cpf", e.target.value)}
@@ -136,7 +144,7 @@ export function FormsCadastro2() {
         <div className="flex justify-between">
           <div>
             <InputDiacono
-              label="Email"
+              label="Email *"
               placeholder="Digite seu email"
               value={dadosCadastro.email}
               onChange={(e) => handleChange("email", e.target.value)}
@@ -146,7 +154,7 @@ export function FormsCadastro2() {
           </div>
           <div>
             <InputDiacono
-              label="Celular"
+              label="Celular *"
               placeholder="Digite seu celular"
               value={formatarTelefone(dadosCadastro.celular) || dadosCadastro.celular}
               onChange={(e) => handleChange("celular", e.target.value)}
@@ -158,7 +166,7 @@ export function FormsCadastro2() {
         <div className="flex justify-between">
           <div>
             <InputSenhaDiacono
-              texto="Senha"
+              texto="Senha *"
               placeholder="Digite sua senha"
               value={dadosCadastro.senha}
               onChange={(e) => handleChange("senha", e.target.value)}
@@ -168,7 +176,7 @@ export function FormsCadastro2() {
           </div>
           <div>
             <InputSenhaDiacono
-              texto="Confirmar Senha"
+              texto="Confirmar Senha *"
               placeholder="Confirme a senha"
               value={dadosCadastro.confirmarSenha}
               onChange={(e) => handleChange("confirmarSenha", e.target.value)}

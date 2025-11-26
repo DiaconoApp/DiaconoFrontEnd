@@ -151,7 +151,7 @@ export function ListaMembros() {
                                         email={formatarEmail(membro.email)}
                                         celular={formatarTelefone(membro.celular)}
                                         nascimento={safeFormatDate(membro.dataNascimento)}
-                                        ministério={membro.ministerios?.[0]?.nomeMinisterio || "Nenhum"}
+                                        ministério={transformationName(membro.ministerios?.[0]?.nomeMinisterio) || "Nenhum"}
                                         qtdMinistério={membro.ministerios?.length || 0}
                                         status={formatarStatus(membro.status)}
                                     />

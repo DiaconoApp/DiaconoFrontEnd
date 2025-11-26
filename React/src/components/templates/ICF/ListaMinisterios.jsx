@@ -146,7 +146,7 @@ export function ListaMinisterios() {
                         ministerios.map((m) => (
                             <LinhaMinisterio
                                 key={m.idExterno}
-                                nome={m.nome}
+                                nome={transformationName(m.nome)}
                                 lider={transformationName(m.nomeLider)}
                                 status={formatarStatus(m.status)}
                                 onEditar={() => abrirModalEditar(m)}

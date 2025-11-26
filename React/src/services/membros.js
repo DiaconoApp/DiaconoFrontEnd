@@ -36,7 +36,7 @@ export const cadastrarMembro = async (dados) => {
             email: dados.email.trim(),
             celular: dados.celular,
             senha: dados.senha,
-            idExternoMinisterios: dados.idExternoMinisterios || [],
+            idExternoMinisterios: dados.idExternoMinisterios,
             cargo: dados.cargo || "",
             membroEnderecoDTO: {
                 cep: dados.cep,

@@ -58,8 +58,10 @@ export function ModalMinisterio({
                     dados,
                     idMinisterio: ministerio.idExterno, 
                 });
+                alert("Ministério editado com sucesso!");
             } else {
                 resultado = await cadastrarMinisterio(dados);
+                alert("Ministério cadastrado com sucesso!");
             }
 
             onSalvar(resultado);

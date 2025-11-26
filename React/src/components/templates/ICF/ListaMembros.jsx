@@ -151,7 +151,22 @@ export function ListaMembros() {
                                         email={formatarEmail(membro.email)}
                                         celular={formatarTelefone(membro.celular)}
                                         nascimento={safeFormatDate(membro.dataNascimento)}
-                                        ministério={transformationName(membro.ministerios?.[0]?.nomeMinisterio) || "Nenhum"}
+                                        ministério={
+                                            membro.ministerios && membro.ministerios.length > 0 ? (
+                                                <div className="flex flex-col">
+                                                    {Array.from({ length: Math.ceil(membro.ministerios.length / 3) }).map((_, i) => (
+                                                        <span key={i}>
+                                                            {membro.ministerios
+                                                                .slice(i * 3, i * 3 + 3)
+                                                                .map(m => transformationName(m.nomeMinisterio))
+                                                                .join(", ")}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                "Nenhum"
+                                            )
+                                        }
                                         qtdMinistério={membro.ministerios?.length || 0}
                                         status={formatarStatus(membro.status)}
                                     />

@@ -17,6 +17,7 @@ export const login = async (email, senha) => {
     localStorage.setItem("token", token);
     localStorage.setItem("nome", payload.nome);
     localStorage.setItem("cargo", payload.scope);
+    localStorage.setItem("idUsuario", payload.sub);
 
     return { token, payload, user: response.data.user ?? response.data ?? payload };
 

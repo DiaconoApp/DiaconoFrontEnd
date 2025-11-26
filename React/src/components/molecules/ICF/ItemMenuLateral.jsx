@@ -1,4 +1,4 @@
-export function ItemMenuLateral({ label, imagem, onClick}) {
+export function ItemMenuLateral({ label, imagem, href, onClick }) {
     return (
         <a href={href} 
         className={`flex gap-3 px-4 py-3 rounded-lg text-icf-primary-300 text-sm font-medium 

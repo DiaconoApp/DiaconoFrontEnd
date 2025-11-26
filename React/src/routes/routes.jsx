@@ -11,6 +11,10 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { Eventos } from "../components/pages/ICF/Eventos";
 import { Membros } from "../components/pages/ICF/Membros";
 import { Outlet } from "react-router-dom";
+import { FormEventos } from "../components/molecules/ICF/FormEventos";
+import { Calendario } from "../components/templates/ICF/Calendario";
+import { ModalExclusaoRecorrencia } from "../components/molecules/ICF/ModalExclusaoRecorrencia";
+import { ModalRecorrente } from "../components/molecules/ICF/ModalRecorrente";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -26,7 +30,8 @@ export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
 
     const routes = createBrowserRouter([
-        { path: "/dev", element: <ModalVisualizarEvento />, errorElement: <div>Error</div> },
+        { path: "/dev", element: <ModalRecorrente/>, errorElement: <div>Error</div> },
+    
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
@@ -55,8 +60,22 @@ export function AppRoutes() {
         {
             path: "/eventos",
             element: <Eventos />,
+            children: [
+                {
+                    index: true,
+                    element: <Calendario /> 
+                },
+                { 
+                    path: "novo", // Rota: /eventos/novo
+                    element: <FormEventos /> 
+                },
+                { 
+                    path: "editar/:idEvento",
+                    element: <FormEventos />
+                }
+            ],
             errorElement: <div>Error</div>,
-        },
+        }
     ]);
 
     return <RouterProvider router={routes} />;

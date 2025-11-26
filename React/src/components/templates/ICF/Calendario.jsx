@@ -1,42 +1,59 @@
 import "./Calendario.css";
 import React, { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router";
-import axios from "axios";
+import { useNavigate, useOutletContext } from "react-router";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import { ModalVisualizarEvento } from "../../molecules/ICF/ModalVisualizarEvento.jsx";
+import { buscarEventoPorId, buscarEventos } from "../../../services/eventos.js";
 
 export function Calendario() {
-  const [events, setEvents] = useState([]); // Lista de eventos do calendário
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false); // Controle do modal de visualização
-  const [eventoSelecionado, setEventoSelecionado] = useState(null); // Evento selecionado no clique
-  const calendarRef = useRef(null); // Referência para manipular o calendário diretamente
+  const [events, setEvents] = useState([]);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [eventoSelecionado, setEventoSelecionado] = useState(null);
+  const calendarRef = useRef(null);
   const navigate = useNavigate();
+
+  const { menuAberto } = useOutletContext();
+
+  useEffect(() => {
+
+    const timer = setTimeout(() => {
+      if (calendarRef.current) {
+        calendarRef.current.getApi().updateSize();
+      }
+    }, 310);
+    return () => clearTimeout(timer);
+
+  }, [menuAberto]);
 
   // 🔹 Carrega eventos da API ao montar o componente
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/eventos")
-      .then((res) => {
-        const eventosFormatados = res.data.map((ev) => ({
-          id: ev.id,
-          title: ev.titulo,
-          start: `${ev.dataInicio}T${ev.horaInicio || "00:00"}`,
-          end: `${ev.dataInicio}T${ev.horaFim || "00:00"}`,
-          extendedProps: {
-            descricao: ev.descricao,
-            local: ev.local,
-          },
-        }));
-        setEvents(eventosFormatados);
-      })
-      .catch((err) => console.error("Erro ao carregar eventos", err));
+    async function carregar() {
+      const hoje = new Date();
+      const mesAtual = hoje.getMonth() + 1;
+      const anoAtual = hoje.getFullYear();
+
+      const res = await buscarEventos(mesAtual, anoAtual);
+
+      if (!res?.eventosMes) return;
+
+      const eventosFormatados = res.eventosMes.map(ev => ({
+        id: ev.idExterno,
+        title: ev.nome,
+        start: ev.dataHoraInicio,
+        end: ev.dataHoraFim,
+        extendedProps: {
+        }
+      }));
+      setEvents(eventosFormatados);
+    }
+
+    carregar();
   }, []);
 
-  // 🔹 Redireciona para a tela de edição
   const handleEditarEvento = (idEvento) => {
     navigate(`/eventos/editar/${idEvento}`);
   };
@@ -48,20 +65,33 @@ export function Calendario() {
 
   // ---------- ATUALIZAÇÃO DO TÍTULO (Mês Atual) ----------
   const renderTitle = (date) => {
-    if (!date) return "";
-    try {
-      return date.toLocaleString("pt-BR", { month: "long", year: "numeric" });
-    } catch {
-      return "";
-    }
+    return date.toLocaleString("pt-BR", { month: "long", year: "numeric" });
   };
 
   const [currentTitle, setCurrentTitle] = useState(() =>
     renderTitle(new Date())
   );
 
-  const handleDatesSet = (arg) => {
-    setCurrentTitle(renderTitle(arg.start));
+  const handleDatesSet = async (arg) => {
+    setCurrentTitle(renderTitle(arg.view.currentStart));
+
+    const dataAtual = arg.view.currentStart;
+
+    const mes = dataAtual.getMonth() + 1;
+    const ano = dataAtual.getFullYear();
+
+    const res = await buscarEventos(mes, ano);
+
+    if (!res?.eventosMes) return;
+
+    const eventosFormatados = res.eventosMes.map(ev => ({
+      id: ev.idExterno,
+      title: ev.nome,
+      start: ev.dataHoraInicio,
+      end: ev.dataHoraFim,
+    }));
+
+    setEvents(eventosFormatados);
   };
 
   return (
@@ -122,35 +152,41 @@ export function Calendario() {
             minute: "2-digit",
             hour12: false,
           }}
-          eventClick={(info) => {
+
+          eventClick={async (info) => {
+            const idEvento = info.event.id;
+
+            const eventoCompleto = await buscarEventoPorId(idEvento);
+
+            if (!eventoCompleto) {
+              alert("Erro ao carregar detalhes do evento.");
+              return;
+            }
+
             const evento = {
-              id: info.event.id,
-              titulo: info.event.title,
-              descricao: info.event.extendedProps.descricao || "",
-              local: info.event.extendedProps.local || "",
-              dataInicio: info.event.startStr,
-              dataFim: info.event.endStr,
-              horaInicio: info.event.start
-                ? info.event.start.toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : "",
-              horaFim: info.event.end
-                ? info.event.end.toLocaleTimeString("pt-BR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })
-                : "",
+              id: idEvento,
+              titulo: eventoCompleto.nome,
+              descricao: eventoCompleto.descricao,
+              dataInicio: eventoCompleto.dataHoraInicio,
+              dataFim: eventoCompleto.dataHoraFim,
+              horaInicio: new Date(eventoCompleto.dataHoraInicio).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+              horaFim: new Date(eventoCompleto.dataHoraFim).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
+              local: eventoCompleto?.enderecoEvento?.apelido || "Sem local",
+              ministerios: eventoCompleto?.fkMinisterios || [],
+              custo: eventoCompleto?.custo || 0,
+              organizador: eventoCompleto?.organizador?.nome,
+              publicoAlvo: eventoCompleto?.publicoAlvo || "",
             };
+
             setEventoSelecionado(evento);
             setIsViewModalOpen(true);
           }}
+
           eventContent={(arg) => (
             <div className="bg-icf-primary-100 text-icf-primary-600 rounded-lg px-1.5 py-1 w-full flex gap-2">
               <div className="bg-icf-primary-400 w-1 rounded-full"></div>
               <div className="flex flex-col">
-                <span className="font-medium">{arg.event.title}</span>
+                <span className="text-gray-600 font-medium">{arg.event.title}</span>
                 {arg.timeText && (
                   <span className="text-xs text-gray-600">{arg.timeText}</span>
                 )}

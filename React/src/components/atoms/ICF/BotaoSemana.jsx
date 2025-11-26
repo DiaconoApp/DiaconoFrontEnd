@@ -40,7 +40,7 @@ export function BotaoSemana() {
                 <label className='font-bold text-icf-primary-300'>Ocorre a cada Domingo até</label>
                 <div className='flex gap-7'>
                     <input type="date" className='text-icf-primary-200 font-semibold text-sm w-30 focus:outline-none border-b-2 border-b-icf-primary-50 focus:border-b-icf-primary-100' />
-                    <button className='text-icf-primary-200 font-semibold text-sm flex items-center gap-1'>Remover a data do término <FiX></FiX></button>
+                    {/* <button className='text-icf-primary-200 font-semibold text-sm flex items-center gap-1'>Remover a data do término <FiX></FiX></button> */}
                 </div>
             </div>
         </div>

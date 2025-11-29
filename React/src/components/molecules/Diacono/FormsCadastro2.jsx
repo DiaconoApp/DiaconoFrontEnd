@@ -1,5 +1,4 @@
 import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
-import { InputSenhaDiacono } from "../../atoms/Diacono/InputSenhaDiacono";
 import { EtapasCadastro } from "../Global/EtapasCadastro";
 import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
 import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
@@ -7,7 +6,7 @@ import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
-import { formatarCpf, formatarTelefone, isTelefone, validaEmail } from "../../../utils/Utils";
+import { formatarCpf, formatarTelefone, isTelefone } from "../../../utils/Utils";
 import { useState } from "react";
 
 export function FormsCadastro2() {
@@ -52,14 +51,6 @@ export function FormsCadastro2() {
         }));
         break;
 
-      case "email":
-        const emailValido = validaEmail(valor);
-        setErros((prev) => ({
-          ...prev,
-          email: emailValido ? undefined : "Email inválido",
-        }));
-        break;
-
       case "celular":
         const celularValido = isTelefone(valor);
         setErros((prev) => ({
@@ -68,27 +59,11 @@ export function FormsCadastro2() {
         }));
         break;
 
-      case "senha":
-        const senhaValida = valor?.length >= 8;
+      case "generoMembro":
+        const generoValido = valor === "MASCULINO" || valor === "FEMININO";
         setErros((prev) => ({
           ...prev,
-          senha: senhaValida ? undefined : "Senha muito curta",
-        }));
-        const confirmarSenha = dadosCadastro.confirmarSenha;
-        if (confirmarSenha) {
-          const senhasConferem = valor === confirmarSenha;
-          setErros((prev) => ({
-            ...prev,
-            confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
-          }));
-        }
-        break;
-
-      case "confirmarSenha":
-        const senhasConferem = valor === dadosCadastro.senha;
-        setErros((prev) => ({
-          ...prev,
-          confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
+          generoMembro: generoValido ? undefined : "Gênero inválido",
         }));
         break;
 
@@ -98,7 +73,7 @@ export function FormsCadastro2() {
   };
 
   const handleAvancar = () => {
-    const camposObrigatorios = ["nome", "dataNascimento", "cpf", "email", "celular", "senha", "confirmarSenha"];
+    const camposObrigatorios = ["nome", "dataNascimento", "cpf", "celular", "generoMembro"];
     const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
     if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
@@ -111,9 +86,9 @@ export function FormsCadastro2() {
 
   return (
 
-    <div className="w-[55%] flex flex-col gap-5">
+    <div className="w-[65%] flex flex-col gap-5">
       <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-      <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-400 text-white" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
+      <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-400 text-white" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className3="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
       <div className="flex flex-col gap-5">
         <InputDiacono
           label="Nome Completo *"
@@ -123,13 +98,6 @@ export function FormsCadastro2() {
           onBlur={() => handleBlur("nome")}
         />
         <div className="flex justify-between">
-          <InputDiacono
-            label="Data de Nascimento *"
-            type="date"
-            className="text-diacono-blue-200"
-            value={dadosCadastro.dataNascimento}
-            onChange={(e) => handleChange("dataNascimento", e.target.value)}
-          />
           <div>
             <InputDiacono
               label="CPF *"
@@ -140,17 +108,28 @@ export function FormsCadastro2() {
             />
             {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
           </div>
-        </div>
-        <div className="flex justify-between">
           <div>
             <InputDiacono
-              label="Email *"
-              placeholder="Digite seu email"
-              value={dadosCadastro.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-              onBlur={() => handleBlur("email")}
+              label="Data de Nascimento *"
+              type="date"
+              className="text-diacono-blue-200"
+              value={dadosCadastro.dataNascimento}
+              onChange={(e) => handleChange("dataNascimento", e.target.value)}
             />
-            {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-1">
+            <label className="text-diacono-blue-400">Gênero *</label>
+            <select
+              value={dadosCadastro.generoMembro}
+              onChange={(e) => handleChange("generoMembro", e.target.value)}
+              className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg h-10 p-5 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]"
+            >
+              <option value="" disabled>Selecione seu gênero</option>
+              <option value="MASCULINO">Masculino</option>
+              <option value="FEMININO">Feminino</option>
+            </select>
           </div>
           <div>
             <InputDiacono
@@ -161,28 +140,6 @@ export function FormsCadastro2() {
               onBlur={() => handleBlur("celular")}
             />
             {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div>
-            <InputSenhaDiacono
-              texto="Senha *"
-              placeholder="Digite sua senha"
-              value={dadosCadastro.senha}
-              onChange={(e) => handleChange("senha", e.target.value)}
-              onBlur={() => handleBlur("senha")}
-            />
-            {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
-          </div>
-          <div>
-            <InputSenhaDiacono
-              texto="Confirmar Senha *"
-              placeholder="Confirme a senha"
-              value={dadosCadastro.confirmarSenha}
-              onChange={(e) => handleChange("confirmarSenha", e.target.value)}
-              onBlur={() => handleBlur("confirmarSenha")}
-            />
-            {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
           </div>
         </div>
         <div className='flex flex-col gap-3 items-end'>

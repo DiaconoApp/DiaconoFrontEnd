@@ -11,6 +11,7 @@ export function CadastroProvider({ children }) {
     email: "", 
     celular: "",
     senha: "",
+    generoMembro: "",
     confirmarSenha: "",
     cargo: "MEMBRO",
     cep: "",

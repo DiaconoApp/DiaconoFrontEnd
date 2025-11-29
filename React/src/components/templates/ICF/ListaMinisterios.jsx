@@ -22,7 +22,7 @@ export function ListaMinisterios() {
     const [totalPaginas, setTotalPaginas] = useState(1);
     const [tamanhoPagina] = useState(6);
 
-    var governo = true;
+    var governo = false;
 
     const abrirModalCriar = () => {
         setModoEdicao(false);

@@ -22,6 +22,7 @@ export function FormMembro({ fecharFormulario }) {
         confirmarSenha: "",
         idExternoMinisterios: "",
         cargo: "MEMBRO",
+        generoMembro: "",
         cep: "",
         rua: "",
         bairro: "",
@@ -126,6 +127,14 @@ export function FormMembro({ fecharFormulario }) {
                 }));
                 break;
 
+            case "generoMembro":
+                const generoValido = valor === "MASCULINO" || valor === "FEMININO";
+                setErros((prev) => ({
+                    ...prev,
+                    generoMembro: generoValido ? undefined : "Gênero inválido",
+                }));
+                break;
+
             default:
                 break;
         }
@@ -158,6 +167,7 @@ export function FormMembro({ fecharFormulario }) {
                 confirmarSenha: "",
                 idExternoMinisterios: "",
                 cargo: "MEMBRO",
+                generoMembro: "",
                 cep: "",
                 rua: "",
                 bairro: "",
@@ -187,15 +197,6 @@ export function FormMembro({ fecharFormulario }) {
                                 onChange={(e) => handleChange("nome", e.target.value)}
                                 onBlur={() => handleBlur("nome")}
                             />
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-4 w-full">
-                            <InputIcf
-                                label="Data de Nascimento"
-                                type="date"
-                                value={dadosCadastro.dataNascimento}
-                                onChange={(e) => handleChange("dataNascimento", e.target.value)}
-                            />
                             <div className="w-full">
                                 <InputIcf
                                     label="CPF"
@@ -207,6 +208,15 @@ export function FormMembro({ fecharFormulario }) {
                                 />
                                 {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
                             </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-4 w-full">
+                            <InputIcf
+                                label="Data de Nascimento"
+                                type="date"
+                                value={dadosCadastro.dataNascimento}
+                                onChange={(e) => handleChange("dataNascimento", e.target.value)}
+                            />
                             <div className="w-full">
                                 <InputIcf
                                     label="Celular"
@@ -217,6 +227,21 @@ export function FormMembro({ fecharFormulario }) {
                                 />
                                 {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
                             </div>
+                            <div className="w-full">
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-icf-primary-400">Gênero *</label>
+                                    <select
+                                        value={dadosCadastro.generoMembro}
+                                        onChange={(e) => handleChange("generoMembro", e.target.value)}
+                                        className="text-icf-primary-400 border border-icf-primary-200 bg-surface-50 rounded-lg h-10 p-5 focus:outline-none focus:border-icf-primary-200 focus:border-3 text-[14px]"
+                                    >
+                                        <option value="" disabled>Selecione seu gênero</option>
+                                        <option value="MASCULINO">Masculino</option>
+                                        <option value="FEMININO">Feminino</option>
+                                    </select>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 w-full">

@@ -116,8 +116,8 @@ export function ModalMinisterio({
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                         >
-                            <option value="Ativo">Ativo</option>
-                            <option value="Inativo">Inativo</option>
+                            <option value="ATIVO">Ativo</option>
+                            <option value="INATIVO">Inativo</option>
                         </select>
                     </div>
                 )}

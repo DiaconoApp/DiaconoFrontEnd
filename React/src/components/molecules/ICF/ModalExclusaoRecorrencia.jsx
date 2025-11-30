@@ -2,8 +2,6 @@ import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
 import { FiX } from "react-icons/fi";
 
 export function ModalExclusaoRecorrencia({
-    titulo,
-    pergunta,
     onClose,
     onConfirm,
     opcaoRecorrencia,
@@ -15,9 +13,9 @@ export function ModalExclusaoRecorrencia({
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
                         <span className="font-bold text-2xl">Confirmar Exclusão</span>
-                        <span className="text-icf-primary-200 text-sm">Tem certeza que deseja excluir o evento <span>"Culto de oração"?</span></span>
+                        <span className="text-icf-primary-200 text-sm">Tem certeza que deseja excluir o evento? <span>"Culto de oração"?</span></span>
                     </div>
-                    <button className="text-xl hover:text-white hover:bg-icf-primary-400 rounded">
+                    <button onClick={onClose} className="text-xl hover:text-white hover:bg-icf-primary-400 rounded">
                         <FiX></FiX>
                     </button>
                 </div>
@@ -46,8 +44,8 @@ export function ModalExclusaoRecorrencia({
                 <div className="flex flex-col gap-6">
                     <div className="flex justify-center gap-6">
                         <div className="w-[75%] flex gap-4">
-                            <BotaoIcf className="bg-icf-primary-400">Excluir</BotaoIcf>
-                            <BotaoIcf className="bg-icf-primary-200">Cancelar</BotaoIcf>
+                            <BotaoIcf onClick={onConfirm} className="bg-icf-primary-400">Excluir</BotaoIcf>
+                            <BotaoIcf onClick={onClose} className="bg-icf-primary-200">Cancelar</BotaoIcf>
                         </div>
                     </div>
                 </div>

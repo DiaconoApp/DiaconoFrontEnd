@@ -21,7 +21,7 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
                 </div>
                 {/* <span className="text-icf-primary-200">Ocorre a cada Sábado até 04 de Abril de 2026</span> */}
                 <div className="flex justify-between">
-                    <InfoEvento label={"Valor do ingresso"} info={evento.custo == 0 ? "Gratuito" : evento.custo} />
+                    <InfoEvento label={"Valor do ingresso"} info={evento.custo == 0 ? "Gratuito" :"R$ " + evento.custo} />
                     <InfoEvento label={"Local"} info={evento.local || "-"} />
                 </div>
                 <InfoEvento label={"Descrição"} info={evento.descricao || "Sem descrição"}

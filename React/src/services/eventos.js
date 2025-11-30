@@ -28,7 +28,7 @@ export async function criarEvento(form) {
     const body = {
       fkIgreja: "550e8400-e29b-41d4-a716-446655440000", // PEGAR DO CONTEXTO DEPOIS
       fkOrganizador: localStorage.getItem("idUsuario"),
-      fkMinisterios: ["5871e562-86b0-467a-b68c-c1bba5158c2e"],
+      fkMinisterios: form.fkMinisterios,
 
       nome: form.nome,
       descricao: form.descricao,
@@ -73,40 +73,32 @@ export async function criarEvento(form) {
 
 export async function editarEvento(id, form) {
   try {
-    const formatarData = (date) => date.toISOString().split("T")[0];
-    const formatarHora = (date) => date.toTimeString().split(" ")[0];
     const body = {
-      fkMinisterios: ["5871e562-86b0-467a-b68c-c1bba5158c2e"],
+      // recorrencia: {
+      //   tipoRecorrencia: form.recorrencia.tipoRecorrencia,
+      //   dataInicioRecorrencia: form.recorrencia.dataInicioRecorrencia,
+      //   dataTerminoRecorrencia: form.recorrencia.dataTerminoRecorrencia
+      // },
 
+      fkMinisterios: form.fkMinisterios,
+      endereco: {
+        idExterno:  null,
+        cep: form.endereco?.cep,
+        estado: form.endereco?.estado || "São Paulo",
+        cidade: form.endereco?.cidade,
+        bairro: form.endereco?.bairro,
+        rua: form.endereco?.rua,
+        complemento: form.endereco?.complemento,
+        numero: form.endereco?.numero,
+        apelido: form.endereco?.apelido
+      },
       nome: form.nome,
       descricao: form.descricao,
       publicoAlvo: form.publicoAlvo,
+      dataHoraInicio: form.dataHoraInicio,
+      dataHoraFim: form.dataHoraFim,
+      custo: Number(form.custo)
 
-      // dataHoraInicio: form.dataHoraInicio,
-      // dataHoraFim: form.dataHoraFim, <--- PADRONIZAR ASSIM
-      data: formatarData(form.dataHoraInicio),
-      horaInicio: formatarHora(form.dataHoraInicio),
-      horaFim: formatarHora(form.dataHoraFim),
-
-      custo: Number(form.custo) || 0,
-
-      recorrencia: {
-        tipoRecorrencia: form.recorrencia.tipoRecorrencia,
-        dataInicioRecorrencia: form.recorrencia.dataInicioRecorrencia,
-        dataTerminoRecorrencia: form.recorrencia.dataTerminoRecorrencia
-      },
-
-      endereco: {
-        idExterno: null,
-        apelido: form.endereco?.apelido,
-        cep: form.endereco?.cep,
-        rua: form.endereco?.rua,
-        numero: form.endereco?.numero,
-        cidade: form.endereco?.cidade,
-        estado: form.endereco?.estado || "São Paulo",
-        bairro: form.endereco?.bairro,
-        complemento: form.endereco?.complemento
-      }
     };
 
     const res = await api.patch(`/api/v1/eventos/${id}`, body);
@@ -121,7 +113,8 @@ export async function editarEvento(id, form) {
 export async function deletarEventoUnico(id) {
   try {
     const response = await api.delete(`/api/v1/eventos/unico/${id}`);
-    return response.data;
+    // return response.data;
+    return true
   } catch (error) {
     console.error("Erro ao deletar evento único:", error);
     throw error;
@@ -131,7 +124,8 @@ export async function deletarEventoUnico(id) {
 export async function deletarEventoMultiplos(id) {
   try {
     const response = await api.delete(`/api/v1/eventos/multiplos/${id}`);
-    return response.data;
+    // return response.data;
+    return true
   } catch (error) {
     console.error("Erro ao deletar eventos múltiplos:", error);
     throw error;

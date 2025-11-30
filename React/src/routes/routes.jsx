@@ -14,6 +14,10 @@ import { Outlet } from "react-router-dom";
 import { Escalas } from "../components/pages/ICF/Escalas";
 import { ModalGerenciarEscala } from "../components/molecules/ICF/ModalGerenciarEscala";
 import { Ministerios } from "../components/pages/ICF/Ministerios";
+import { FormEventos } from "../components/molecules/ICF/FormEventos";
+import { Calendario } from "../components/templates/ICF/Calendario";
+import { ModalExclusaoRecorrencia } from "../components/molecules/ICF/ModalExclusaoRecorrencia";
+import { ModalRecorrente } from "../components/molecules/ICF/ModalRecorrente";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -80,8 +84,22 @@ export function AppRoutes() {
                     <Ministerios />
                 </ProtectedRoute>
             ),
+            children: [
+                {
+                    index: true,
+                    element: <Calendario /> 
+                },
+                { 
+                    path: "novo", // Rota: /eventos/novo
+                    element: <FormEventos /> 
+                },
+                { 
+                    path: "editar/:idEvento",
+                    element: <FormEventos />
+                }
+            ],
             errorElement: <div>Error</div>,
-        },
+        }
     ]);
 
     return <RouterProvider router={routes} />;

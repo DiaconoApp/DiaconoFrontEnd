@@ -4,17 +4,32 @@ import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../services/login';
 import { transformationName } from '../../../utils/Utils';
+
 export function Menu({ menuAberto, setMenuAberto }) {
     const navigate = useNavigate();
     const [nome, setNome] = useState("");
     const [cargo, setCargo] = useState("");
 
-    useEffect(() => {
-        const nomeSalvo = localStorage.getItem("nome");
-        if (nomeSalvo) setNome(nomeSalvo);
+    const menuItems = [
+        { label: "Calendário", imagem: "calendario", onClick: () => navigate('/eventos') },
+        { label: "Escalas", imagem: "iconeEscala" },
+        { label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
+        { label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
+        { label: "Financeiro", imagem: "iconeFinanceiro" },
+        { label: "Dashboard", imagem: "iconeDash" },
+    ];
 
-        const cargoSalvo = localStorage.getItem("cargo");
-        if (cargoSalvo) setCargo(cargoSalvo);
+    const configItems = [
+        { label: "Configurações", imagem: "iconeConfig" },
+        { label: "Sair", imagem: "iconeSair", onClick: logout },
+    ];
+
+    useEffect(() => {
+        const nomeSalvo = localStorage.getItem("nome") || "";
+        setNome(nomeSalvo);
+
+        const cargoSalvo = localStorage.getItem("cargo") || "";
+        setCargo(cargoSalvo);
     }, []);
 
     return (
@@ -53,65 +68,28 @@ export function Menu({ menuAberto, setMenuAberto }) {
                 </button>
                 <div className='gap-6 flex flex-col'>
                     <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"} cursor-pointer`}>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Calendário" : false}
-                                imagem="calendario"
-                                onClick={() => navigate('/eventos')}
-                            />
-                        </li>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Escalas" : false}
-                                imagem="iconeEscala"
-                                href="teste"
-                            />
-                        </li>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Membros" : false}
-                                imagem="iconeGrupo"
-                                onClick={() => navigate('/membros')}
-                            />
-                        </li>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Ministérios" : false}
-                                imagem="iconeTerra"
-                                href="teste"
-                            />
-                        </li>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Financeiro" : false}
-                                imagem="iconeFinanceiro"
-                                href="teste"
-                            />
-                        </li>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Dashboard" : false}
-                                imagem="iconeDash"
-                                href="teste"
-                            />
-                        </li>
+                        {menuItems.map((item, index) => (
+                            <li key={index}>
+                                <ItemMenuLateral
+                                    label={menuAberto ? item.label : false}
+                                    imagem={item.imagem}
+                                    onClick={item.onClick}
+                                    href={item.href}
+                                />
+                            </li>
+                        ))}
                     </ul>
                     <hr className='border border-icf-primary-100' />
                     <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"} cursor-pointer`}>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Configurações" : false}
-                                imagem="iconeConfig"
-                                href="teste"
-                            />
-                        </li>
-                        <li>
-                            <ItemMenuLateral
-                                label={menuAberto ? "Sair" : false}
-                                imagem="iconeSair"
-                                onClick={logout}
-                            />
-                        </li>
+                        {configItems.map((item, index) => (
+                            <li key={index}>
+                                <ItemMenuLateral
+                                    label={menuAberto ? item.label : false}
+                                    imagem={item.imagem}
+                                    onClick={item.onClick}
+                                />
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>

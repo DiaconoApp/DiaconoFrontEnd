@@ -31,6 +31,14 @@ export function FormsCadastro3() {
     };
 
     const handleSubmit = () => {
+        const camposObrigatorios = ["cep", "rua", "bairro", "cidade", "numero"];
+        const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
+
+        if (camposVazios.length > 0) {
+            alert("Preencha todos os campos corretamente para continuar.");
+            return;
+        }
+
         api.post("/register", dadosCadastro)
             .then(() => {
                 alert("Cadastro concluído com sucesso!");
@@ -41,8 +49,6 @@ export function FormsCadastro3() {
             });
     };
 
-
-
     return (
         <div className="w-[55%] flex flex-col gap-5">
             <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
@@ -51,13 +57,13 @@ export function FormsCadastro3() {
                 <label className="font-semibold text-diacono-blue-400">Endereço</label>
                 <div className="flex justify-between">
                     <InputDiacono
-                        label="CEP"
+                        label="CEP *"
                         placeholder="Digite seu CEP"
                         value={dadosCadastro.cep}
                         onChange={(e) => handleCepChange(e.target.value)}
                     />
                     <InputDiacono
-                        label="Rua/Avenida"
+                        label="Rua/Avenida *"
                         placeholder="Ex: Rua Japão"
                         value={dadosCadastro.rua}
                         onChange={(e) => handleChange("rua", e.target.value)}
@@ -66,13 +72,13 @@ export function FormsCadastro3() {
                 </div>
                 <div className="flex justify-between">
                     <InputDiacono
-                        label="Bairro"
+                        label="Bairro *"
                         placeholder="Digite seu bairro"
                         value={dadosCadastro.bairro}
                         onChange={(e) => handleChange("bairro", e.target.value)}
                         disabled={!!dadosCadastro.bairro} />
                     <InputDiacono
-                        label="Cidade"
+                        label="Cidade *"
                         placeholder="Digite sua cidade"
                         value={dadosCadastro.cidade}
                         onChange={(e) => handleChange("cidade", e.target.value)}
@@ -80,7 +86,7 @@ export function FormsCadastro3() {
                 </div>
                 <div className="flex justify-between">
                     <InputDiacono
-                        label="Número"
+                        label="Número *"
                         placeholder="Digite o número"
                         value={dadosCadastro.numero}
                         onChange={(e) => handleChange("numero", e.target.value)} />

@@ -195,15 +195,11 @@ export function isTelefone(telefone) {
     return regexTelefone.test(telefone);
 }
 
-//Utils formatar data de nascimento
-export function formatarDataNascimentoSimples(data) {
-    // Remove qualquer caractere não numérico
-    const dataLimpa = data.replace(/\D/g, '');
-    // Verifica se tem 8 dígitos
-    if (dataLimpa.length !== 8) return "Formato inválido";
-    // Formata para dd/MM/yyyy
-    return `${dataLimpa.slice(0, 2)}/${dataLimpa.slice(2, 4)}/${dataLimpa.slice(4)}`;
-}
+export const safeFormatDate = (dateStr) => {
+    if (!dateStr) return "";            // evita erro quando for null/undefined
+    const ymd = dateStr.split("T")[0]; // remove time se vier ISO
+    return ymd.split("-").reverse().join("/");
+};
 
 export function validaEmail(email) {
     if (!email) return false;

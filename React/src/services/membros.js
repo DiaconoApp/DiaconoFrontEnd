@@ -27,17 +27,17 @@ export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", stat
 export const cadastrarMembro = async (dados) => {
     try {
         const payload = {
-            fkIgreja: "550e8400-e29b-41d4-a716-446655440000",
+            fkIgreja: dados.fkIgreja,
             nome: dados.nome,
             cpf: dados.cpf,
-            nascimento: typeof dados.nascimento === "string"
-                ? dados.nascimento
-                : dados.nascimento.toISOString().slice(0, 10),
+            dataNascimento: typeof dados.dataNascimento === "string"
+                ? dados.dataNascimento
+                : dados.dataNascimento.toISOString().slice(0, 10),
             email: dados.email.trim(),
             celular: dados.celular,
             senha: dados.senha,
-            idExternoMinisterios: dados.idExternoMinisterios || [],
-            cargo: dados.cargo || "",
+            idExternoMinisterios: dados.idExternoMinisterios,
+            cargo: dados.cargo,
             membroEnderecoDTO: {
                 cep: dados.cep,
                 bairro: dados.bairro,

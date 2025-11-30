@@ -26,7 +26,7 @@ export async function buscarEventoPorId(id) {
 export async function criarEvento(form) {
   try {
     const body = {
-      fkIgreja: "550e8400-e29b-41d4-a716-446655440000", // PEGAR DO CONTEXTO DEPOIS
+      fkIgreja: localStorage.getItem("fk_igreja"), // PEGAR DO CONTEXTO DEPOIS
       fkOrganizador: localStorage.getItem("idUsuario"),
       fkMinisterios: form.fkMinisterios,
 

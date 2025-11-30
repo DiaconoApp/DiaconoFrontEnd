@@ -14,7 +14,7 @@ import {
   deletarEventoUnico,
   editarEvento
 } from "../../../services/eventos";
-import { buscarMinisterios } from "../../../services/ministerios";
+import { buscarTodosMinisterios } from "../../../services/ministerios";
 
 /*
   FormEventos
@@ -71,7 +71,7 @@ export function FormEventos() {
   // -----------------------
   useEffect(() => {
     // buscar ministérios
-    buscarMinisterios().then(data => setMinisterios(data));
+    buscarTodosMinisterios().then(data => setMinisterios(data));
 
     // nome do organizador salvo localmente
     const nomeSalvo = localStorage.getItem("nome");

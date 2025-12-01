@@ -381,7 +381,7 @@ export function FormEventos() {
                 className="w-[25%] px-4 py-2.5 rounded-md bg-icf-primary-50 flex justify-center items-center gap-2 text-icf-primary-300 text-base cursor-pointer"
                 onClick={() => setShowRecorrente(true)}
               >
-                <img src="/public/iconeRecorrencia.svg" alt="" className="w-4 h-4" />
+                <img src="/iconeRecorrencia.svg" alt="" className="w-4 h-4" />
                 {formData.recorrencia.tipoRecorrencia === "NAO_REPETE" ? "Tornar recorrente" : "Ajustar recorrência"}
               </button>
             </div>
@@ -453,7 +453,7 @@ export function FormEventos() {
 
           <div className="flex items-center gap-1 mt-3">
             <img
-              src="/public/iconePerfil.svg"
+              src="/iconePerfil.svg"
               alt="Avatar organizador"
               className="w-7 h-7 p-1 border border-icf-primary-300 rounded-full object-cover"
             />

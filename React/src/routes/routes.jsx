@@ -63,6 +63,20 @@ export function AppRoutes() {
                     <Eventos />
                 </ProtectedRoute>
             ),
+            children: [
+                {
+                    index: true,
+                    element: <Calendario />
+                },
+                {
+                    path: "novo",
+                    element: <FormEventos />
+                },
+                {
+                    path: "editar/:idEvento",
+                    element: <FormEventos />
+                }
+            ],
             errorElement: <div>Error</div>,
         },
         {
@@ -81,20 +95,6 @@ export function AppRoutes() {
                     <Ministerios />
                 </ProtectedRoute>
             ),
-            children: [
-                {
-                    index: true,
-                    element: <Calendario />
-                },
-                {
-                    path: "novo", 
-                    element: <FormEventos />
-                },
-                {
-                    path: "editar/:idEvento",
-                    element: <FormEventos />
-                }
-            ],
             errorElement: <div>Error</div>,
         },
         {

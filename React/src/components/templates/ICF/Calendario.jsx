@@ -108,14 +108,14 @@ export function Calendario() {
           </button>
 
           <button onClick={handlePrev} className="px-2 py-1 rounded w-6 h-6">
-            <img src="/public/seta.png" alt="Anterior" />
+            <img src="/seta.png" alt="Anterior" />
           </button>
 
           <button
             onClick={handleNext}
             className="px-2 py-1 rounded rotate-180 w-6 h-6"
           >
-            <img src="/public/seta.png" alt="Próximo" />
+            <img src="/seta.png" alt="Próximo" />
           </button>
 
           <div className="ml-5 font-bold text-2xl text-icf-primary-300 capitalize">
@@ -130,7 +130,7 @@ export function Calendario() {
             className="px-8 py-3 rounded bg-icf-primary-400 text-xs text-white flex gap-2"
           >
             <span>Adicionar</span>
-            <img className="w-2" src="/public/adicao.svg" alt="Adicionar" />
+            <img className="w-2" src="/adicao.svg" alt="Adicionar" />
           </button>
         </div>
       </div>

@@ -12,7 +12,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
 
     const menuItems = [
         { label: "Calendário", imagem: "calendario", onClick: () => navigate('/eventos') },
-        { label: "Escalas", imagem: "iconeEscala" },
+        { label: "Escalas", imagem: "iconeEscala", onclick: () => navigate('/escalas') },
         { label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
         { label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
         { label: "Financeiro", imagem: "iconeFinanceiro" },

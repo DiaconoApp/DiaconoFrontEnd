@@ -38,6 +38,7 @@ export const cadastrarMembro = async (dados) => {
             senha: dados.senha,
             idExternoMinisterios: dados.idExternoMinisterios,
             cargo: dados.cargo,
+            generoMembro: dados.generoMembro,
             membroEnderecoDTO: {
                 cep: dados.cep,
                 bairro: dados.bairro,
@@ -45,7 +46,7 @@ export const cadastrarMembro = async (dados) => {
                 rua: dados.rua,
                 estado: dados.estado,
                 numero: dados.numero,
-                complemento: dados.complemento || "",
+                complemento: dados.complemento,
             },
         };
 

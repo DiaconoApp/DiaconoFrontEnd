@@ -5,6 +5,7 @@ import { Login } from "../components/pages/Diacono/Login";
 import { Cadastro1 } from "../components/pages/Diacono/Cadastro/Cadastro1";
 import { Cadastro2 } from "../components/pages/Diacono/Cadastro/Cadastro2";
 import { Cadastro3 } from "../components/pages/Diacono/Cadastro/Cadastro3";
+import { Cadastro4 } from "../components/pages/Diacono/Cadastro/Cadastro4";
 import { ModalVisualizarEvento } from "../components/molecules/ICF/ModalVisualizarEvento";
 import { Menu } from "../components/templates/ICF/Menu";
 import { ProtectedRoute } from "./ProtectedRoute";
@@ -44,12 +45,8 @@ export function AppRoutes() {
                 { path: "cadastro/etapa1", element: <Cadastro1 /> },
                 { path: "cadastro/etapa2", element: <Cadastro2 /> },
                 { path: "cadastro/etapa3", element: <Cadastro3 /> },
-                { 
-                    path: "membros", element: (
-                        <ProtectedRoute>
-                            <Membros />
-                        </ProtectedRoute>)
-                },
+                { path: "cadastro/etapa4", element: <Cadastro4 /> },
+                
             ],
             errorElement: <div>Error</div>,
         },
@@ -99,7 +96,20 @@ export function AppRoutes() {
                 }
             ],
             errorElement: <div>Error</div>,
+<<<<<<< HEAD
         }
+=======
+        },
+        {
+            path: "/membros",
+            element: (
+                <ProtectedRoute>
+                    <Membros />
+                </ProtectedRoute>
+            ),
+            errorElement: <div>Error</div>,
+        },
+>>>>>>> feature/izael_integracao_tela_ministerios
     ]);
 
     return <RouterProvider router={routes} />;

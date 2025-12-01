@@ -55,16 +55,16 @@ export function Menu({ menuAberto, setMenuAberto }) {
                 ${menuAberto ? "w-70" : "w-24.5 px-3"}`
             }>
                 <div className='flex justify-center items-center gap-1.5 pb-4 py-3'>
-                    <img src="/public/logoICF.png" alt="Logo da Igreja Cristã da Familia" />
+                    <img src="/logoICF.png" alt="Logo da Igreja Cristã da Familia" />
                     {menuAberto && (
-                        <img src="/public/LogotipoICF.png" alt="Logotipo da Cristã da Familia, contendo o nome e o slogan 'Formando Jesus em Nós'"/>
+                        <img src="/LogotipoICF.png" alt="Logotipo da Cristã da Familia, contendo o nome e o slogan 'Formando Jesus em Nós'"/>
                     )}
                 </div>
                 <button onClick={() => setMenuAberto(!menuAberto)}
                     className={`px-2 py-2 border-icf-primary-200 border cursor-pointer
                     rounded-full ml-7 fixed top-6 bg-white transition-all duration-450 ease-in-out
                     ${menuAberto ? "left-60" : "left-15 rotate-180"}`}>
-                    <img src="/public/seta.png" alt="icone de seta" />
+                    <img src="/seta.png" alt="icone de seta" />
                 </button>
                 <div className='gap-6 flex flex-col'>
                     <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"} cursor-pointer`}>

@@ -46,7 +46,7 @@ export function AppRoutes() {
                 { path: "cadastro/etapa2", element: <Cadastro2 /> },
                 { path: "cadastro/etapa3", element: <Cadastro3 /> },
                 { path: "cadastro/etapa4", element: <Cadastro4 /> },
-                
+
             ],
             errorElement: <div>Error</div>,
         },
@@ -84,21 +84,18 @@ export function AppRoutes() {
             children: [
                 {
                     index: true,
-                    element: <Calendario /> 
+                    element: <Calendario />
                 },
-                { 
-                    path: "novo", // Rota: /eventos/novo
-                    element: <FormEventos /> 
+                {
+                    path: "novo", 
+                    element: <FormEventos />
                 },
-                { 
+                {
                     path: "editar/:idEvento",
                     element: <FormEventos />
                 }
             ],
             errorElement: <div>Error</div>,
-<<<<<<< HEAD
-        }
-=======
         },
         {
             path: "/membros",
@@ -109,7 +106,6 @@ export function AppRoutes() {
             ),
             errorElement: <div>Error</div>,
         },
->>>>>>> feature/izael_integracao_tela_ministerios
     ]);
 
     return <RouterProvider router={routes} />;

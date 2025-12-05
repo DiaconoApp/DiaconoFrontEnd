@@ -82,7 +82,7 @@ export function ModalMinisterio({
     return (
         <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-140 py-8 px-4">
             <div className="w-[90%] flex flex-col gap-5">
-                <TituloModal titulo={titulo} onClick={onCancelar} />
+                <TituloModal titulo={titulo} onClose={onCancelar} />
 
                 <InputIcf
                     label="Nome do Ministério"

@@ -20,7 +20,7 @@ export function FormsLogin() {
         setLoading(true);
         try {
             await login(email, senha);
-            navigate("/membros");
+            navigate("/eventos");
         } catch (err) {
             console.error("Erro no login:", err);
             setErro("Email ou senha inválidos");

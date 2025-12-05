@@ -14,7 +14,8 @@ export function Escalas() {
     // Listar os ministérios no select
     const [options, setOptions] = useState([]);
     useEffect(() => {
-        buscarMinisterios().then(setOptions);
+        buscarMinisterios({})
+            .then((res) => setOptions(res.content || []));
     }, []);
 
     return (
@@ -31,17 +32,18 @@ export function Escalas() {
                             <InputBuscar placeholder="Buscar por nome do evento" />
                         </div>
                         <div className="w-[33%]">
-                            <SelectIcf
-                                opt1={<option value="todos">Todos os status</option>}
-                                opt2={<option value="concluidas">Concluídas</option>}
-                                opt3={<option value="pendentes">Pendentes</option>}
-                            />
+                            <select className="text-icf-primary-400 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 p-4 focus:border-icf-primary-200 focus:border-3 w-full text-[14px]">
+                                <option value="">Todos os status</option>
+                                <option value="concluidas">Concluídas</option>
+                                <option value="pendentes">Pendentes</option>
+                            </select>
                         </div>
                         <div className="w-[33%]">
                             <SelectIcf
                                 opt1={<option value="">Todos os ministérios</option>}
                                 options={options}
                                 value={fkMinisterio}
+                                onChange={(val) => setFkMinisterio(val)}
                             />
                         </div>
                     </div>

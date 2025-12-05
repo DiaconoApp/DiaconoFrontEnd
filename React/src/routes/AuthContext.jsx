@@ -1,16 +1,9 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState({ cargo: "MEMBRO" });
-
-  useEffect(() => {
-    const savedCargo = localStorage.getItem("cargo");
-    if (savedCargo) {
-      setUser({ cargo: savedCargo });
-    }
-  }, []);
 
   const updateUser = (newUser) => {
     setUser(newUser);

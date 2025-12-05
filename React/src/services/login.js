@@ -8,11 +8,16 @@ export const login = async (email, senha) => {
     const token = response.data.acessToken;
     if (!token) throw new Error("Token não retornado pelo servidor");
 
-    
+
     let payload = null;
     try { payload = jwtDecode(token); } catch (e) { }
-    
+
     console.log("login payload:", payload);
+
+    const user = {
+      cargo: payload.scope,
+    };
+
 
     localStorage.setItem("token", token);
     localStorage.setItem("nome", payload.nome);
@@ -20,7 +25,7 @@ export const login = async (email, senha) => {
     localStorage.setItem("fk_igreja", payload.fk_igreja);
     localStorage.setItem("idUsuario", payload.sub);
 
-    return { token, payload, user: response.data.user ?? response.data ?? payload };
+    return { token, payload, user };
 
   } catch (err) {
     console.error("login error:", {

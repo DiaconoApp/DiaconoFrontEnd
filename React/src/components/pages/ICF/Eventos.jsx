@@ -1,9 +1,5 @@
 import { Menu } from "../../templates/ICF/Menu";
-import { Calendario } from "../../templates/ICF/Calendario";
 import { useState } from "react";
-import api from "../../../provider/api"
-import { useEffect } from "react";
-import { TituloPagina } from "../../atoms/ICF/TituloPagina";
 import { Outlet } from "react-router-dom";
 
 export function Eventos() {

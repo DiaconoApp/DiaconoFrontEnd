@@ -8,6 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import { ModalVisualizarEvento } from "../../molecules/ICF/ModalVisualizarEvento.jsx";
 import { buscarEventoPorId, buscarEventos } from "../../../services/eventos.js";
+import { useAuth } from "../../../routes/AuthContext.jsx";
 
 export function Calendario() {
   const [events, setEvents] = useState([]);
@@ -15,6 +16,7 @@ export function Calendario() {
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
   const calendarRef = useRef(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const { menuAberto } = useOutletContext();
 
@@ -127,10 +129,14 @@ export function Calendario() {
         <div>
           <button
             onClick={() => navigate("/eventos/novo")}
-            className="px-8 py-3 rounded bg-icf-primary-400 text-xs text-white flex gap-2"
+            disabled={user.cargo === "MEMBRO"}
+            className={`px-8 py-3 rounded flex gap-2
+              ${user.cargo === "MEMBRO"
+                ? "bg-icf-primary-200 text-icf-primary-300 cursor-not-allowed"
+                : "bg-icf-primary-400 text-xs text-white"
+              }`}
           >
-            <span>Adicionar</span>
-            <img className="w-2" src="/adicao.svg" alt="Adicionar" />
+            <span>Adicionar Evento +</span>
           </button>
         </div>
       </div>

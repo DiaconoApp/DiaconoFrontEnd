@@ -8,7 +8,7 @@ import { ModalMembroMinisterio } from "../../molecules/ICF/ModalMembroMinisterio
 
 export function ListaMinisterioMembro() {
     const [modalAberto, setModalAberto] = useState(false);
-
+ 
     const abrirModalCriar = () => {
         setModoEdicao(false);
         setModalAberto(true);

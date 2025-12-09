@@ -5,9 +5,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useState, useEffect } from "react";
 
 const FAQ = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
   const faqs = [
     {
       question: "Como funciona o período de teste?",
@@ -36,11 +48,21 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="relative overflow-hidden py-20 md:py-28 bg-white" ref={ref}>
-      <div className="container mx-auto px-4">
+    <section id="faq" className="pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28 relative overflow-hidden bg-ice-white border-none" ref={ref}>
+      {/* Mouse-following light effect */}
+      <div 
+        className="hidden md:block absolute w-[600px] h-[600px] bg-primary/8 rounded-full blur-[80px] pointer-events-none transition-all duration-300 ease-out"
+        style={{
+          left: `${mousePosition.x - 300}px`,
+          top: `${mousePosition.y - 300}px`,
+          zIndex: 0
+        }}
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-3xl mx-auto">
-          <div className={`text-center space-y-4 mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
+          <div className={`text-center space-y-3 sm:space-y-4 mb-10 sm:mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
               Perguntas Frequentes
             </h2>
             <p className="text-base md:text-lg text-gray-600 leading-relaxed">

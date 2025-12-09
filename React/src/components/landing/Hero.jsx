@@ -33,17 +33,17 @@ const Hero = () => {
         <div className="absolute top-32 right-32 w-[420px] h-[420px] bg-white/22 rounded-full blur-[160px] animate-float-horizontal"></div>
       </div>
 
-      <div className="container mx-auto px-6 lg:px-8 py-28 md:py-40 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 md:py-40 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
             <div className="text-white space-y-8 animate-fade-in">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-sm">
                 <span>Gestão com eficiente para igrejas</span>
               </div>
               
-              <div className="space-y-6">
-                <h1 className="text-5xl md:text-6xl lg:text-7xl text-white font-bold leading-tight">
+              <div className="space-y-4 sm:space-y-6">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-bold leading-tight">
                   Sua
                   <br />
                   missão,
@@ -52,7 +52,7 @@ const Hero = () => {
                   <br />
                   gestão.
                 </h1>
-                <p className="text-lg md:text-xl text-white/70 leading-relaxed max-w-xl">
+                <p className="text-base sm:text-lg md:text-xl text-white/70 leading-relaxed max-w-xl">
                   A plataforma que organiza sua igreja com clareza, excelência e propósito.
                 </p>
               </div>

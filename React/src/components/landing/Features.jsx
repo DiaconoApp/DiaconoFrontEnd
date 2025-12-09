@@ -38,21 +38,21 @@ const Features = () => {
   ];
 
   return (
-    <section id="funcionalidades" className="py-20 md:py-28 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className={`max-w-3xl mx-auto text-center space-y-4 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl text-white font-bold">
+    <section id="funcionalidades" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold">
             Principais
             <br />
             Funcionalidades
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
           {features.map((feature, index) => (
             <Card
               key={index}
-              className={`p-8 bg-white/95 backdrop-blur border-none shadow-sm hover:shadow-lg transition-all duration-700 hover:-translate-y-1 rounded-xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
+              className={`p-6 sm:p-8 bg-white/95 backdrop-blur border-none shadow-sm hover:shadow-lg transition-all duration-700 hover:-translate-y-1 rounded-xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
               style={{ transitionDelay: `${index * 120}ms` }}
             >
               <div className="flex flex-col items-center text-center space-y-4">

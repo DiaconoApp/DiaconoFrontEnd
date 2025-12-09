@@ -1,10 +1,9 @@
 const Footer = () => {
   return (
-    <footer className="relative overflow-hidden bg-[#0f2744] py-16">
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
+    <footer className="relative overflow-hidden bg-[#0f2744] py-12 sm:py-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-12 mb-12">
-            {/* Logo e Descrição */}
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 sm:gap-10 md:gap-12 mb-10 sm:mb-12">{/* Logo e Descrição */}
             <div className="space-y-4">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-white/10 rounded-lg">

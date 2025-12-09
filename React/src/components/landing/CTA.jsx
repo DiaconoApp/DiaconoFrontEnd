@@ -6,17 +6,17 @@ const CTA = () => {
   const { ref, isVisible } = useScrollAnimation();
   
   return (
-    <section id="cta" className="py-24 md:py-32 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
+    <section id="cta" className="py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
       {/* Dotted Background */}
       <div className="absolute inset-0 dotted-texture opacity-50"></div>
       
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className={`max-w-3xl mx-auto text-center space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20 text-sm text-white mb-2">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className={`max-w-3xl mx-auto text-center space-y-4 sm:space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-2 rounded-full border border-white/20 text-sm text-white mb-2">
             <span>Não perca tempo!</span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl text-white font-bold leading-tight px-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold leading-tight px-4">
             Pronto para organizar sua igreja com excelência?
           </h2>
           <p className="text-lg text-white/70 leading-relaxed">

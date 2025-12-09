@@ -1,12 +1,33 @@
 import { Target, Eye, Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useState, useEffect } from "react";
 
 const Mission = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   return (
-    <section id="quem-somos" className="py-20 md:py-28 relative overflow-hidden bg-ice-white" ref={ref}>
+    <section id="quem-somos" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-ice-white" ref={ref}>
+      {/* Mouse-following light effect */}
+      <div 
+        className="hidden md:block absolute w-[600px] h-[600px] bg-primary/10 rounded-full blur-[80px] pointer-events-none transition-all duration-300 ease-out"
+        style={{
+          left: `${mousePosition.x - 300}px`,
+          top: `${mousePosition.y - 300}px`,
+          zIndex: 0
+        }}
+      />
+      
       {/* Gradient Transition from Previous Section */}
       <div className="absolute top-0 left-0 right-0 h-[120px] pointer-events-none">
         <div className="absolute inset-0 opacity-[0.12]">
@@ -27,9 +48,9 @@ const Mission = () => {
         }}></div>
       </div>
       
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className={`max-w-3xl mx-auto text-center space-y-4 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className={`max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
             Quem Somos
           </h2>
         </div>

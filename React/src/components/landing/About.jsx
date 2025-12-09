@@ -37,17 +37,17 @@ const About = () => {
   const benefits = aboutContent;
 
   return (
-    <section id="sobre" className="pt-20 md:pt-28 pb-20 md:pb-28 relative bg-ice-white border-none" ref={ref}>
+    <section id="sobre" className="pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28 relative bg-ice-white border-none" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
-        className="absolute w-[800px] h-[800px] bg-primary/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"
+        className="hidden md:block absolute w-[800px] h-[800px] bg-primary/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"
         style={{
           left: `${mousePosition.x - 400}px`,
           top: `${mousePosition.y - 400}px`,
         }}
       />
       
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className={`max-w-3xl mx-auto text-center space-y-4 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
             O que é o Diácono?

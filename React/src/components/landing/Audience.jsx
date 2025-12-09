@@ -1,9 +1,20 @@
 import { Crown, Shield, Heart, Wallet, Settings, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useState, useEffect } from "react";
 
 const Audience = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
   const profiles = [
     {
       icon: Crown,
@@ -38,10 +49,20 @@ const Audience = () => {
   ];
 
   return (
-    <section id="publico" className="py-20 md:py-28 relative overflow-hidden bg-white" ref={ref}>
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className={`max-w-3xl mx-auto text-center space-y-4 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
+    <section id="publico" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-white" ref={ref}>
+      {/* Mouse-following light effect */}
+      <div 
+        className="hidden md:block absolute w-[600px] h-[600px] bg-primary/10 rounded-full blur-[80px] pointer-events-none transition-all duration-300 ease-out"
+        style={{
+          left: `${mousePosition.x - 300}px`,
+          top: `${mousePosition.y - 300}px`,
+          zIndex: 0
+        }}
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className={`max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
             Para quem é o Diácono?
           </h2>
           <p className="text-base md:text-lg text-gray-600 leading-relaxed">
@@ -49,11 +70,11 @@ const Audience = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           {profiles.map((profile, index) => (
             <Card
               key={index}
-              className={`p-8 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-700 hover:-translate-y-1 rounded-2xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
+              className={`p-6 sm:p-8 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-700 hover:-translate-y-1 rounded-2xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
               style={{ transitionDelay: `${index * 130}ms` }}
             >
               <div className="flex flex-col items-center text-center space-y-4">

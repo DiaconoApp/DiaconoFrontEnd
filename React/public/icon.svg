@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Camada_2" data-name="Camada 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43.82 58.18">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <g id="Logo_Branca" data-name="Logo Branca">
+    <g>
+      <rect class="cls-1" x="8.71" y=".74" width="13.62" height="13.62" rx="4.5" ry="4.5" transform="translate(-1.73 6.96) rotate(-24)"/>
+      <rect class="cls-1" x="15.1" y="15.1" width="13.62" height="13.62" rx="4.5" ry="4.5" transform="translate(-7.02 10.81) rotate(-24)"/>
+      <rect class="cls-1" x="21.49" y="29.46" width="13.62" height="13.62" rx="4.5" ry="4.5" transform="translate(-12.3 14.65) rotate(-24)"/>
+      <rect class="cls-1" x="27.88" y="43.79" width="13.62" height="13.65" rx="4.5" ry="4.5" transform="translate(-17.59 18.49) rotate(-24)"/>
+      <rect class="cls-1" x="29.46" y="8.71" width="13.62" height="13.62" rx="4.5" ry="4.5" transform="translate(-3.18 16.09) rotate(-24)"/>
+      <rect class="cls-1" x=".74" y="21.49" width="13.62" height="13.62" rx="4.5" ry="4.5" transform="translate(-10.86 5.52) rotate(-24)"/>
+    </g>
+  </g>
+</svg>

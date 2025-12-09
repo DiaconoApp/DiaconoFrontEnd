@@ -1,0 +1,48 @@
+import { CheckCircle2 } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+
+const Benefits = () => {
+  const { ref, isVisible } = useScrollAnimation();
+  const benefits = [
+    "Gestão centralizada e intuitiva",
+    "Melhor organização interna",
+    "Comunicação clara entre líderes",
+    "Indicadores confiáveis para decisões",
+    "Engajamento da igreja",
+    "Transparência total",
+  ];
+
+  return (
+    <section id="beneficios" className="py-20 md:py-28 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
+      <div className="container mx-auto px-6 lg:px-8">
+        <div className={`max-w-3xl mx-auto text-center space-y-4 mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl text-white font-bold">
+            Benefícios
+          </h2>
+          <p className="text-base md:text-lg text-white/70 leading-relaxed">
+            Transforme a gestão da sua igreja com ferramentas que realmente fazem a diferença
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {benefits.map((benefit, index) => (
+            <div
+              key={index}
+              className={`flex items-center gap-4 p-6 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-700 group ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="p-2 bg-white/10 rounded-lg flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-white" strokeWidth={2.5} />
+              </div>
+              <p className="text-base text-white font-medium">
+                {benefit}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Benefits;

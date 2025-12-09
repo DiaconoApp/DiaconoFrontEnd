@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useNavigate } from "react-router-dom";
 
 const CTA = () => {
+  const navigate = useNavigate();
   const { ref, isVisible } = useScrollAnimation();
   
   return (
@@ -25,6 +27,7 @@ const CTA = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Button
               size="lg"
+              onClick={() => navigate('/cadastro/etapa1')}
               className="bg-white text-[#1e3a5f] hover:bg-white/90 px-10 py-6 rounded-lg font-semibold shadow-lg text-base"
             >
               Criar conta

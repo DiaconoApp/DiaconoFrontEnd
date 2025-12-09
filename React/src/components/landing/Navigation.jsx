@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(false);
@@ -112,6 +114,7 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center gap-3">
             <Button
               variant="ghost"
+              onClick={() => navigate('/login')}
               className={`rounded-xl font-semibold transition-all hover:scale-105 ${
                 isOnBlueSection
                   ? "text-white hover:bg-white/10 hover:text-white"
@@ -122,6 +125,7 @@ const Navigation = () => {
             </Button>
             <Button
               size="lg"
+              onClick={() => navigate('/cadastro/etapa1')}
               className={`rounded-xl font-bold shadow-lg transition-all hover:scale-105 hover:shadow-xl ${
                 isOnBlueSection
                   ? "bg-white text-primary hover:bg-white/95"
@@ -161,6 +165,7 @@ const Navigation = () => {
               <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
                 <Button
                   variant="ghost"
+                  onClick={() => navigate('/login')}
                   className={`rounded-xl font-semibold w-full ${
                     isScrolled
                       ? "text-primary hover:bg-primary/10"
@@ -171,6 +176,7 @@ const Navigation = () => {
                 </Button>
                 <Button
                   size="lg"
+                  onClick={() => navigate('/cadastro/etapa1')}
                   className={`rounded-xl font-bold shadow-lg w-full ${
                     isScrolled
                       ? "bg-primary text-white hover:bg-primary/90"

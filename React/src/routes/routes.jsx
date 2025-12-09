@@ -19,6 +19,7 @@ import { FormEventos } from "../components/molecules/ICF/FormEventos";
 import { Calendario } from "../components/templates/ICF/Calendario";
 import { ModalExclusaoRecorrencia } from "../components/molecules/ICF/ModalExclusaoRecorrencia";
 import { ModalRecorrente } from "../components/molecules/ICF/ModalRecorrente";
+import LandingPage from "../pages/LandingPage";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -34,18 +35,19 @@ export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
 
     const routes = createBrowserRouter([
+        { path: "/", element: <LandingPage />, errorElement: <div>Error</div> },
         { path: "/dev", element: <ModalGerenciarEscala />, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
         {
-            path: "/",
+            path: "/cadastro",
             element: <CadastroWrapper />,
             children: [
-                { path: "cadastro/etapa1", element: <Cadastro1 /> },
-                { path: "cadastro/etapa2", element: <Cadastro2 /> },
-                { path: "cadastro/etapa3", element: <Cadastro3 /> },
-                { path: "cadastro/etapa4", element: <Cadastro4 /> },
+                { path: "etapa1", element: <Cadastro1 /> },
+                { path: "etapa2", element: <Cadastro2 /> },
+                { path: "etapa3", element: <Cadastro3 /> },
+                { path: "etapa4", element: <Cadastro4 /> },
 
             ],
             errorElement: <div>Error</div>,

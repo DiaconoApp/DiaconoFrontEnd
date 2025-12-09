@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -60,6 +62,7 @@ const Hero = () => {
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <Button
                   size="lg"
+                  onClick={() => navigate('/cadastro/etapa1')}
                   className="bg-white text-primary hover:bg-white/90 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] px-8 py-6 rounded-lg font-medium shadow-lg transition-all duration-300"
                 >
                   Criar conta

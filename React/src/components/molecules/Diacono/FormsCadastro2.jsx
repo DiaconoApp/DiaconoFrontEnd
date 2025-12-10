@@ -124,9 +124,9 @@ export function FormsCadastro2() {
             <select
               value={dadosCadastro.generoMembro}
               onChange={(e) => handleChange("generoMembro", e.target.value)}
-              className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg h-10 p-5 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]"
+              className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg py-2.5  px-5 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]"
             >
-              <option value="" disabled>Selecione seu gênero</option>
+              <option value="" hidden>Selecione seu gênero</option>
               <option value="MASCULINO">Masculino</option>
               <option value="FEMININO">Feminino</option>
             </select>

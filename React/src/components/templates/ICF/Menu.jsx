@@ -15,8 +15,8 @@ export function Menu({ menuAberto, setMenuAberto }) {
         { label: "Escalas", imagem: "iconeEscala", onclick: () => navigate('/escalas') },
         { label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
         { label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
-        { label: "Financeiro", imagem: "iconeFinanceiro" },
-        { label: "Dashboard", imagem: "iconeDash" },
+        // { label: "Financeiro", imagem: "iconeFinanceiro" },
+        { label: "Dashboard", imagem: "iconeDash", onClick: () => navigate('/dashboard') },
     ];
 
     const configItems = [

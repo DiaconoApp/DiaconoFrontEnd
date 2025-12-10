@@ -19,6 +19,7 @@ import { FormEventos } from "../components/molecules/ICF/FormEventos";
 import { Calendario } from "../components/templates/ICF/Calendario";
 import { ModalExclusaoRecorrencia } from "../components/molecules/ICF/ModalExclusaoRecorrencia";
 import { ModalRecorrente } from "../components/molecules/ICF/ModalRecorrente";
+import { Dashboard } from "../components/pages/ICF/Dashboard";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -34,7 +35,7 @@ export function AppRoutes() {
     const [menuAberto, setMenuAberto] = useState(true);
 
     const routes = createBrowserRouter([
-        { path: "/dev", element: <ModalGerenciarEscala />, errorElement: <div>Error</div> },
+        { path: "/dev", element: <Dashboard />, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
@@ -102,6 +103,15 @@ export function AppRoutes() {
             element: (
                 <ProtectedRoute>
                     <Membros />
+                </ProtectedRoute>
+            ),
+            errorElement: <div>Error</div>,
+        },
+         {
+            path: "/dashboard",
+            element: (
+                <ProtectedRoute>
+                    <Dashboard />
                 </ProtectedRoute>
             ),
             errorElement: <div>Error</div>,

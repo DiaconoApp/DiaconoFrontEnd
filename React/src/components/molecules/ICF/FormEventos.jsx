@@ -312,7 +312,7 @@ export function FormEventos() {
 
                 {dropdownAberto && (
                   <div className="absolute mt-1 w-[500px] bg-white shadow-lg border border-icf-primary-200 rounded-lg max-h-64 overflow-y-auto z-50 p-2">
-                    {ministerios.map(m => (
+                    {ministerios?.map(m => (
                       <label key={m.idExterno} className="flex items-center gap-3 px-2 py-2 hover:bg-surface-50 rounded cursor-pointer">
                         <input
                           type="checkbox"

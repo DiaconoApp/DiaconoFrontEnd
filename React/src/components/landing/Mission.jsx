@@ -20,11 +20,12 @@ const Mission = () => {
     <section id="quem-somos" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-ice-white" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
-        className="hidden md:block absolute w-[600px] h-[600px] bg-primary/10 rounded-full blur-[80px] pointer-events-none transition-all duration-300 ease-out"
+        className="hidden md:block absolute w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none transition-all duration-500 ease-out opacity-30 mix-blend-multiply"
         style={{
+          background: 'radial-gradient(circle, rgba(13, 39, 80, 0.15) 0%, transparent 70%)',
           left: `${mousePosition.x - 300}px`,
           top: `${mousePosition.y - 300}px`,
-          zIndex: 0
+          zIndex: 1
         }}
       />
       

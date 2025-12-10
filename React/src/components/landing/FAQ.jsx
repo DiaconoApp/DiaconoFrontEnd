@@ -34,16 +34,8 @@ const FAQ = () => {
       answer: "Sim! Utilizamos criptografia de ponta e servidores seguros. Seus dados são protegidos com os mais altos padrões de segurança.",
     },
     {
-      question: "Posso importar dados de outros sistemas?",
-      answer: "Sim! Nossa equipe auxilia na migração de dados de planilhas e outros sistemas de gestão.",
-    },
-    {
       question: "Há suporte técnico disponível?",
       answer: "Sim! Oferecemos suporte técnico por e-mail, chat e telefone em horário comercial.",
-    },
-    {
-      question: "Como funciona o pagamento?",
-      answer: "Trabalhamos com planos mensais ou anuais flexíveis, de acordo com o tamanho da sua igreja.",
     },
   ];
 

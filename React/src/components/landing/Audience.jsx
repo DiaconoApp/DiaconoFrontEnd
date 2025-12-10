@@ -52,11 +52,10 @@ const Audience = () => {
     <section id="publico" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-white" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
-        className="hidden md:block absolute w-[600px] h-[600px] bg-primary/10 rounded-full blur-[80px] pointer-events-none transition-all duration-300 ease-out"
+        className="hidden md:block absolute w-[800px] h-[800px] bg-primary/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"
         style={{
-          left: `${mousePosition.x - 300}px`,
-          top: `${mousePosition.y - 300}px`,
-          zIndex: 0
+          left: `${mousePosition.x - 400}px`,
+          top: `${mousePosition.y - 400}px`,
         }}
       />
       

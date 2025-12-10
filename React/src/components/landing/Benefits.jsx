@@ -1,8 +1,19 @@
 import { CheckCircle2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useState, useEffect } from "react";
 
 const Benefits = () => {
   const { ref, isVisible } = useScrollAnimation();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
   const benefits = [
     "Gestão centralizada e intuitiva",
     "Melhor organização interna",
@@ -14,7 +25,18 @@ const Benefits = () => {
 
   return (
     <section id="beneficios" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Mouse-following light effect */}
+      <div 
+        className="hidden md:block absolute w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none transition-all duration-500 ease-out opacity-20 mix-blend-screen"
+        style={{
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%)',
+          left: `${mousePosition.x - 300}px`,
+          top: `${mousePosition.y - 300}px`,
+          zIndex: 1
+        }}
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className={`max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold">
             Benefícios

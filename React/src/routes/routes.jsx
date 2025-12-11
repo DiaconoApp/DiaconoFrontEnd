@@ -16,6 +16,7 @@ import { Ministerios } from "../components/pages/ICF/Ministerios";
 import { FormEventos } from "../components/molecules/ICF/FormEventos";
 import { Calendario } from "../components/templates/ICF/Calendario";
 import { Dashboard } from "../components/pages/ICF/Dashboard";
+import { LandingPage } from "../components/pages/Diacono/LandingPage";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -33,6 +34,7 @@ export function AppRoutes() {
     const routes = createBrowserRouter([
         // { path: "/dev", element: <Dashboard />, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
+        { path: "/home", element: <LandingPage />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
         {

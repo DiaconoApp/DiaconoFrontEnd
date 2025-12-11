@@ -3,7 +3,7 @@ import { ItemMenuLateral } from '../../molecules/ICF/ItemMenuLateral';
 import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../services/login';
-import { transformationName } from '../../../utils/Utils';
+import { formatarCargo, transformationName } from '../../../utils/Utils';
 import { usePermission } from "../../../hooks/usePermission";
 
 export function Menu({ menuAberto, setMenuAberto }) {
@@ -47,7 +47,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
                     />
                     <div className='flex flex-col'>
                         <span className='text-sm font-bold text-icf-primary-400'>{transformationName(nome)}</span>
-                        <span className='text-[10px] text-icf-primary-300 font-light tracking-[0.5px]'>{cargo === "LIDER_MINISTERIO" ? "Líder" : transformationName(cargo)}</span>
+                        <span className='text-[10px] text-icf-primary-300 font-light tracking-[0.5px]'>{formatarCargo(cargo)}</span>
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@ export const ROLES = {
 };
 
 export const permissions = {
-  [ROLES.GOVERNO]: ["eventos", "escalas", "membros", "ministerios"],
-  [ROLES.LIDER_MINISTERIO]: ["eventos", "escalas", "membros", "ministerios"],
-  [ROLES.MEMBRO]: ["eventos", "escalas"],
+  [ROLES.GOVERNO]: ["eventos", "membros", "ministerios"],
+  [ROLES.LIDER_MINISTERIO]: ["eventos", "membros", "ministerios"],
+  [ROLES.MEMBRO]: ["eventos"],
 };

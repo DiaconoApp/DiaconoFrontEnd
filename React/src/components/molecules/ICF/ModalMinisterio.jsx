@@ -21,15 +21,27 @@ export function ModalMinisterio({
     // Listar os membros no select
     const [listaMembros, setListaMembros] = useState([]);
     useEffect(() => {
-        api.get('/membros')
-            .then(response => {
-                const membros = response.data?.content || [];
-                setListaMembros(membros);
-            })
-            .catch(() => {
-                console.log('Erro ao listar membros');
+        const fetchAllMembros = async () => {
+            let page = 0;
+            let allMembros = [];
+            let totalPages = 1;
+
+            try {
+                while (page < totalPages) {
+                    const res = await api.get(`/membros?page=${page}&size=50&sort=nome`);
+                    const { content, totalPages: tp } = res.data;
+                    allMembros = [...allMembros, ...content];
+                    totalPages = tp;
+                    page++;
+                }
+                setListaMembros(allMembros);
+            } catch (err) {
+                console.error("Erro ao listar membros", err);
                 setListaMembros([]);
-            });
+            }
+        };
+
+        fetchAllMembros();
     }, []);
 
     useEffect(() => {
@@ -47,7 +59,7 @@ export function ModalMinisterio({
         try {
             const dados = {
                 nome,
-                idLider, 
+                idLider,
                 status,
             };
 
@@ -56,7 +68,7 @@ export function ModalMinisterio({
             if (tipo === "editar") {
                 resultado = await atualizarMinisterio({
                     dados,
-                    idMinisterio: ministerio.idExterno, 
+                    idMinisterio: ministerio.idExterno,
                 });
                 alert("Ministério editado com sucesso!");
             } else {

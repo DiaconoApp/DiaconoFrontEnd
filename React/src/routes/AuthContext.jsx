@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState({ cargo: "MEMBRO" });
+  const [user, setUser] = useState({ cargo: localStorage.getItem("cargo") });
 
   const updateUser = (newUser) => {
     setUser(newUser);

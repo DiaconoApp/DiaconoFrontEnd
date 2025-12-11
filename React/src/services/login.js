@@ -19,11 +19,11 @@ export const login = async (email, senha) => {
     };
 
 
-    localStorage.setItem("token", token);
     localStorage.setItem("nome", payload.nome);
     localStorage.setItem("cargo", payload.scope);
     localStorage.setItem("fk_igreja", payload.fk_igreja);
     localStorage.setItem("idUsuario", payload.sub);
+    localStorage.setItem("token", token);
 
     return { token, payload, user };
 

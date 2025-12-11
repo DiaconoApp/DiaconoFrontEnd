@@ -2,56 +2,27 @@ import { useEffect, useState } from "react";
 import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
 import { InputBuscar } from "../../atoms/ICF/InputBuscar";
 import { FiFilter } from "react-icons/fi";
-import { SelectIcf } from "../../atoms/ICF/SelectIcf";
 import { LinhaMinisterioMembro } from "../../molecules/ICF/LinhaMinisterioMembro";
 import { ModalMembroMinisterio } from "../../molecules/ICF/ModalMembroMinisterio";
+import { buscarMembrosMinisterios, buscarMinisteriosQueLidero } from "../../../services/ministerios";
+import { formatarCargo, formatarTelefone, safeFormatDate, transformationName } from "../../../utils/Utils";
 
 export function ListaMinisterioMembro() {
     const [modalAberto, setModalAberto] = useState(false);
 
+    const [membros, setMembros] = useState([]);
+
     const abrirModalCriar = () => {
-        setModoEdicao(false);
         setModalAberto(true);
     };
 
-    const [ministerios, setMinisterios] = useState([]);
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [totalPaginas, setTotalPaginas] = useState(1);
+    const [tamanhoPagina] = useState(10);
+
     const [buscaTexto, setBuscaTexto] = useState("");
     const [statusSelecionado, setStatusSelecionado] = useState("todos");
-    const [paginaAtual, setPaginaAtual] = useState(0);
-    const [tamanhoPagina] = useState(5);
-
-    // --- MOCK DE DADOS ---
-    const dadosMock = [
-        { id: 1, nome: "Maria", email: "maria.silva@gmail.com", celular: "11912345678", dtNascimento: "01/02/2023", cargo: "Líder" },
-        { id: 2, nome: "João", email: "joao.pereira@gmail.com", celular: "11912345678", dtNascimento: "15/04/2023", cargo: "Líder"},
-        { id: 3, nome: "Ana", email: "ana.souza@gmail.com", celular: "In11912345678", dtNascimento: "20/08/2022", cargo: "Líder"},
-        { id: 4, nome: "Lucas", email: "lucas.costa@gmail.com", celular: "11912345678", dtNascimento: "09/01/2024", cargo: "Líder"},
-        { id: 5, nome: "Carla", email: "carla.dias@gmail.com", celular: "11912345678", dtNascimento: "11/03/2023", cargo: "Líder" },
-        { id: 6, nome: "Paulo", email: "paulo.henrique@gmail.com", celular: "11912345678", dtNascimento: "25/07/2022", cargo: "Líder"},
-        { id: 7, nome: "Laura", email: "laura.ramos@gmail.com", celular: "11912345678", dtNascimento: "03/06/2023", cargo: "Líder"},
-    ];
-
-    // --- FILTRAGEM E PAGINAÇÃO ---
-    useEffect(() => {
-        let filtrados = dadosMock;
-
-        if (buscaTexto) {
-            filtrados = filtrados.filter((m) =>
-                m.nome.toLowerCase().includes(buscaTexto.toLowerCase())
-            );
-        }
-
-        if (statusSelecionado !== "todos") {
-            filtrados = filtrados.filter(
-                (m) => m.status.toLowerCase() === statusSelecionado.toLowerCase()
-            );
-        }
-
-        const inicio = paginaAtual * tamanhoPagina;
-        const fim = inicio + tamanhoPagina;
-
-        setMinisterios(filtrados.slice(inicio, fim));
-    }, [buscaTexto, statusSelecionado, paginaAtual]);
+    const [idMinisterio, setIdMinisterio] = useState("");
 
     const resetarFiltros = () => {
         setBuscaTexto("");
@@ -59,16 +30,55 @@ export function ListaMinisterioMembro() {
         setPaginaAtual(0);
     };
 
-    const totalPaginas = Math.ceil(
-        dadosMock.filter(
-            (m) =>
-                (statusSelecionado === "todos" ||
-                    m.status.toLowerCase() === statusSelecionado.toLowerCase()) &&
-                (!buscaTexto || m.nome.toLowerCase().includes(buscaTexto.toLowerCase()))
-        ).length / tamanhoPagina
-    );
+    const formatarEmail = (email) => {
+        if (!email) return "";
+        return email.trim().toLowerCase();
+    };
 
-    var governo = true;
+    const montarFiltros = () => {
+        const filtros = {
+            pagina: paginaAtual,
+            tamanho: tamanhoPagina,
+            busca: buscaTexto,
+            idMinisterio: idMinisterio,
+        };
+        const statusFormatado = statusSelecionado;
+        if (statusFormatado) filtros.status = statusFormatado;
+        return filtros;
+    };
+
+    const carregarMembros = () => {
+        buscarMembrosMinisterios(montarFiltros())
+            .then((res) => {
+                setMembros(res.content || []);
+                setTotalPaginas(res.totalPages || 1);
+            })
+            .catch((err) => {
+                console.error("Erro ao buscar membros do ministério:", err);
+                setMembros([]);
+                setTotalPaginas(1);
+            });
+    };
+
+    useEffect(() => {
+        carregarMembros();
+    }, [paginaAtual, buscaTexto, statusSelecionado, tamanhoPagina, idMinisterio]);
+
+    // Listar os ministérios no select
+    const [options, setOptions] = useState([]);
+    useEffect(() => {
+        buscarMinisteriosQueLidero({})
+            .then((res) => {
+                const lista = res || [];
+                setOptions(lista);
+
+                // Se houver pelo menos um ministério, já seleciona o primeiro
+                if (lista.length > 0) {
+                    setIdMinisterio(lista[0].idExterno);
+                }
+            });
+    }, []);
+
     return (
         <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
             {/* Botão */}
@@ -88,33 +98,25 @@ export function ListaMinisterioMembro() {
                     />
                 </div>
 
-                <span className="font-medium text-icf-primary-400">Status:</span>
-                <div className="flex gap-4">
-                    {["todos", "Ativo", "Inativo"].map((filtro) => (
-                        <button
-                            key={filtro}
-                            className={`px-6 py-2 rounded-lg text-sm font-medium ${statusSelecionado === filtro.toLowerCase()
-                                ? "bg-icf-primary-400 text-white"
-                                : "text-icf-primary-200 border border-icf-primary-200 hover:bg-icf-primary-50"}`}
-                        >
-                            {filtro.charAt(0).toUpperCase() + filtro.slice(1)}
-                        </button>
-                    ))}
-                </div>
-
                 <FiFilter className="text-4xl cursor-pointer" onClick={resetarFiltros} />
 
-                {governo && (
-                    <div className="w-[40%]">
-                        <SelectIcf
-                            opt1={<option value="">Todos os ministérios</option>}
-                        // options={options}
-                        // value={fkMinisterio}
-                        // onChange={(val) => { setPaginaAtual(0); setFkMinisterio(val); }}
-                        />
-                    </div>
-                )
-                }
+                <div className="w-[40%]">
+                    <select
+                        value={idMinisterio}
+                        onChange={(e) => {
+                            setPaginaAtual(0);
+                            setIdMinisterio(e.target.value);
+                        }}
+                        className="text-icf-primary-400 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 p-4 focus:border-icf-primary-200 focus:border-3 w-full text-[14px]"
+                    >
+                        {options.map((option) => (
+                            <option key={option.idExterno} value={option.idExterno}>
+                                {option.nome}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
             </div>
 
             {/* Lista */}
@@ -126,18 +128,20 @@ export function ListaMinisterioMembro() {
                         ))}
                     </li>
 
-                    {ministerios.length === 0 ? (
-                        <li className="text-center p-4 text-icf-primary-400">Nenhum ministério encontrado</li>
+                    {membros.length === 0 ? (
+                        <li className="text-center p-4 text-icf-primary-400">Nenhum membro encontrado</li>
                     ) : (
-                        ministerios.map((m) => (
+                        membros.map((m) => (
                             <LinhaMinisterioMembro
-                                key={m.id}
-                                nome={m.nome}
-                                email={m.email}
-                                celular={m.celular}
-                                cargo={m.cargo}
-                                dtNascimento={m.dtNascimento}
-                                
+                                key={m.idExternoMembro}
+                                idMembro={m.idExternoMembro}
+                                idMinisterio={idMinisterio}
+                                nome={transformationName(m.nome)}
+                                email={formatarEmail(m.email)}
+                                celular={formatarTelefone(m.numeroCelular)}
+                                cargo={formatarCargo(m.cargo)}
+                                dtNascimento={safeFormatDate(m.dataNascimento)}
+                                onRemovido={carregarMembros}
                             />
                         ))
                     )}
@@ -170,6 +174,8 @@ export function ListaMinisterioMembro() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
                     <ModalMembroMinisterio
                         onCancelar={() => setModalAberto(false)}
+                        fkMinisterio={idMinisterio}
+                        onMembroAdicionado={carregarMembros}
                     />
                 </div>
             )}

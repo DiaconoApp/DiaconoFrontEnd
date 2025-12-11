@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSpinner } from "react-icons/fa";
 import { login } from '../../../services/login';
+import { useAuth } from '../../../routes/AuthContext.jsx';
 
 export function FormsLogin() {
     const [email, setEmail] = useState("");
@@ -14,13 +15,15 @@ export function FormsLogin() {
     const [erro, setErro] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { setUser } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            await login(email, senha);
-            navigate("/membros");
+            const { user } = await login(email, senha);
+            setUser(user);
+            navigate("/eventos");
         } catch (err) {
             console.error("Erro no login:", err);
             setErro("Email ou senha inválidos");

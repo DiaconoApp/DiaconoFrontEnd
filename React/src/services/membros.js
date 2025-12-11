@@ -2,7 +2,7 @@ import api from "../provider/api";
 
 export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", status = "", fkMinisterio = "" }) => {
     try {
-        let url = `/membros?page=${pagina}&size=${tamanho}`;
+        let url = `/membros?page=${pagina}&size=${tamanho}&sort=nome,asc`;
 
         if (busca.trim()) {
             url += `&buscaGeral=${encodeURIComponent(busca.trim())}`;

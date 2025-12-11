@@ -7,7 +7,7 @@ import { ListaMinisterioMembro } from "../../templates/ICF/ListaMinisterioMembro
 export function Ministerios() {
     const [menuAberto, setMenuAberto] = useState(true);
     var espacamento = menuAberto ? "ml-70" : "ml-24.5";
-    let governo = true
+    let cargo = localStorage.getItem("cargo");
 
     return (
         <div className='bg-[#F6F7F9] flex flex-col h-screen w-full pb-6'>
@@ -17,7 +17,7 @@ export function Ministerios() {
                 <TituloPagina titulo="Ministerios" descricao="Gerencie todos os membros da igreja" />
             </div>
             <div className={`${espacamento} px-6`}>
-                {governo ? <ListaMinisterios /> : <ListaMinisterioMembro />}
+                {cargo === "GOVERNO" ? <ListaMinisterios /> : <ListaMinisterioMembro />}
             </div>
         </div>
     );

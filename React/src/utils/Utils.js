@@ -201,6 +201,19 @@ export const safeFormatDate = (dateStr) => {
     return ymd.split("-").reverse().join("/");
 };
 
+export const formatarDataHora = (dataHora) => {
+    if (!dataHora) return "";
+    const date = new Date(dataHora);
+    return date.toLocaleString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+};
+
+
 export function validaEmail(email) {
     if (!email) return false;
 
@@ -209,3 +222,19 @@ export function validaEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(emailLimpo);
 }
+
+export const formatarCargo = (cargo) => {
+  if (!cargo) return "";
+
+  switch (cargo.toUpperCase()) {
+    case "LIDER_MINISTERIO":
+      return "Líder";
+    case "MEMBRO_MINISTERIO":
+      return "Membro";
+    case "GOVERNO":
+      return "Governo";
+    default:
+      return cargo; 
+  }
+};
+

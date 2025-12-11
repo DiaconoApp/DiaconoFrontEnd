@@ -60,7 +60,7 @@ export function AppRoutes() {
         {
             path: "/eventos",
             element: (
-                <ProtectedRoute>
+                <ProtectedRoute required={"eventos"}>
                     <Eventos />
                 </ProtectedRoute>
             ),
@@ -83,7 +83,7 @@ export function AppRoutes() {
         {
             path: "/escalas",
             element: (
-                <ProtectedRoute>
+                <ProtectedRoute required={"escalas"}>
                     <Escalas />
                 </ProtectedRoute>
             ),
@@ -92,7 +92,7 @@ export function AppRoutes() {
         {
             path: "/ministerios",
             element: (
-                <ProtectedRoute>
+                <ProtectedRoute required={"ministerios"}>
                     <Ministerios />
                 </ProtectedRoute>
             ),
@@ -101,7 +101,7 @@ export function AppRoutes() {
         {
             path: "/membros",
             element: (
-                <ProtectedRoute>
+                <ProtectedRoute required={"membros"}>
                     <Membros />
                 </ProtectedRoute>
             ),
@@ -113,6 +113,13 @@ export function AppRoutes() {
                 <ProtectedRoute>
                     <Dashboard />
                 </ProtectedRoute>
+            ),
+            errorElement: <div>Error</div>,
+        },
+        {
+            path: "/unauthorized",
+            element: (
+                <h1>Acesso negado</h1>
             ),
             errorElement: <div>Error</div>,
         },

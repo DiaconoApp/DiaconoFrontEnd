@@ -3,20 +3,22 @@ import { ItemMenuLateral } from '../../molecules/ICF/ItemMenuLateral';
 import { ItemMenuTopo } from '../../molecules/ICF/ItemMenuTopo';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../services/login';
-import { transformationName } from '../../../utils/Utils';
+import { formatarCargo, transformationName } from '../../../utils/Utils';
+import { usePermission } from "../../../hooks/usePermission";
 
 export function Menu({ menuAberto, setMenuAberto }) {
     const navigate = useNavigate();
     const [nome, setNome] = useState("");
     const [cargo, setCargo] = useState("");
+    const { can } = usePermission();
 
     const menuItems = [
-        { label: "Calendário", imagem: "calendario", onClick: () => navigate('/eventos') },
-        { label: "Escalas", imagem: "iconeEscala", onclick: () => navigate('/escalas') },
-        { label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
-        { label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
-        // { label: "Financeiro", imagem: "iconeFinanceiro" },
-        { label: "Dashboard", imagem: "iconeDash", onClick: () => navigate('/dashboard') },
+        { key: "eventos", label: "Calendário", imagem: "calendario", onClick: () => navigate('/eventos') },
+        { key: "escalas", label: "Escalas", imagem: "iconeEscala", onClick: () => navigate('/escalas') },
+        { key: "membros", label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
+        { key: "ministerios", label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
+        { key: "dashboards", label: "Dashboard", imagem: "iconeDash", onClick: () => navigate('/dashboard') },
+        { key: "", label: "Financeiro", imagem: "iconeFinanceiro" },
     ];
 
     const configItems = [
@@ -45,7 +47,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
                     />
                     <div className='flex flex-col'>
                         <span className='text-sm font-bold text-icf-primary-400'>{transformationName(nome)}</span>
-                        <span className='text-[10px] text-icf-primary-300 font-light tracking-[0.5px]'>{transformationName(cargo)}</span>
+                        <span className='text-[10px] text-icf-primary-300 font-light tracking-[0.5px]'>{formatarCargo(cargo)}</span>
                     </div>
                 </div>
             </div>
@@ -57,7 +59,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
                 <div className='flex justify-center items-center gap-1.5 pb-4 py-3'>
                     <img src="/logoICF.png" alt="Logo da Igreja Cristã da Familia" />
                     {menuAberto && (
-                        <img src="/LogotipoICF.png" alt="Logotipo da Cristã da Familia, contendo o nome e o slogan 'Formando Jesus em Nós'"/>
+                        <img src="/LogotipoICF.png" alt="Logotipo da Cristã da Familia, contendo o nome e o slogan 'Formando Jesus em Nós'" />
                     )}
                 </div>
                 <button onClick={() => setMenuAberto(!menuAberto)}
@@ -69,14 +71,15 @@ export function Menu({ menuAberto, setMenuAberto }) {
                 <div className='gap-6 flex flex-col'>
                     <ul className={`gap-2 flex flex-col ${menuAberto ? "px-6" : "px-3"} cursor-pointer`}>
                         {menuItems.map((item, index) => (
-                            <li key={index}>
-                                <ItemMenuLateral
-                                    label={menuAberto ? item.label : false}
-                                    imagem={item.imagem}
-                                    onClick={item.onClick}
-                                    href={item.href}
-                                />
-                            </li>
+                            can(item.key) && (
+                                <li key={index}>
+                                    <ItemMenuLateral
+                                        label={menuAberto ? item.label : false}
+                                        imagem={item.imagem}
+                                        onClick={item.onClick}
+                                    />
+                                </li>
+                            )
                         ))}
                     </ul>
                     <hr className='border border-icf-primary-100' />

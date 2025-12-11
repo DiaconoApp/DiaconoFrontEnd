@@ -17,7 +17,7 @@ export function Menu({ menuAberto, setMenuAberto }) {
         { key: "escalas", label: "Escalas", imagem: "iconeEscala", onClick: () => navigate('/escalas') },
         { key: "membros", label: "Membros", imagem: "iconeGrupo", onClick: () => navigate('/membros') },
         { key: "ministerios", label: "Ministérios", imagem: "iconeTerra", onClick: () => navigate('/ministerios') },
-        { key: "dashboards", label: "Dashboard", imagem: "iconeDash", onClick: () => navigate('/dashboard') },
+        { key: "dashboards", label: "Dashboards", imagem: "iconeDash", onClick: () => navigate('/dashboard') },
         { key: "", label: "Financeiro", imagem: "iconeFinanceiro" },
     ];
 

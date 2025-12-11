@@ -55,7 +55,7 @@ export default function GraficoEvolucaoMembros({ anoInicio, anoFim }) {
 
   return (
     <div className="bg-white shadow p-6 rounded-xl">
-      <h2 className="text-2xl font-bold mb-4">Evolução da quantidade de membros</h2>
+      <h2 className="text-2xl font-bold mb-4">Evolução da quantidade novos de membros</h2>
 
       <LineChart width="100%" height={400} data={dadosTratados}>
         {/* <Line type="monotone" dataKey="qtd" stroke="#4C7CF3" strokeWidth={3} dot /> */}

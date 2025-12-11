@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-    /* CORES */
+    /* CORES ORIGINAIS DO PROJETO */
     --color-icf-primary-50: #F5F5F5;
     --color-icf-primary-100: #D9D9D9;
     --color-icf-primary-200: #A6A6A6;
@@ -19,9 +19,61 @@
     --color-surface-50: #FCFCFC;
     --color-warning-200: #F2AB53;
 
+    /* CORES LANDING PAGE */
+    --color-primary: #0D2750;
+    --color-soft-blue: #BFCDE0;
+    --color-ice-white: #F5F5F5;
+
     /* EFEITO SOMBRAS */
     --shadow-menu-shadow: 0px 16px 44px 0px rgba(0,0,0,0.07);
 
     --tracking-default: -0.6px;
-
 }
+
+/* Animações da Landing Page */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes float-horizontal {
+  0%, 100% {
+    transform: translateX(0px) translateY(0px);
+  }
+  50% {
+    transform: translateX(-30px) translateY(-15px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-horizontal {
+  animation: float-horizontal 8s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out;
+}
+
+.dotted-texture {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+

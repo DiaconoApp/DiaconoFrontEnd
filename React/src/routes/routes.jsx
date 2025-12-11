@@ -65,15 +65,27 @@ export function AppRoutes() {
             children: [
                 {
                     index: true,
-                    element: <Calendario />
+                    element: (
+                        <ProtectedRoute required={"calendario"}>
+                            <Calendario />
+                        </ProtectedRoute>
+                    )
                 },
                 {
                     path: "novo",
-                    element: <FormEventos />
+                    element: (
+                        <ProtectedRoute required={"criar_evento"}>
+                            <FormEventos />
+                        </ProtectedRoute>
+                    )
                 },
                 {
                     path: "editar/:idEvento",
-                    element: <FormEventos />
+                    element: (
+                        <ProtectedRoute required={"editar_evento"}>
+                            <FormEventos />
+                        </ProtectedRoute>
+                    )
                 }
             ],
             errorElement: <div>Error</div>,
@@ -105,7 +117,7 @@ export function AppRoutes() {
             ),
             errorElement: <div>Error</div>,
         },
-         {
+        {
             path: "/dashboard",
             element: (
                 <ProtectedRoute required={"dashboards"}>

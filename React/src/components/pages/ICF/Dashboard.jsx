@@ -55,7 +55,7 @@ export function Dashboard() {
             <Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />
             <div className={`grid grid-cols-3 gap-5  mt-15 p-6 transition-all duration-300
             ${espacamento}`}>
-                <TituloPagina titulo="Dashboard" />
+                <TituloPagina titulo="Dashboards" />
             </div>
             <div className={`${espacamento} px-6 flex justify-between`}>
                 <MenuHeaderDashboards activeTab={activeTab} onChangeTab={setActiveTab} />

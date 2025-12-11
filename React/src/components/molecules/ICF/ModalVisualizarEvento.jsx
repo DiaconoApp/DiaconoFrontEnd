@@ -5,6 +5,9 @@ import { InfoEvento } from "../../atoms/ICF/InfoEvento";
 export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
     if (!evento) return null;
 
+    const cargo = localStorage.getItem("cargo");
+    const podeEditar = cargo === "LIDER_MINISTERIO" || cargo === "GOVERNO";
+
     return (
         <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
             <div className="w-[90%] flex flex-col gap-4">
@@ -21,18 +24,23 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
                 </div>
                 {/* <span className="text-icf-primary-200">Ocorre a cada Sábado até 04 de Abril de 2026</span> */}
                 <div className="flex justify-between">
-                    <InfoEvento label={"Valor do ingresso"} info={evento.custo == 0 ? "Gratuito" :"R$ " + evento.custo} />
+                    <InfoEvento label={"Valor do ingresso"} info={evento.custo == 0 ? "Gratuito" : "R$ " + evento.custo} />
                     <InfoEvento label={"Local"} info={evento.local || "-"} />
                 </div>
                 <InfoEvento label={"Descrição"} info={evento.descricao || "Sem descrição"}
                 />
-                <div className="flex justify-end">
-                    <div className="w-[30%]">
-                        <BotaoIcf 
-                        onClick={onEdit}
-                        className="bg-icf-primary-400 flex items-center justify-center gap-2">Editar</BotaoIcf>
+                {podeEditar && (
+                    <div className="flex justify-end">
+                        <div className="w-[30%]">
+                            <BotaoIcf
+                                onClick={onEdit}
+                                className="bg-icf-primary-400 flex items-center justify-center gap-2">
+                                Editar
+                            </BotaoIcf>
+                        </div>
                     </div>
-                </div>
+                )}
+
             </div>
         </div>
     )

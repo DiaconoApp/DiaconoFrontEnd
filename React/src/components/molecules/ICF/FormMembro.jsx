@@ -233,7 +233,7 @@ export function FormMembro({ fecharFormulario }) {
                                     <select
                                         value={dadosCadastro.generoMembro}
                                         onChange={(e) => handleChange("generoMembro", e.target.value)}
-                                        className="text-icf-primary-400 border border-icf-primary-200 bg-surface-50 rounded-lg h-10 p-5 focus:outline-none focus:border-icf-primary-200 focus:border-3 text-[14px]"
+                                        className="text-icf-primary-400 border border-icf-primary-200 bg-surface-50 rounded-lg p-[11px] focus:outline-none focus:border-icf-primary-200 focus:border-3 text-[14px]"
                                     >
                                         <option value="" disabled>Selecione seu gênero</option>
                                         <option value="MASCULINO">Masculino</option>

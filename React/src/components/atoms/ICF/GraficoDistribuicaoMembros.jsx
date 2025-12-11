@@ -140,7 +140,7 @@ export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: coresGenero[i] }}
                 ></span>
-                {item.name} <span className="ml-1 text-gray-500">{item.value}%</span>
+                {item.name} <span className="ml-1 text-gray-500">{Math.round(item.value)}%</span>
               </li>
             ))}
           </ul>

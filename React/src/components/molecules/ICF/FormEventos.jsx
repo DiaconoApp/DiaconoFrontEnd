@@ -71,7 +71,19 @@ export function FormEventos() {
   // -----------------------
   useEffect(() => {
     // buscar ministérios
-    buscarTodosMinisterios().then(data => setMinisterios(data));
+    buscarTodosMinisterios()
+      .then(data => {
+        if (Array.isArray(data)) {
+          setMinisterios(data);
+        } else {
+          console.error("Resposta inesperada:", data);
+          setMinisterios([]); // fallback seguro
+        }
+      })
+      .catch(err => {
+        console.error("Erro ao buscar ministérios:", err);
+        setMinisterios([]); // fallback em caso de erro
+      });
 
     // nome do organizador salvo localmente
     const nomeSalvo = localStorage.getItem("nome");
@@ -304,9 +316,9 @@ export function FormEventos() {
                 >
                   {formData.ministeriosSelecionados.length > 0
                     ? formData.ministeriosSelecionados
-                        .map(id => ministerios.find(m => m.idExterno === id)?.nome)
-                        .filter(Boolean)
-                        .join(", ")
+                      .map(id => ministerios.find(m => m.idExterno === id)?.nome)
+                      .filter(Boolean)
+                      .join(", ")
                     : "Selecione os ministérios"}
                 </button>
 

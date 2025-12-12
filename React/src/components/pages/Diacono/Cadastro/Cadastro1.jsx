@@ -48,10 +48,17 @@ export function Cadastro1() {
 
     useEffect(() => {
         api.get('/register')
-            .then(response => setListaIgrejas(response.data))
-            .catch(() => console.log('Erro ao listar igrejas'))
-        console.log("Igrejas carregadas:", listaIgrejas);
-    }, [])
+            .then(response => {
+                const data = response.data;
+                if (Array.isArray(data)) {
+                    setListaIgrejas(data);
+                } else {
+                    console.error("Resposta inesperada:", data);
+                    setListaIgrejas([]); // fallback seguro
+                }
+            })
+            .catch(() => console.log('Erro ao listar igrejas'));
+    }, []);
 
     const handleChange = (e) => {
         setDadosCadastro({ ...dadosCadastro, fkIgreja: e.target.value });

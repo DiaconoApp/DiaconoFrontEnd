@@ -41,7 +41,7 @@ const Hero = () => {
             {/* Left Content */}
             <div className="text-white space-y-8 animate-fade-in">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-sm">
-                <span>Gestão com eficiente para igrejas</span>
+                <span>Gestão eficiente para igrejas</span>
               </div>
               
               <div className="space-y-4 sm:space-y-6">

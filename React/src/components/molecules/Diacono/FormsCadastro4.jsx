@@ -18,7 +18,7 @@ export function FormsCadastro4() {
 
     const { buscarEnderecoPorCep } = useValidacaoCadastro();
     const handleCepChange = async (cep) => {
-        handleChange("cep", cep);
+        handleChange("cep", cep); 
         if (cep.length === 8) {
             const endereco = await buscarEnderecoPorCep(cep);
             if (endereco) {

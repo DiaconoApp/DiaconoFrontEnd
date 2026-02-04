@@ -1,8 +1,5 @@
 import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
-import { EtapasCadastro } from "../Global/EtapasCadastro";
-import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
-import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
+import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
@@ -50,65 +47,54 @@ export function FormsCadastro4() {
     };
 
     return (
-        <div className="w-[55%] flex flex-col gap-5">
-            <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-            <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className3="bg-diacono-blue-400 text-white" />
-            <div className="flex flex-col gap-5">
-                <label className="font-semibold text-diacono-blue-400">Endereço</label>
-                <div className="flex justify-between">
-                    <InputDiacono
-                        label="CEP *"
-                        placeholder="Digite seu CEP"
-                        value={dadosCadastro.cep}
-                        onChange={(e) => handleCepChange(e.target.value)}
-                    />
-                    <InputDiacono
-                        label="Rua/Avenida *"
-                        placeholder="Ex: Rua Japão"
-                        value={dadosCadastro.rua}
-                        onChange={(e) => handleChange("rua", e.target.value)}
-                        disabled={!!dadosCadastro.rua}
-                    />
-                </div>
-                <div className="flex justify-between">
-                    <InputDiacono
-                        label="Bairro *"
-                        placeholder="Digite seu bairro"
-                        value={dadosCadastro.bairro}
-                        onChange={(e) => handleChange("bairro", e.target.value)}
-                        disabled={!!dadosCadastro.bairro} />
-                    <InputDiacono
-                        label="Cidade *"
-                        placeholder="Digite sua cidade"
-                        value={dadosCadastro.cidade}
-                        onChange={(e) => handleChange("cidade", e.target.value)}
-                        disabled={!!dadosCadastro.cidade} />
-                </div>
-                <div className="flex justify-between">
-                    <InputDiacono
-                        label="Número *"
-                        placeholder="Digite o número"
-                        value={dadosCadastro.numero}
-                        onChange={(e) => handleChange("numero", e.target.value)} />
-                    <InputDiacono
-                        label="Complemento"
-                        placeholder="Digite o complemento"
-                        value={dadosCadastro.complemento}
-                        onChange={(e) => handleChange("complemento", e.target.value)} />
-                </div>
-                <div className='flex flex-col gap-3 items-end'>
-                    <div className="w-full flex justify-between gap-10">
-                        <div className="w-[30%]">
-                            <BotaoDiacono onClick={() => navigate('/cadastro/etapa3')}>Voltar</BotaoDiacono>
-                        </div>
-                        <div className="w-[50%]">
-                            <BotaoDiacono onClick={handleSubmit}>Finalizar cadastro</BotaoDiacono>
-                        </div>
-                    </div>
-                    <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-                    <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
-                </div>
+        <CadastroLayout
+            etapaAtual={3}
+            onVoltar={() => navigate('/cadastro/etapa3')}
+            onProximo={handleSubmit}
+            textoBotaoProximo="Finalizar cadastro"
+        >
+            <label className="font-semibold text-diacono-blue-400">Endereço</label>
+            <div className="grid grid-cols-2 gap-6">
+                <InputDiacono
+                    label="CEP *"
+                    placeholder="Digite seu CEP"
+                    value={dadosCadastro.cep}
+                    onChange={(e) => handleCepChange(e.target.value)}
+                />
+                <InputDiacono
+                    label="Rua/Avenida *"
+                    placeholder="Ex: Rua Japão"
+                    value={dadosCadastro.rua}
+                    onChange={(e) => handleChange("rua", e.target.value)}
+                    disabled={!!dadosCadastro.rua}
+                />
             </div>
-        </div>
+            <div className="grid grid-cols-2 gap-6">
+                <InputDiacono
+                    label="Bairro *"
+                    placeholder="Digite seu bairro"
+                    value={dadosCadastro.bairro}
+                    onChange={(e) => handleChange("bairro", e.target.value)}
+                    disabled={!!dadosCadastro.bairro} />
+                <InputDiacono
+                    label="Cidade *"
+                    placeholder="Digite sua cidade"
+                    value={dadosCadastro.cidade}
+                    onChange={(e) => handleChange("cidade", e.target.value)}
+                    disabled={!!dadosCadastro.cidade} />
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+                <InputDiacono
+                    label="Número *"
+                    placeholder="Digite o número"
+                    value={dadosCadastro.numero}
+                    onChange={(e) => handleChange("numero", e.target.value)} />
+                <InputDiacono
+                    label="Complemento"
+                    placeholder="Digite o complemento"
+                    value={dadosCadastro.complemento}
+                    onChange={(e) => handleChange("complemento", e.target.value)} />
+            </div>
+        </CadastroLayout>
     );
 }

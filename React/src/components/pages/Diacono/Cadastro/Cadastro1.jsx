@@ -11,6 +11,7 @@ import Select from "react-select";
 
 export function Cadastro1() {
     const [listaIgrejas, setListaIgrejas] = useState([]);
+    const [erroIgreja, setErroIgreja] = useState(false);
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const navigate = useNavigate();
 
@@ -39,26 +40,20 @@ export function Cadastro1() {
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
         if (camposVazios.length > 0) {
-            alert("Selecione uma igreja para continuar.");
+            setErroIgreja(true);
             return;
         }
 
+        setErroIgreja(false);
         navigate("/cadastro/etapa2");
     };
 
     useEffect(() => {
         api.get('/register')
-            .then(response => {
-                const data = response.data;
-                if (Array.isArray(data)) {
-                    setListaIgrejas(data);
-                } else {
-                    console.error("Resposta inesperada:", data);
-                    setListaIgrejas([]); // fallback seguro
-                }
-            })
-            .catch(() => console.log('Erro ao listar igrejas'));
-    }, []);
+            .then(response => setListaIgrejas(response.data))
+            .catch(() => console.log('Erro ao listar igrejas'))
+        console.log("Igrejas carregadas:", listaIgrejas);
+    }, [])
 
     const handleChange = (e) => {
         setDadosCadastro({ ...dadosCadastro, fkIgreja: e.target.value });
@@ -72,27 +67,41 @@ export function Cadastro1() {
                     <label className="text-diacono-blue-400">Qual a sua igreja?</label>
                     <div className="flex flex-col gap-1">
                         <Select
-                            className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg text-[14px]"
+                            className={`text-diacono-blue-400 rounded-lg text-[14px]`}
                             styles={{
                                 control: (base, state) => ({
                                     ...base,
+                                    alignItems: "flex-start",
                                     height: "40px",
                                     padding: "4px",
-                                    borderColor: state.isFocused
-                                        ? "#93C5FD" // cor equivalente a diacono-blue-200
-                                        : "#DBEAFE", // cor equivalente a diacono-blue-100
-                                    boxShadow: state.isFocused ? "0 0 0 1px #93C5FD" : "none",
+                                    borderColor: erroIgreja 
+                                        ? "#ef4444"
+                                        : state.isFocused
+                                        ? "#93C5FD"
+                                        : "#BFCDE0",
+                                    borderWidth: "1.5px",
+                                    boxShadow: erroIgreja 
+                                        ? "0 0 0 1px #ef4444"
+                                        : state.isFocused ? "0 0 0 1px #93C5FD" : "none",
                                     "&:hover": {
-                                        borderColor: "#93C5FD",
+                                        borderColor: erroIgreja ? "#ef4444" : "#93C5FD",
                                     },
                                 }),
                             }}
                             options={opcoesIgrejas}
                             value={igrejaSelecionada}
-                            onChange={handleIgrejaChange}
+                            onChange={(selected) => {
+                                handleIgrejaChange(selected);
+                                setErroIgreja(false);
+                            }}
                             placeholder="Selecione uma igreja"
                             isClearable
                         />
+                        {erroIgreja && (
+                            <span className="text-red-500 text-[12px] font-medium">
+                                Selecione uma opção
+                            </span>
+                        )}
                     </div>
 
                     <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>

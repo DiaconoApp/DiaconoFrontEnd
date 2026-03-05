@@ -1,6 +1,6 @@
-import { FiRepeat } from "react-icons/fi";
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
-import { TituloModal } from "../../atoms/ICF/TituloModal";
+import { Repeat } from "lucide-react";
+import { BaseModal } from "../../atoms/ICF/BaseModal";
+import { Button } from "@/components/ui/button";
 
 export function ModalRecorrente({ formData, setFormData, onClose }) {
 
@@ -17,69 +17,70 @@ export function ModalRecorrente({ formData, setFormData, onClose }) {
     };
 
     return (
-        <div className="">
-            <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-                <div className="w-[90%] flex flex-col gap-4">
-                    <TituloModal titulo={"Repetir"} onClose={onClose} />
-                    <div className="border border-icf-primary-50"></div>
-                    <div className="flex flex-col gap-6">
-                        <div className="flex items-center gap-7">
-                            <label className="text-icf-primary-400">Repetir até: </label>
-                            <input type="date" value={formData.recorrencia.dataTerminoRecorrencia}
-                                onChange={e =>
-                                    setFormData(prev => ({
-                                        ...prev,
-                                        recorrencia: {
-                                            ...prev.recorrencia,
-                                            dataTerminoRecorrencia: e.target.value
-                                        }
-                                    }))
+        <BaseModal
+            title="Repetir"
+            onClose={onClose}
+            size="md"
+            footer={
+                <div className="flex gap-3 w-full">
+                    <Button
+                        onClick={onClose}
+                        className="flex-1 bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
+                    >
+                        Salvar
+                    </Button>
+                    <Button
+                        onClick={handleDiscard}
+                        variant="outline"
+                        className="flex-1 border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
+                    >
+                        Descartar
+                    </Button>
+                </div>
+            }
+        >
+            <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                    <label className="text-sm font-medium text-icf-primary-400">Repetir até:</label>
+                    <input 
+                        type="date" 
+                        value={formData.recorrencia.dataTerminoRecorrencia}
+                        onChange={e =>
+                            setFormData(prev => ({
+                                ...prev,
+                                recorrencia: {
+                                    ...prev.recorrencia,
+                                    dataTerminoRecorrencia: e.target.value
                                 }
-                                className="border-b-2 border-b-icf-primary-50 text-icf-primary-300 focus:outline-none focus:border-b-icf-primary-100"
-                            />
-                        </div>
-                        <div className="flex items-center gap-5">
-                            <div className="flex items-center gap-4">
-                                <FiRepeat className="text-lg text-icf-primary-400" />
-                                <label className="text-icf-primary-300">Repetir a cada</label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                {/* <select className="text-icf-primary-300 rounded-[2px] p-2 bg-icf-primary-100">
-                                    {numeros.map((opt) =>(
-                                        <option value={opt}>{opt}</option>
-                                    ))}
-                                </select> */}
-                                <select value={formData.recorrencia.tipoRecorrencia}
-                                    onChange={e =>
-                                        setFormData(prev => ({
-                                            ...prev,
-                                            recorrencia: {
-                                                ...prev.recorrencia,
-                                                tipoRecorrencia: e.target.value
-                                            }
-                                        }))
-                                    } className="text-icf-primary-300 rounded-[2px] p-2 bg-icf-primary-100">
-                                    <option value='NAO_REPETE' disabled > Selecione...</option>
-                                    <option value="SEMANAL">Semana</option>
-                                    {/* <option value="dia">Dia</option> */}
-                                    <option value="MENSAL">Mês</option>
-                                    {/* <option value="ano">Ano</option> */}
-                                </select>
-                            </div>
-                        </div>
-                        {/* <div className="flex justify-center items-center">
-                            <BotaoSemana />
-                        </div> */}
-                        <div className="flex justify-center gap-6">
-                            <div className="w-[75%] flex gap-4">
-                                <BotaoIcf className="bg-icf-primary-400" onClick={onClose}>Salvar</BotaoIcf>
-                                <BotaoIcf className="bg-icf-primary-200" onClick={handleDiscard} >Descartar</BotaoIcf>
-                                {/* <button className="rounded-lg h-10 w-full border border-icf-primary-200 text-icf-primary-200">Remover</button> */}
-                            </div>
-                        </div>
+                            }))
+                        }
+                        className="border-b-2 border-b-icf-primary-100 text-icf-primary-400 focus:outline-none focus:border-b-icf-primary-200 py-1"
+                    />
+                </div>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <Repeat className="w-5 h-5 text-icf-primary-400" />
+                        <label className="text-sm text-icf-primary-300">Repetir a cada</label>
                     </div>
+                    <select 
+                        value={formData.recorrencia.tipoRecorrencia}
+                        onChange={e =>
+                            setFormData(prev => ({
+                                ...prev,
+                                recorrencia: {
+                                    ...prev.recorrencia,
+                                    tipoRecorrencia: e.target.value
+                                }
+                            }))
+                        }
+                        className="text-icf-primary-400 rounded-md px-3 py-2 bg-icf-primary-50 border border-icf-primary-100 focus:outline-none focus:ring-2 focus:ring-icf-primary-200"
+                    >
+                        <option value='NAO_REPETE' disabled>Selecione...</option>
+                        <option value="SEMANAL">Semana</option>
+                        <option value="MENSAL">Mês</option>
+                    </select>
                 </div>
             </div>
-        </div>
+        </BaseModal>
     );
 }

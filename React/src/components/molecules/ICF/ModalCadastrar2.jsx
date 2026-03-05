@@ -1,6 +1,6 @@
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
+import { BaseModal } from "../../atoms/ICF/BaseModal";
+import { Button } from "@/components/ui/button";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
-import { TituloModal } from "../../atoms/ICF/TituloModal";
 import { EtapasCadastro } from "../Global/EtapasCadastro";
 import { SelectIcf } from "../../atoms/ICF/SelectIcf";
 import { useEffect, useState } from "react";
@@ -46,14 +46,33 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
     };
     
     return (
-        <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-            <div className="flex flex-col gap-3">
-                <TituloModal titulo={"Cadastrar Novo Membro"} onClick={onClose} />
-                <div className="border border-icf-primary-50"></div>
+        <BaseModal
+            title="Cadastrar Novo Membro"
+            onClose={onClose}
+            size="lg"
+            footer={
+                <div className="flex gap-3 w-full">
+                    <Button
+                        onClick={onBack}
+                        variant="outline"
+                        className="flex-1 border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
+                    >
+                        Voltar
+                    </Button>
+                    <Button
+                        onClick={handleSubmit}
+                        className="flex-1 bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
+                    >
+                        Cadastrar Membro
+                    </Button>
+                </div>
+            }
+        >
+            <div className="space-y-4">
                 <EtapasCadastro corLinha="border-[#D9D9D9]" corTexto="text-icf-primary-400" className1="bg-icf-primary-100 text-icf-primary-300" className2="bg-icf-primary-200 text-icf-primary-300" />
-                <div className="flex justify-between">
+                <div className="flex gap-4">
                     <SelectIcf
-                        opt1={<option value="">Nenhum</option>}
+                        placeholder="Nenhum"
                         label="Ministério"
                         options={options}
                         value={dadosCadastro.ministerios}
@@ -67,8 +86,7 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
                         onChange={(valor) => handleChange("cargo", valor)}
                     />
                 </div>
-                <div className="flex gap-14">
-
+                <div className="flex gap-4">
                     <InputIcf
                         label="CEP"
                         value={dadosCadastro.cep}
@@ -81,7 +99,7 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
                         disabled={!!dadosCadastro.rua}
                     />
                 </div>
-                <div className=" flex gap-14">
+                <div className="flex gap-4">
                     <InputIcf
                         label="Bairro"
                         value={dadosCadastro.bairro}
@@ -93,7 +111,7 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
                         onChange={(e) => handleChange("cidade", e.target.value)}
                         disabled={!!dadosCadastro.cidade} />
                 </div>
-                <div className=" flex gap-14">
+                <div className="flex gap-4">
                     <InputIcf
                         label="Número"
                         value={dadosCadastro.numero}
@@ -103,21 +121,7 @@ export function ModalCadastrar2({ onClose, onBack, onSubmit }) {
                         value={dadosCadastro.complemento}
                         onChange={(e) => handleChange("complemento", e.target.value)} />
                 </div>
-                <div className="w-full flex justify-center mt-3">
-                    <div className="w-[90%] flex gap-10">
-                        <BotaoIcf
-                            className="bg-icf-primary-200 flex items-center justify-center gap-2"
-                            onClick={onBack}>
-                            Voltar
-                        </BotaoIcf>
-                        <BotaoIcf
-                            className="bg-icf-primary-400 flex items-center justify-center gap-2"
-                            onClick={handleSubmit}>
-                            Cadastrar Membro
-                        </BotaoIcf>
-                    </div>
-                </div>
             </div>
-        </div>
+        </BaseModal>
     )
 }

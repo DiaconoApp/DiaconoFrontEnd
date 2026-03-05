@@ -1,32 +1,82 @@
-import React from 'react'
-import { TituloModal } from '../../atoms/ICF/TituloModal'
-import { BotaoIcf } from '../../atoms/ICF/BotaoIcf'
-import { OpcaoSelecionar } from '../../atoms/ICF/OpcaoSelecionar'
+import React, { useState } from 'react';
+import { BaseModal } from '../../atoms/ICF/BaseModal';
+import { Button } from '@/components/ui/button';
+import { OpcaoSelecionar } from '../../atoms/ICF/OpcaoSelecionar';
+import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 
-export function ModalGerenciarEscala() {
+export function ModalGerenciarEscala({ onClose, onConfirm }) {
+    const [modo, setModo] = useState('aleatorio'); // 'aleatorio' | 'manual'
+    const [tamanhoEquipe, setTamanhoEquipe] = useState(3);
+
     return (
-        <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-            <div className="w-[90%] flex flex-col gap-4">
-                <TituloModal titulo={"Gerenciar Escala"} />
-                <div className="border border-icf-primary-50"></div>
-                <div className='flex items-center h-10 justify-center text-icf-primary-300 bg-icf-primary-100 rounded p-1 text-sm'>
-                    <button className='w-[50%] h-[95%] bg-surface-50 rounded'>Aleatório</button>
-                    <button className='w-[50%] h-[95%] rounded'>Escolher Manualmente</button>
+        <BaseModal
+            title="Gerenciar Escala"
+            onClose={onClose}
+            size="md"
+            footer={
+                <Button
+                    onClick={onConfirm}
+                    className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white w-full"
+                >
+                    Confirmar escala
+                </Button>
+            }
+        >
+            <div className="space-y-5">
+                {/* Toggle Aleatório / Manual */}
+                <div className="flex items-center h-10 bg-icf-primary-50 rounded-lg p-1">
+                    <button 
+                        onClick={() => setModo('aleatorio')}
+                        className={cn(
+                            "flex-1 h-full rounded-md text-sm font-medium transition-colors",
+                            modo === 'aleatorio' 
+                                ? "bg-white text-icf-primary-400 shadow-sm" 
+                                : "text-icf-primary-300 hover:text-icf-primary-400"
+                        )}
+                    >
+                        Aleatório
+                    </button>
+                    <button 
+                        onClick={() => setModo('manual')}
+                        className={cn(
+                            "flex-1 h-full rounded-md text-sm font-medium transition-colors",
+                            modo === 'manual' 
+                                ? "bg-white text-icf-primary-400 shadow-sm" 
+                                : "text-icf-primary-300 hover:text-icf-primary-400"
+                        )}
+                    >
+                        Escolher Manualmente
+                    </button>
                 </div>
-                <div className='flex flex-col gap-2'>
-                    <span>Tamanho da equipe</span>
-                    <div className='flex gap-4'>
-                        <input type="number" className='border p-1 border-icf-primary-100 rounded focus:outline-none focus:border-icf-primary-200' />
-                        <BotaoIcf className='bg-icf-primary-400'>Gerar escala aleatória</BotaoIcf>
+
+                {/* Tamanho da equipe */}
+                {modo === 'aleatorio' && (
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-icf-primary-400">Tamanho da equipe</label>
+                        <div className="flex gap-3">
+                            <Input 
+                                type="number" 
+                                value={tamanhoEquipe}
+                                onChange={(e) => setTamanhoEquipe(Number(e.target.value))}
+                                className="w-24 border-icf-primary-100"
+                                min={1}
+                            />
+                            <Button className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white">
+                                Gerar escala aleatória
+                            </Button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Lista de membros */}
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-icf-primary-400">Membros da escala</label>
+                    <div className="space-y-2 max-h-[200px] overflow-y-auto">
+                        <OpcaoSelecionar nome="João Silva" tituloBotao="Trocar" />
                     </div>
                 </div>
-
-                {/* Lista de membros gerados */}
-                <div className='flex flex-col gap-2'>
-                    <OpcaoSelecionar nome={"João Silva"} tituloBotao={"Trocar"} />
-                </div>
-                <button className='h-10 bg-icf-primary-200 text-surface-50 p-1 rounded'>Confirmar escala</button>
             </div>
-        </div>
-    )
+        </BaseModal>
+    );
 }

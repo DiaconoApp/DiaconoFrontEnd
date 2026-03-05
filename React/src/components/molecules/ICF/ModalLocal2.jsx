@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
-import { TituloModal } from "../../atoms/ICF/TituloModal";
+import { BaseModal } from "../../atoms/ICF/BaseModal";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { EnderecosSalvos } from "../../atoms/ICF/EnderecosSalvos";
+import { Plus } from "lucide-react";
 
 export function ModalLocal2({ onSelect, onClose, onOpenLocal1 }) {
     const [locais, setLocais] = useState([]);
@@ -36,37 +37,40 @@ export function ModalLocal2({ onSelect, onClose, onOpenLocal1 }) {
 
 
     return (
-        <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-            <div className="w-[90%] flex flex-col gap-4">
-                <TituloModal titulo={"Endereços Salvos"} onClose={onClose} />
-                <div className="border border-icf-primary-50"></div>
-
-                <div className="flex flex-col gap-2 overflow-y-auto">
-                    {locais.map(local => (
-                        <EnderecosSalvos
-                            key={local.id}
-                            titulo={local.apelido}
-                            endereco={`${local.rua}, ${local.numero} - ${local.bairro}, ${local.cidade}`}
-                            onClick={() => { onSelect(local); onClose(); }}
-                            onEdit={() => handleEditar(local)}
-                            onDelete={() => handleDelete(local.id)}
-                        />
-                    ))}
-                </div>
-
-                <div className="w-full flex justify-between gap-25">
-                    <BotaoIcf
-                        className="bg-icf-primary-400 flex items-center justify-center gap-2"
+        <BaseModal
+            title="Endereços Salvos"
+            onClose={onClose}
+            size="md"
+            footer={
+                <div className="flex gap-3 w-full">
+                    <Button
                         onClick={handleNovo}
+                        className="flex-1 bg-icf-primary-400 hover:bg-icf-primary-500 text-white gap-2"
                     >
-                        <span className="text-xl mb-1">+</span> Novo Endereço
-                    </BotaoIcf>
-
-                    <BotaoIcf className="bg-icf-primary-200" onClick={onClose}>
+                        <Plus className="w-4 h-4" /> Novo Endereço
+                    </Button>
+                    <Button
+                        onClick={onClose}
+                        variant="outline"
+                        className="flex-1 border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
+                    >
                         Fechar
-                    </BotaoIcf>
+                    </Button>
                 </div>
+            }
+        >
+            <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                {locais.map(local => (
+                    <EnderecosSalvos
+                        key={local.id}
+                        titulo={local.apelido}
+                        endereco={`${local.rua}, ${local.numero} - ${local.bairro}, ${local.cidade}`}
+                        onClick={() => { onSelect(local); onClose(); }}
+                        onEdit={() => handleEditar(local)}
+                        onDelete={() => handleDelete(local.id)}
+                    />
+                ))}
             </div>
-        </div>
+        </BaseModal>
     );
 }

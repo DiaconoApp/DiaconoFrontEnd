@@ -1,5 +1,6 @@
 import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
 import { InputSenhaDiacono } from "../../atoms/Diacono/InputSenhaDiacono";
+import { ValidacaoSenha } from "../../atoms/Diacono/ValidacaoSenha";
 import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
@@ -29,22 +30,6 @@ export function FormsCadastro3() {
                 }));
                 break;
 
-            case "senha":
-                const senhaValida = valor?.length >= 8;
-                setErros((prev) => ({
-                    ...prev,
-                    senha: senhaValida ? undefined : "Senha muito curta",
-                }));
-                const confirmarSenha = dadosCadastro.confirmarSenha;
-                if (confirmarSenha) {
-                    const senhasConferem = valor === confirmarSenha;
-                    setErros((prev) => ({
-                        ...prev,
-                        confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
-                    }));
-                }
-                break;
-
             case "confirmarSenha":
                 const senhasConferem = valor === dadosCadastro.senha;
                 setErros((prev) => ({
@@ -58,12 +43,35 @@ export function FormsCadastro3() {
         }
     };
 
+    const validarSenhaForte = (senha) => {
+        return senha.length >= 8 &&
+            /\d/.test(senha) &&
+            /[a-z]/.test(senha) &&
+            /[A-Z]/.test(senha) &&
+            /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~;']/.test(senha);
+    };
+
     const handleAvancar = () => {
         const camposObrigatorios = ["email", "senha", "confirmarSenha"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
-        if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
-            alert("Preencha todos os campos corretamente para continuar.");
+        if (camposVazios.length > 0) {
+            alert("Preencha todos os campos para continuar.");
+            return;
+        }
+
+        if (!validarSenhaForte(dadosCadastro.senha)) {
+            alert("A senha deve atender todos os requisitos de segurança.");
+            return;
+        }
+
+        if (dadosCadastro.senha !== dadosCadastro.confirmarSenha) {
+            alert("As senhas não coincidem.");
+            return;
+        }
+
+        if (Object.values(erros).some(e => e)) {
+            alert("Corrija os erros antes de continuar.");
             return;
         }
 
@@ -93,9 +101,7 @@ export function FormsCadastro3() {
                         placeholder="Digite sua senha"
                         value={dadosCadastro.senha}
                         onChange={(e) => handleChange("senha", e.target.value)}
-                        onBlur={() => handleBlur("senha")}
                     />
-                    {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
                 </div>
                 <div>
                     <InputSenhaDiacono
@@ -108,6 +114,9 @@ export function FormsCadastro3() {
                     {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
                 </div>
             </div>
+            
+            {/* Validação visual da senha */}
+            <ValidacaoSenha senha={dadosCadastro.senha} />
         </CadastroLayout>
     );
 }

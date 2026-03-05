@@ -1,18 +1,8 @@
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 import { getEvolucaoMembros } from "../../../services/dashboards";
 
 const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-
-const CORES_ANO = {
-  2020: "#4C7CF3",
-  2021: "#10B981",
-  2022: "#F59E0B",
-  2023: "#EC4899",
-  2024: "#6366F1",
-  2025: "#0EA5E9",
-};
-
 
 function transformarParaMultiLinha(dados, anoInicio, anoFim) {
   const estrutura = MESES.map(m => ({ mes: m }));
@@ -54,31 +44,48 @@ export default function GraficoEvolucaoMembros({ anoInicio, anoFim }) {
   }, [anoInicio, anoFim]);
 
   return (
-    <div className="bg-white shadow p-6 rounded-xl">
-      <h2 className="text-2xl font-bold mb-4">Evolução da quantidade novos de membros</h2>
+    <div className="bg-white shadow-sm p-5 rounded-xl">
+      <h2 className="font-semibold text-icf-primary-400 mb-4">Evolução de Membros</h2>
 
-      <LineChart width="100%" height={400} data={dadosTratados}>
-        {/* <Line type="monotone" dataKey="qtd" stroke="#4C7CF3" strokeWidth={3} dot /> */}
-        <CartesianGrid stroke="#ddd" />
-        <XAxis dataKey="mes" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-         {Array.from({ length: anoFim - anoInicio + 1 }).map((_, i) => {
-          const ano = anoInicio + i;
-          return (
-            <Line
-              key={ano}
-              type="monotone"
-              dataKey={ano}
-              strokeWidth={3}
-              stroke={CORES_ANO[ano] || `#${((ano * 999999) % 0xffffff).toString(16)}`}
-              dot={{ r: 4 }}
-              name={`${ano}`} // **Nome na legenda**
-            />
-          );
-        })}
-      </LineChart>
+      <ResponsiveContainer width="100%" height={280}>
+        <LineChart data={dadosTratados} margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
+          <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" vertical={false} />
+          <XAxis 
+            dataKey="mes" 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fontSize: 12, fill: '#6b7280' }}
+          />
+          <YAxis 
+            axisLine={false} 
+            tickLine={false} 
+            tick={{ fontSize: 12, fill: '#6b7280' }}
+          />
+          <Tooltip 
+            contentStyle={{ 
+              backgroundColor: '#fff', 
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}
+          />
+          {Array.from({ length: anoFim - anoInicio + 1 }).map((_, i) => {
+            const ano = anoInicio + i;
+            return (
+              <Line
+                key={ano}
+                type="monotone"
+                dataKey={ano}
+                strokeWidth={2}
+                stroke="#1f2937"
+                dot={{ r: 4, fill: '#fff', stroke: '#1f2937', strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: '#1f2937' }}
+                name={`${ano}`}
+              />
+            );
+          })}
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

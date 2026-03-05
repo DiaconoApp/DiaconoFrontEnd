@@ -47,7 +47,7 @@ const Navigation = () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
           ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-200/80"
-          : "bg-primary/10 backdrop-blur-sm border-b border-white/15"
+          : "bg-diacono-blue-400/10 backdrop-blur-sm border-b border-white/15"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -73,11 +73,11 @@ const Navigation = () => {
                 key={link.id}
                 onClick={() => scrollToSection(link.id)}
                 className={`font-medium transition-all hover:scale-105 relative group ${
-                  isScrolled ? "text-primary" : "text-white/95"
+                  isScrolled ? "text-diacono-blue-400" : "text-white/95"
                 }`}
               >
                 {link.name}
-                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${isScrolled ? 'bg-primary' : 'bg-white'}`}></span>
+                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${isScrolled ? 'bg-diacono-blue-400' : 'bg-white'}`}></span>
               </button>
             ))}
           </div>
@@ -89,7 +89,7 @@ const Navigation = () => {
               onClick={() => navigate('/login')}
               className={`rounded-xl font-semibold transition-all hover:scale-105 ${
                 isScrolled
-                  ? "text-primary hover:bg-primary/10"
+                  ? "text-diacono-blue-400 hover:bg-diacono-blue-400/10"
                   : "text-white hover:bg-white/10 hover:text-white"
               }`}
             >
@@ -100,8 +100,8 @@ const Navigation = () => {
               onClick={() => navigate('/cadastro/etapa1')}
               className={`rounded-xl font-bold shadow-lg transition-all hover:scale-105 hover:shadow-xl ${
                 isScrolled
-                  ? "bg-primary text-white hover:bg-primary/90"
-                  : "bg-white text-primary hover:bg-white/90"
+                  ? "bg-diacono-blue-400 text-white hover:bg-diacono-blue-400/90"
+                  : "bg-white text-diacono-blue-400 hover:bg-white/90"
               }`}
             >
               Cadastrar
@@ -112,7 +112,7 @@ const Navigation = () => {
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className={`lg:hidden p-2 transition-colors ${
-              isScrolled ? "text-primary" : "text-white"
+              isScrolled ? "text-diacono-blue-400" : "text-white"
             }`}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -128,7 +128,7 @@ const Navigation = () => {
                   key={link.id}
                   onClick={() => scrollToSection(link.id)}
                   className={`text-left font-medium transition-colors hover:opacity-80 ${
-                    isScrolled ? "text-primary" : "text-white"
+                    isScrolled ? "text-diacono-blue-400" : "text-white"
                   }`}
                 >
                   {link.name}
@@ -140,7 +140,7 @@ const Navigation = () => {
                   onClick={() => navigate('/login')}
                   className={`rounded-xl font-semibold w-full ${
                     isScrolled
-                      ? "text-primary hover:bg-primary/10"
+                      ? "text-diacono-blue-400 hover:bg-diacono-blue-400/10"
                       : "text-white hover:bg-white/10"
                   }`}
                 >
@@ -151,8 +151,8 @@ const Navigation = () => {
                   onClick={() => navigate('/cadastro/etapa1')}
                   className={`rounded-xl font-bold shadow-lg w-full ${
                     isScrolled
-                      ? "bg-primary text-white hover:bg-primary/90"
-                      : "bg-white text-primary hover:bg-white/90"
+                      ? "bg-diacono-blue-400 text-white hover:bg-diacono-blue-400/90"
+                      : "bg-white text-diacono-blue-400 hover:bg-white/90"
                   }`}
                 >
                   Cadastrar

@@ -7,10 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import api from "../../../provider/api";
+import { AlertModal } from "../../ui/AlertModal";
+import { useState } from "react";
 
 export function FormsCadastro4() {
     const navigate = useNavigate();
     const { dadosCadastro, setDadosCadastro } = useCadastro();
+    const [modal, setModal] = useState(null);
 
     const handleChange = (campo, valor) => {
         setDadosCadastro((prev) => ({ ...prev, [campo]: valor }));
@@ -35,17 +38,32 @@ export function FormsCadastro4() {
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
         if (camposVazios.length > 0) {
-            alert("Preencha todos os campos corretamente para continuar.");
+            setModal({
+                type: "warning",
+                title: "Campos obrigatórios",
+                message: "Preencha todos os campos corretamente para continuar."
+            });
             return;
         }
 
         api.post("/register", dadosCadastro)
             .then(() => {
-                alert("Cadastro concluído com sucesso!");
-                navigate("/login");
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Cadastro concluído com sucesso!",
+                    autoClose: 2000
+                });
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
             })
             .catch(() => {
-                alert("Erro ao finalizar cadastro.");
+                setModal({
+                    type: "error",
+                    title: "Erro",
+                    message: "Erro ao finalizar cadastro."
+                });
             });
     };
 
@@ -109,6 +127,7 @@ export function FormsCadastro4() {
                     <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
                 </div>
             </div>
+        {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
         </div>
     );
 }

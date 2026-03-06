@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { buscarMembros } from "../../../services/membros";
 import { transformationName } from "../../../utils/Utils";
 import { adicionarMembroMinisterio, removerMembroMinisterio } from "../../../services/ministerios";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function ModalMembroMinisterio({ onCancelar, fkMinisterio, onMembroAdicionado }) {
     const [membros, setMembros] = useState([]);
+    const [modal, setModal] = useState(null);
 
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(1);
@@ -77,14 +79,25 @@ export function ModalMembroMinisterio({ onCancelar, fkMinisterio, onMembroAdicio
                                         dados: { idMembro },
                                         idMinisterio: fkMinisterio,
                                     });
-                                    alert(`Membro ${m.nome} adicionado com sucesso!`);
+                                    setModal({
+                                        type: "success",
+                                        title: "Sucesso",
+                                        message: `Membro ${m.nome} adicionado com sucesso!`,
+                                        autoClose: 2000
+                                    });
 
                                     if (onMembroAdicionado) {
                                         onMembroAdicionado();
                                     }
-                                    onCancelar(); // fecha modal
+                                    setTimeout(() => {
+                                        onCancelar();
+                                    }, 2000);
                                 } catch (err) {
-                                    alert("Erro ao atualizar membro");
+                                    setModal({
+                                        type: "error",
+                                        title: "Erro",
+                                        message: "Erro ao atualizar membro"
+                                    });
                                 }
                             }}
                         />
@@ -105,6 +118,7 @@ export function ModalMembroMinisterio({ onCancelar, fkMinisterio, onMembroAdicio
             <div className="py-4">
                 <BotaoIcf className="bg-icf-primary-400" onClick={onCancelar} > Confirmar</BotaoIcf>
             </div>
+            {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
         </div>
     )
 

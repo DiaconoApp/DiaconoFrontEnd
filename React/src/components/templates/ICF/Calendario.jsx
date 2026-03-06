@@ -9,11 +9,13 @@ import listPlugin from "@fullcalendar/list";
 import { ModalVisualizarEvento } from "../../molecules/ICF/ModalVisualizarEvento.jsx";
 import { buscarEventoPorId, buscarEventos } from "../../../services/eventos.js";
 import { useAuth } from "../../../routes/AuthContext.jsx";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function Calendario() {
   const [events, setEvents] = useState([]);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
+  const [modal, setModalErro] = useState(null);
   const calendarRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -165,7 +167,11 @@ export function Calendario() {
             const eventoCompleto = await buscarEventoPorId(idEvento);
 
             if (!eventoCompleto) {
-              alert("Erro ao carregar detalhes do evento.");
+              setModalErro({
+                type: "error",
+                title: "Ocorreu um problema",
+                message: "Erro ao carregar detalhes do evento."
+              });
               return;
             }
 
@@ -212,6 +218,9 @@ export function Calendario() {
           />
         </div>
       )}
+
+      {/* ---------- ALERT MODAL ---------- */}
+      {modal && <AlertModal {...modal} onClose={() => setModalErro(null)} />}
     </div>
   );
 }

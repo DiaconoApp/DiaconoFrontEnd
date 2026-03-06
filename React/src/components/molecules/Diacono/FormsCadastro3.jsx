@@ -9,11 +9,13 @@ import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function FormsCadastro3() {
     const navigate = useNavigate();
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const [erros, setErros] = useState({});
+    const [modal, setModal] = useState(null);
 
     const handleChange = (campo, valor) => {
         let novoValor = valor;
@@ -67,7 +69,11 @@ export function FormsCadastro3() {
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
         if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
-            alert("Preencha todos os campos corretamente para continuar.");
+            setModal({
+                type: "warning",
+                title: "Campos obrigatórios",
+                message: "Preencha todos os campos corretamente para continuar."
+            });
             return;
         }
 
@@ -121,6 +127,7 @@ export function FormsCadastro3() {
                     <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
                 </div>
             </div>
+            {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
         </div >
     );
 }

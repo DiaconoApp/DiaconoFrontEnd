@@ -6,6 +6,7 @@ import { cadastrarMinisterio, atualizarMinisterio } from "../../../services/mini
 import api from '../../../provider/api';
 import { transformationName } from "../../../utils/Utils";
 import Select from "react-select";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function ModalMinisterio({
     tipo = "criar",
@@ -17,6 +18,7 @@ export function ModalMinisterio({
     const [idLider, setIdLider] = useState("");
     const [status, setStatus] = useState("");
     const [carregando, setCarregando] = useState(false);
+    const [modal, setModal] = useState(null);
 
     // Listar os membros no select
     const [listaMembros, setListaMembros] = useState([]);
@@ -70,15 +72,31 @@ export function ModalMinisterio({
                     dados,
                     idMinisterio: ministerio.idExterno,
                 });
-                alert("Ministério editado com sucesso!");
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Ministério editado com sucesso!",
+                    autoClose: 2000
+                });
             } else {
                 resultado = await cadastrarMinisterio(dados);
-                alert("Ministério cadastrado com sucesso!");
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Ministério cadastrado com sucesso!",
+                    autoClose: 2000
+                });
             }
 
-            onSalvar(resultado);
+            setTimeout(() => {
+                onSalvar(resultado);
+            }, 2000);
         } catch (err) {
-            alert(`Erro ao ${tipo === "editar" ? "editar" : "salvar"} ministério.`);
+            setModal({
+                type: "error",
+                title: "Erro",
+                message: `Erro ao ${tipo === "editar" ? "editar" : "salvar"} ministério.`
+            });
         } finally {
             setCarregando(false);
         }
@@ -154,6 +172,7 @@ export function ModalMinisterio({
                     </div>
                 </div>
             </div>
+        {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
         </div>
     );
 }

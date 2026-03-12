@@ -7,13 +7,17 @@ import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone } from "../../../utils/Utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import { loginWithGoogle } from "../../../services/login";
+import { useAuth } from "../../../routes/AuthContext.jsx";
 
 export function FormsCadastro2() {
   const navigate = useNavigate();
   const { dadosCadastro, setDadosCadastro } = useCadastro();
   const [erros, setErros] = useState({});
   const { validarNome, validarCpf } = useValidacaoCadastro();
+  const { setUser } = useAuth();
 
   const handleChange = (campo, valor) => {
     let novoValor = valor;
@@ -84,6 +88,29 @@ export function FormsCadastro2() {
     navigate("/cadastro/etapa3");
   };
 
+  // callback invoked by the Google hook when the user successfully logs in
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const idToken = credentialResponse.credential; // new library returns `credential`
+    try {
+      const { payload, user } = await loginWithGoogle(idToken);
+      setUser(user);
+      handleAvancar();
+    } catch (e) {
+      console.error("erro no login Google", e);
+    }
+  };
+
+  const loginGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: (err) => console.error("Google login falhou", err),
+    onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+  });
+
+  // debug: show global google object if available
+  useEffect(() => {
+    console.log('window.google at mount', window.google);
+  }, []);
+
   return (
 
     <div className="w-[65%] flex flex-col gap-5">
@@ -147,7 +174,15 @@ export function FormsCadastro2() {
             <BotaoDiacono onClick={() => navigate('/cadastro/etapa1')}>Voltar</BotaoDiacono>
             <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
           </div>
-          <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+          <BotaoGoogle onClick={() => {
+              console.log('botao clicado');
+              if (typeof loginGoogle === 'function') {
+                const ret = loginGoogle();
+                console.log('valor retornado por loginGoogle()', ret);
+              } else {
+                console.error('loginGoogle não é função', loginGoogle);
+              }
+            }}>Entrar com o Google</BotaoGoogle>
           <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
         </div>
       </div>

@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import api from "../../../provider/api";
+import { useGoogleLogin } from "@react-oauth/google";
+import { loginWithGoogle } from "../../../services/login";
+import { useAuth } from "../../../routes/AuthContext.jsx";
 
 export function FormsCadastro4() {
     const navigate = useNavigate();
@@ -30,6 +33,8 @@ export function FormsCadastro4() {
         }
     };
 
+    const { setUser } = useAuth();
+
     const handleSubmit = () => {
         const camposObrigatorios = ["cep", "rua", "bairro", "cidade", "numero"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
@@ -48,6 +53,23 @@ export function FormsCadastro4() {
                 alert("Erro ao finalizar cadastro.");
             });
     };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const idToken = credentialResponse.credential;
+        try {
+            const { user } = await loginWithGoogle(idToken);
+            setUser(user);
+            navigate("/login");
+        } catch (e) {
+            console.error("erro google cadastro4", e);
+        }
+    };
+
+    const loginGoogle = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: (err) => console.error("Google login falhou", err),
+        onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+    });
 
     return (
         <div className="w-[55%] flex flex-col gap-5">
@@ -105,7 +127,7 @@ export function FormsCadastro4() {
                             <BotaoDiacono onClick={handleSubmit}>Finalizar cadastro</BotaoDiacono>
                         </div>
                     </div>
-                    <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+                    <BotaoGoogle onClick={() => loginGoogle()}>Entrar com o Google</BotaoGoogle>
                     <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
                 </div>
             </div>

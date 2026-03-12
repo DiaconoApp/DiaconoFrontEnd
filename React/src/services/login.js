@@ -41,3 +41,33 @@ export const logout = () => {
   localStorage.clear();
   window.location.reload();
 };
+
+
+export const loginWithGoogle = async (idToken) => {
+  try {
+    const res = await api.post("/api/v1/auth/google", { idToken });
+    const token = res.data.acessToken;
+    if (!token) throw new Error("Token não retornado pelo servidor");
+
+    let payload = null;
+    try { payload = jwtDecode(token); } catch (e) { }
+
+    console.log("login payload:", payload);
+
+    // build same user object as regular login
+    const user = {
+      cargo: payload.scope,
+    };
+
+    localStorage.setItem("nome", payload.nome);
+    localStorage.setItem("cargo", payload.scope);
+    localStorage.setItem("fk_igreja", payload.fk_igreja);
+    localStorage.setItem("idUsuario", payload.sub);
+    localStorage.setItem("token", token);
+
+    return { token, payload, user };
+  } catch (err) {
+    console.error("google login error", err);
+    throw err;
+  }
+};

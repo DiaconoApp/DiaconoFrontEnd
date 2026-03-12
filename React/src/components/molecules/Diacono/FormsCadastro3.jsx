@@ -9,6 +9,9 @@ import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import { loginWithGoogle } from "../../../services/login";
+import { useAuth } from "../../../routes/AuthContext.jsx";
 
 export function FormsCadastro3() {
     const navigate = useNavigate();
@@ -62,6 +65,8 @@ export function FormsCadastro3() {
         }
     };
 
+    const { setUser } = useAuth();
+
     const handleAvancar = () => {
         const camposObrigatorios = ["email", "senha", "confirmarSenha"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
@@ -73,6 +78,23 @@ export function FormsCadastro3() {
 
         navigate("/cadastro/etapa4");
     };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const idToken = credentialResponse.credential;
+        try {
+            const { user } = await loginWithGoogle(idToken);
+            setUser(user);
+            navigate("/cadastro/etapa4");
+        } catch (e) {
+            console.error("erro google cadastro3", e);
+        }
+    };
+
+    const loginGoogle = useGoogleLogin({
+        onSuccess: handleGoogleSuccess,
+        onError: (err) => console.error("Google login falhou", err),
+        onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+    });
 
     return (
 
@@ -117,7 +139,7 @@ export function FormsCadastro3() {
                         <BotaoDiacono onClick={() => navigate('/cadastro/etapa2')}>Voltar</BotaoDiacono>
                         <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
                     </div>
-                    <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+                    <BotaoGoogle onClick={() => loginGoogle()}>Entrar com o Google</BotaoGoogle>
                     <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
                 </div>
             </div>

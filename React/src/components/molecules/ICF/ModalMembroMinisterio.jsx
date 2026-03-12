@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { buscarMembros } from "../../../services/membros";
 import { transformationName } from "../../../utils/Utils";
-import { adicionarMembroMinisterio } from "../../../services/ministerios";
+import { adicionarMembroMinisterio, removerMembroMinisterio } from "../../../services/ministerios";
+import { AlertModal } from "../../ui/AlertModal";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function ModalMembroMinisterio({ onCancelar, fkMinisterio, onMembroAdicionado }) {
     const [membros, setMembros] = useState([]);
+    const [modal, setModal] = useState(null);
 
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(1);
@@ -89,11 +91,24 @@ export function ModalMembroMinisterio({ onCancelar, fkMinisterio, onMembroAdicio
                                                 dados: { idMembro },
                                                 idMinisterio: fkMinisterio,
                                             });
-                                            alert(`Membro ${m.nome} adicionado com sucesso!`);
-                                            if (onMembroAdicionado) onMembroAdicionado();
-                                            onCancelar();
+                                            setModal({
+                                        type: "success",
+                                        title: "Sucesso",
+                                        message: `Membro ${m.nome} adicionado com sucesso!`,
+                                        autoClose: 2000
+                                    });
+                                             if (onMembroAdicionado) {
+                                        onMembroAdicionado();
+                                    }
+                                    setTimeout(() => {
+                                        onCancelar();
+                                    }, 2000);
                                         } catch (err) {
-                                            alert("Erro ao atualizar membro");
+                                             setModal({
+                                        type: "error",
+                                        title: "Erro",
+                                        message: "Erro ao atualizar membro"
+                                    });
                                         }
                                     }}
                                 />
@@ -129,6 +144,7 @@ export function ModalMembroMinisterio({ onCancelar, fkMinisterio, onMembroAdicio
                     </Button>
                 </div>
             </div>
+            {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
         </BaseModal>
     );
 

@@ -19,12 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function Calendario() {
   const [events, setEvents] = useState([]);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [eventoSelecionado, setEventoSelecionado] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [modal, setModalErro] = useState(null);
   const calendarRef = useRef(null);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -186,10 +188,14 @@ export function Calendario() {
               const idEvento = info.event.id;
               const eventoCompleto = await buscarEventoPorId(idEvento);
 
-              if (!eventoCompleto) {
-                alert("Erro ao carregar detalhes do evento.");
-                return;
-              }
+            if (!eventoCompleto) {
+              setModalErro({
+                type: "error",
+                title: "Ocorreu um problema",
+                message: "Erro ao carregar detalhes do evento."
+              });
+              return;
+            }
 
               const evento = {
                 id: idEvento,
@@ -255,6 +261,9 @@ export function Calendario() {
           />
         </div>
       )}
+
+      {/* ---------- ALERT MODAL ---------- */}
+      {modal && <AlertModal {...modal} onClose={() => setModalErro(null)} />}
     </div>
   );
 }

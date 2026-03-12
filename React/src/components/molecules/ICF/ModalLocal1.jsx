@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
     numero: "",
     apelido: "",
   });
+  const [modal, setModal] = useState(null);
 
   function salvar() {
     onSalvarEndereco(formData);
@@ -66,10 +68,18 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
           estado: response.data.uf,
         }));
       } else {
-        alert("CEP não encontrado.");
+        setModal({
+          type: "error",
+          title: "CEP não encontrado",
+          message: "CEP não encontrado."
+        });
       }
     } catch (error) {
-      alert("Erro ao buscar endereço pelo CEP.");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao buscar endereço pelo CEP."
+      });
     }
   };
 
@@ -154,6 +164,7 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
           placeholder={"Ex: Igreja ICF"} 
         />
       </div>
+      {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
     </BaseModal>
   );
 }

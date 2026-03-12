@@ -6,6 +6,7 @@ import { ModalExclusao } from "./ModalExclusao";
 import { ModalExclusaoRecorrencia } from "./ModalExclusaoRecorrencia";
 import { ModalLocal1 } from "./ModalLocal1";
 import { ModalRecorrente } from "./ModalRecorrente";
+import { AlertModal } from "../../ui/AlertModal";
 
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ export function FormEventos() {
   const [isModalRecorrencia, setShowRecorrente] = useState(false);
   const [modalLocalAberto, setModalLocalAberto] = useState(false);
   const [dropdownAberto, setDropdownAberto] = useState(false);
+  const [modal, setModal] = useState(null);
 
   // Form / dados
   const [formData, setFormData] = useState({
@@ -183,15 +185,26 @@ export function FormEventos() {
     try {
       await deletarEventoUnico(idEvento);
     } catch (error) {
-      alert("Erro ao excluir evento CAIU AQUI");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao excluir evento CAIU AQUI"
+      });
       return;
     }
 
-    alert("Evento excluído com sucesso!");
+    setModal({
+      type: "success",
+      title: "Sucesso!",
+      message: "Evento excluído com sucesso!",
+      autoClose: 2000
+    });
     setIsModalExcluirOpen(false);
-    navigate("/eventos");
-    // atualizarCalendario() -> função externa usada em outras partes da app
-    if (typeof atualizarCalendario === "function") atualizarCalendario();
+    setTimeout(() => {
+      navigate("/eventos");
+      // atualizarCalendario() -> função externa usada em outras partes da app
+      if (typeof atualizarCalendario === "function") atualizarCalendario();
+    }, 2000);
   }
 
   // Confirmação de exclusão quando há recorrência (unico | multiplos)
@@ -203,14 +216,25 @@ export function FormEventos() {
         await deletarEventoMultiplos(idEvento);
       }
     } catch (error) {
-      alert("Erro ao excluir evento");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao excluir evento"
+      });
       return;
     }
 
-    alert("Evento excluído!");
+    setModal({
+      type: "success",
+      title: "Sucesso!",
+      message: "Evento excluído!",
+      autoClose: 2000
+    });
     setIsModalExcluirRecorrenciaOpen(false);
-    navigate("/eventos");
-    if (typeof atualizarCalendario === "function") atualizarCalendario();
+    setTimeout(() => {
+      navigate("/eventos");
+      if (typeof atualizarCalendario === "function") atualizarCalendario();
+    }, 2000);
   }
 
   // Validação simples antes de salvar
@@ -225,7 +249,14 @@ export function FormEventos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const erro = validarFormulario();
-    if (erro) return alert(erro);
+    if (erro) {
+      setModal({
+        type: "warning",
+        title: "Campos obrigatórios",
+        message: erro
+      });
+      return;
+    }
 
     const eventoPayload = {
       nome: formData.titulo,
@@ -256,15 +287,31 @@ export function FormEventos() {
     try {
       if (modoEdicao) {
         await editarEvento(idEvento, eventoPayload);
-        alert("Evento atualizado com sucesso!");
+        setModal({
+          type: "success",
+          title: "Sucesso!",
+          message: "Evento atualizado com sucesso!",
+          autoClose: 2000
+        });
       } else {
         await criarEvento(eventoPayload);
-        alert("Evento criado com sucesso!");
+        setModal({
+          type: "success",
+          title: "Sucesso!",
+          message: "Evento criado com sucesso!",
+          autoClose: 2000
+        });
       }
-      navigate("/eventos");
+      setTimeout(() => {
+        navigate("/eventos");
+      }, 2000);
     } catch (error) {
       console.error("Erro ao salvar evento:", error);
-      alert("Erro ao salvar evento. Tente novamente.");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao salvar evento. Tente novamente."
+      });
     }
   };
 
@@ -536,6 +583,7 @@ export function FormEventos() {
           />
         </div>
       )}
+      {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
     </div>
   );
 }

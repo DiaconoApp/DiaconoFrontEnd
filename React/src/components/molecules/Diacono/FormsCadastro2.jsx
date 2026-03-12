@@ -5,11 +5,13 @@ import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone } from "../../../utils/Utils";
 import { useState } from "react";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function FormsCadastro2() {
   const navigate = useNavigate();
   const { dadosCadastro, setDadosCadastro } = useCadastro();
   const [erros, setErros] = useState({});
+  const [modal, setModal] = useState(null);
   const { validarNome, validarCpf } = useValidacaoCadastro();
 
   const handleChange = (campo, valor) => {
@@ -74,7 +76,11 @@ export function FormsCadastro2() {
     const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
     if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
-      alert("Preencha todos os campos corretamente para continuar.");
+      setModal({
+        type: "warning",
+        title: "Campos obrigatórios",
+        message: "Preencha todos os campos corretamente para continuar."
+      });
       return;
     }
 
@@ -138,6 +144,7 @@ export function FormsCadastro2() {
           />
           {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
         </div>
+        {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
       </div>
     </CadastroLayout>
   );

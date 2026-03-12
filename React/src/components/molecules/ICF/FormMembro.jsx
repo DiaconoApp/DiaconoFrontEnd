@@ -9,10 +9,12 @@ import { cadastrarMembro } from "../../../services/membros";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { Button } from "@/components/ui/button";
 import { X, Save, User, Lock, Church, MapPin } from "lucide-react";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function FormMembro({ fecharFormulario }) {
     const [erros, setErros] = useState({});
     const { validarNome, validarCpf, validarCamposObrigatorios } = useValidacaoCadastro();
+    const [modal, setModalAviso] = useState(null);
 
     const [dadosCadastro, setDadosCadastro] = useState({
         fkIgreja: localStorage.getItem("fk_igreja"),
@@ -148,15 +150,27 @@ export function FormMembro({ fecharFormulario }) {
 
         const erros = validarCamposObrigatorios(dadosCadastro);
         if (erros.length > 0) {
-            alert("Erro no cadastro:\n" + erros.join("\n"));
+            // alert("Erro no cadastro:\n" + erros.join("\n"));
+             setModalAviso({
+                type: "error",
+                title: "Ocorreu um problema",
+                message: "Erro ao cadastrar, verifique os dados inseridos."
+              });
             return;
         }
 
         try {
             await cadastrarMembro(dadosCadastro);
-            alert("Membro cadastrado com sucesso!");
+            setModalAviso({
+                type: "success",
+                title: "Cadastro realizado",
+                message: "Membro cadastrado com sucesso!",
+                autoClose: 2000
+            });
 
-            if (typeof fecharFormulario === "function") fecharFormulario(false);
+            setTimeout(() => {
+                if (typeof fecharFormulario === "function") fecharFormulario(false);
+            }, 2000);
 
             // resetar dados para o estado inicial (não para um objeto vazio)
             setDadosCadastro({
@@ -179,8 +193,12 @@ export function FormMembro({ fecharFormulario }) {
                 complemento: "",
             });
         } catch (err) {
-            alert("Erro ao cadastrar membro. Verifique os dados e tente novamente.");
-            console.error(err);
+           setModalAviso({
+                type: "error",
+                title: "Ocorreu um problema",
+                message: "Erro ao cadastrar membro, verifique os dados e tente novamente."
+              });
+            console.error(err + 'caiu aqui');
         }
     };
 
@@ -404,6 +422,8 @@ export function FormMembro({ fecharFormulario }) {
                     </div>
                 </form>
             </div>
+            <div className="bg-white border-l rounded-r-lg py-4 px-9 border-icf-primary-100"></div>
+            {modal && <AlertModal {...modal} onClose={() => setModalAviso(null)} />}
         </div>
     );
 }

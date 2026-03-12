@@ -4,13 +4,17 @@ import { ValidacaoSenha } from "../../atoms/Diacono/ValidacaoSenha";
 import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
+import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
+import api from "../../../provider/api";
 import { validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function FormsCadastro3() {
     const navigate = useNavigate();
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const [erros, setErros] = useState({});
+    const [modal, setModal] = useState(null);
 
     const handleChange = (campo, valor) => {
         let novoValor = valor;
@@ -55,27 +59,34 @@ export function FormsCadastro3() {
         const camposObrigatorios = ["email", "senha", "confirmarSenha"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
-        if (camposVazios.length > 0) {
-            alert("Preencha todos os campos para continuar.");
+        if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
+            setModal({
+                type: "warning",
+                title: "Campos obrigatórios",
+                message: "Preencha todos os campos corretamente para continuar."
+            });
             return;
         }
 
-        if (!validarSenhaForte(dadosCadastro.senha)) {
-            alert("A senha deve atender todos os requisitos de segurança.");
-            return;
-        }
-
-        if (dadosCadastro.senha !== dadosCadastro.confirmarSenha) {
-            alert("As senhas não coincidem.");
-            return;
-        }
-
-        if (Object.values(erros).some(e => e)) {
-            alert("Corrija os erros antes de continuar.");
-            return;
-        }
-
-        navigate("/cadastro/etapa4");
+        api.post("/register", dadosCadastro)
+            .then(() => {
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Cadastro concluído com sucesso!",
+                    autoClose: 2000
+                });
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            })
+            .catch(() => {
+                setModal({
+                    type: "error",
+                    title: "Erro",
+                    message: "Erro ao finalizar cadastro."
+                });
+            });
     };
 
     return (
@@ -117,6 +128,7 @@ export function FormsCadastro3() {
             
             {/* Validação visual da senha */}
             <ValidacaoSenha senha={dadosCadastro.senha} />
+            {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
         </CadastroLayout>
     );
 }

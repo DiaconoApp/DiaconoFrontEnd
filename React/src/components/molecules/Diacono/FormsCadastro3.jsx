@@ -1,9 +1,7 @@
 import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
 import { InputSenhaDiacono } from "../../atoms/Diacono/InputSenhaDiacono";
-import { EtapasCadastro } from "../Global/EtapasCadastro";
-import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
-import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
+import { ValidacaoSenha } from "../../atoms/Diacono/ValidacaoSenha";
+import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
@@ -36,22 +34,6 @@ export function FormsCadastro3() {
                 }));
                 break;
 
-            case "senha":
-                const senhaValida = valor?.length >= 8;
-                setErros((prev) => ({
-                    ...prev,
-                    senha: senhaValida ? undefined : "Senha muito curta",
-                }));
-                const confirmarSenha = dadosCadastro.confirmarSenha;
-                if (confirmarSenha) {
-                    const senhasConferem = valor === confirmarSenha;
-                    setErros((prev) => ({
-                        ...prev,
-                        confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
-                    }));
-                }
-                break;
-
             case "confirmarSenha":
                 const senhasConferem = valor === dadosCadastro.senha;
                 setErros((prev) => ({
@@ -63,6 +45,14 @@ export function FormsCadastro3() {
             default:
                 break;
         }
+    };
+
+    const validarSenhaForte = (senha) => {
+        return senha.length >= 8 &&
+            /\d/.test(senha) &&
+            /[a-z]/.test(senha) &&
+            /[A-Z]/.test(senha) &&
+            /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~;']/.test(senha);
     };
 
     const handleAvancar = () => {
@@ -100,53 +90,45 @@ export function FormsCadastro3() {
     };
 
     return (
-
-        <div className="w-[55%] flex flex-col gap-5">
-            <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-            <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className3="bg-diacono-blue-400 text-white" />
-            <div className="flex flex-col gap-5">
+        <CadastroLayout
+            etapaAtual={2}
+            onVoltar={() => navigate('/cadastro/etapa2')}
+            onProximo={handleAvancar}
+        >
+            <div>
+                <InputDiacono
+                    label="Email *"
+                    placeholder="Digite seu email"
+                    value={dadosCadastro.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    onBlur={() => handleBlur("email")}
+                />
+                {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
+            </div>
+            <div className="grid grid-cols-2 gap-6">
                 <div>
-                    <InputDiacono
-                        label="Email *"
-                        placeholder="Digite seu email"
-                        value={dadosCadastro.email}
-                        onChange={(e) => handleChange("email", e.target.value)}
-                        onBlur={() => handleBlur("email")}
+                    <InputSenhaDiacono
+                        texto="Senha *"
+                        placeholder="Digite sua senha"
+                        value={dadosCadastro.senha}
+                        onChange={(e) => handleChange("senha", e.target.value)}
                     />
-                    {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
                 </div>
-                <div className="flex justify-between">
-                    <div>
-                        <InputSenhaDiacono
-                            texto="Senha *"
-                            placeholder="Digite sua senha"
-                            value={dadosCadastro.senha}
-                            onChange={(e) => handleChange("senha", e.target.value)}
-                            onBlur={() => handleBlur("senha")}
-                        />
-                        {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
-                    </div>
-                    <div>
-                        <InputSenhaDiacono
-                            texto="Confirmar Senha *"
-                            placeholder="Confirme a senha"
-                            value={dadosCadastro.confirmarSenha}
-                            onChange={(e) => handleChange("confirmarSenha", e.target.value)}
-                            onBlur={() => handleBlur("confirmarSenha")}
-                        />
-                        {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
-                    </div>
-                </div>
-                <div className='flex flex-col gap-3 items-end'>
-                    <div className="w-full flex gap-40">
-                        <BotaoDiacono onClick={() => navigate('/cadastro/etapa3')}>Voltar</BotaoDiacono>
-                        <BotaoDiacono onClick={handleAvancar}>Finalizar cadastro</BotaoDiacono>
-                    </div>
-                    <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-                    <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
+                <div>
+                    <InputSenhaDiacono
+                        texto="Confirmar Senha *"
+                        placeholder="Confirme a senha"
+                        value={dadosCadastro.confirmarSenha}
+                        onChange={(e) => handleChange("confirmarSenha", e.target.value)}
+                        onBlur={() => handleBlur("confirmarSenha")}
+                    />
+                    {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
                 </div>
             </div>
+            
+            {/* Validação visual da senha */}
+            <ValidacaoSenha senha={dadosCadastro.senha} />
             {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
-        </div >
+        </CadastroLayout>
     );
 }

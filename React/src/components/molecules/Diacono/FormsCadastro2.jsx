@@ -1,8 +1,5 @@
 import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
-import { EtapasCadastro } from "../Global/EtapasCadastro";
-import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
-import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
+import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
@@ -91,73 +88,64 @@ export function FormsCadastro2() {
   };
 
   return (
-
-    <div className="w-[65%] flex flex-col gap-5">
-      <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-      <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-400 text-white" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className3="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
-      <div className="flex flex-col gap-5">
-        <InputDiacono
-          label="Nome Completo *"
-          placeholder="Digite seu nome"
-          value={dadosCadastro.nome}
-          onChange={(e) => handleChange("nome", e.target.value)}
-          onBlur={() => handleBlur("nome")}
-        />
-        <div className="flex justify-between">
-          <div>
-            <InputDiacono
-              label="CPF *"
-              placeholder="Digite seu CPF"
-              value={formatarCpf(dadosCadastro.cpf) || dadosCadastro.cpf}
-              onChange={(e) => handleChange("cpf", e.target.value)}
-              onBlur={() => handleBlur("cpf")}
-            />
-            {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
-          </div>
-          <div>
-            <InputDiacono
-              label="Data de Nascimento *"
-              type="date"
-              className="text-diacono-blue-200"
-              value={dadosCadastro.dataNascimento}
-              onChange={(e) => handleChange("dataNascimento", e.target.value)}
-            />
-          </div>
+    <CadastroLayout
+      etapaAtual={1}
+      onVoltar={() => navigate('/cadastro/etapa1')}
+      onProximo={handleAvancar}
+    >
+      <InputDiacono
+        label="Nome Completo *"
+        placeholder="Digite seu nome"
+        value={dadosCadastro.nome}
+        onChange={(e) => handleChange("nome", e.target.value)}
+        onBlur={() => handleBlur("nome")}
+      />
+      <div className="grid grid-cols-2 gap-6">
+        <div>
+          <InputDiacono
+            label="CPF *"
+            placeholder="Digite seu CPF"
+            value={formatarCpf(dadosCadastro.cpf) || dadosCadastro.cpf}
+            onChange={(e) => handleChange("cpf", e.target.value)}
+            onBlur={() => handleBlur("cpf")}
+          />
+          {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
         </div>
-        <div className="flex justify-between">
-          <div className="flex flex-col gap-1">
-            <label className="text-diacono-blue-400">Gênero *</label>
-            <select
-              value={dadosCadastro.generoMembro}
-              onChange={(e) => handleChange("generoMembro", e.target.value)}
-              className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg py-2.5  px-5 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]"
-            >
-              <option value="" hidden>Selecione seu gênero</option>
-              <option value="MASCULINO">Masculino</option>
-              <option value="FEMININO">Feminino</option>
-            </select>
-          </div>
-          <div>
-            <InputDiacono
-              label="Celular *"
-              placeholder="Digite seu celular"
-              value={formatarTelefone(dadosCadastro.celular) || dadosCadastro.celular}
-              onChange={(e) => handleChange("celular", e.target.value)}
-              onBlur={() => handleBlur("celular")}
-            />
-            {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
-          </div>
-        </div>
-        <div className='flex flex-col gap-3 items-end'>
-          <div className="w-full flex gap-40">
-            <BotaoDiacono onClick={() => navigate('/cadastro/etapa1')}>Voltar</BotaoDiacono>
-            <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
-          </div>
-          <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-          <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
+        <div>
+          <InputDiacono
+            label="Data de Nascimento *"
+            type="date"
+            className="text-diacono-blue-200"
+            value={dadosCadastro.dataNascimento}
+            onChange={(e) => handleChange("dataNascimento", e.target.value)}
+          />
         </div>
       </div>
-      {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
-    </div >
+      <div className="grid grid-cols-2 gap-6">
+        <div className="flex flex-col gap-1">
+          <label className="text-diacono-blue-400">Gênero *</label>
+          <select
+            value={dadosCadastro.generoMembro}
+            onChange={(e) => handleChange("generoMembro", e.target.value)}
+            className="text-diacono-blue-400 border border-diacono-blue-100 rounded-lg py-2.5 px-5 focus:outline-none focus:border-diacono-blue-200 focus:border-3 text-[14px]"
+          >
+            <option value="" hidden>Selecione seu gênero</option>
+            <option value="MASCULINO">Masculino</option>
+            <option value="FEMININO">Feminino</option>
+          </select>
+        </div>
+        <div>
+          <InputDiacono
+            label="Celular *"
+            placeholder="Digite seu celular"
+            value={formatarTelefone(dadosCadastro.celular) || dadosCadastro.celular}
+            onChange={(e) => handleChange("celular", e.target.value)}
+            onBlur={() => handleBlur("celular")}
+          />
+          {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
+        </div>
+        {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
+      </div>
+    </CadastroLayout>
   );
 }

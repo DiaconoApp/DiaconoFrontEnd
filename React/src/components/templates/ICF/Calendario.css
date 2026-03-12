@@ -6,22 +6,62 @@
   font-weight: 600;
   font-size: 0.875rem;
   color: #595959;
-  /* text-transform: capitalize; */
+  padding: 12px 0;
+  text-transform: capitalize;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .fc-daygrid-day {
-  /* height: 110px; aumenta altura */
+  min-height: 80px;
 }
 
 .fc-daygrid-day-number {
   font-size: 0.875rem;
-  font-weight: 400;
-  margin: 4px;
+  font-weight: 500;
+  margin: 8px;
   color: #3F3F3F;
+}
+
+/* Today's date - orange circle */
+.fc-day-today .fc-daygrid-day-number {
+  background-color: #F5A623;
+  color: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Today's column - light cream background */
+.fc-day-today {
+  background-color: #fffbeb !important;
 }
 
 .fc-h-event {
   background-color: transparent !important;
   border: none !important;
   display: block;
+}
+
+/* Grid lines */
+.fc-scrollgrid {
+  border: none !important;
+}
+
+.fc-scrollgrid td,
+.fc-scrollgrid th {
+  border-color: #e5e7eb;
+}
+
+/* Remove outer border */
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: #e5e7eb;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: none;
 }

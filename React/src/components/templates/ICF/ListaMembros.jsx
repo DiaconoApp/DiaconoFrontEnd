@@ -1,50 +1,42 @@
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
-import { InputBuscar } from "../../atoms/ICF/InputBuscar";
-import { SelectIcf } from "../../atoms/ICF/SelectIcf";
-import { LinhaMembro } from "../../molecules/ICF/LinhaMembro";
 import { useEffect, useState } from "react";
-import { FiFilter } from "react-icons/fi";
+import { ExternalLink, Users, Mail, Phone } from "lucide-react";
 import { buscarMinisterios } from "../../../services/ministerios";
 import { transformationName, formatarTelefone, safeFormatDate } from "../../../utils/Utils";
 import { FormMembro } from "../../molecules/ICF/FormMembro";
+import { FormEditarMembro } from "../../molecules/ICF/FormEditarMembro";
 import { buscarMembros } from "../../../services/membros";
+import { PageHeader } from "../../atoms/ICF/PageHeader";
+import { FilterBar } from "../../atoms/ICF/FilterBar";
+import { StatusBadge, MinisterioBadge } from "../../atoms/ICF/DataTable";
+
+// Helper para formatar cargo
+const formatarCargo = (cargo) => {
+    const cargos = {
+        "MEMBRO": "Membro",
+        "LIDER_MINISTERIO": "Líder",
+        "GOVERNO": "Governo",
+    };
+    return cargos[cargo] || cargo || "-";
+};
 
 export function ListaMembros() {
-
     const [abrirForm, setAbrirForm] = useState(false);
-
+    const [membroEditando, setMembroEditando] = useState(null);
     const [membros, setMembros] = useState([]);
 
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(1);
-    const [tamanhoPagina, setTamanhoPagina] = useState(10);
+    const [tamanhoPagina] = useState(10);
 
     const [buscaTexto, setBuscaTexto] = useState("");
     const [statusSelecionado, setStatusSelecionado] = useState("todos");
     const [fkMinisterio, setFkMinisterio] = useState("");
 
-    const resetarFiltros = () => {
-        setBuscaTexto("");
-        setStatusSelecionado("todos");
-        setFkMinisterio("");
-        setPaginaAtual(0);
-    };
-
-
-    const formatarStatus = (status) => {
-        if (!status) return "";
-        return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
-    };
     const adaptarStatus = (status) => {
         const s = status.trim().toLowerCase();
         if (s === "ativos") return "ATIVO";
         if (s === "inativos") return "INATIVO";
         return "";
-    };
-
-    const formatarEmail = (email) => {
-        if (!email) return "";
-        return email.trim().toLowerCase();
     };
 
     const montarFiltros = () => {
@@ -83,112 +75,160 @@ export function ListaMembros() {
             .then((res) => setOptions(res.content || []));
     }, []);
 
-    return (
-        <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
-            {abrirForm ? (
+    // Tela de cadastro
+    if (abrirForm) {
+        return (
+            <div className="flex flex-col gap-6">
                 <FormMembro fecharFormulario={() => { setAbrirForm(false); carregarMembros(); }} />
-            ) : (
-                <>
+            </div>
+        );
+    }
 
-                    <div className="w-full flex justify-end">
-                        <div className="w-[15%]">
-                            <BotaoIcf className="bg-icf-primary-400" onClick={() => { setAbrirForm(true) }}>
-                                Cadastrar Membro +
-                            </BotaoIcf>
-                        </div>
-                    </div>
+    // Tela de edição
+    if (membroEditando) {
+        return (
+            <div className="flex flex-col gap-6">
+                <FormEditarMembro 
+                    idMembro={membroEditando} 
+                    fecharFormulario={() => { setMembroEditando(null); carregarMembros(); }} 
+                />
+            </div>
+        );
+    }
 
-                    <div className="flex items-center gap-3 justify-end">
-                        <div className="w-full">
-                            <InputBuscar
-                                placeholder="Buscar por nome, email, ou celular"
-                                value={buscaTexto}
-                                onChange={(e) => { setPaginaAtual(0); setBuscaTexto(e.target.value); }}
-                            />
-                        </div>
+    return (
+        <div className="flex flex-col gap-6">
+            {/* Header */}
+            <PageHeader
+                titulo="Membros"
+                descricao="Gerencie todos os membros da igreja"
+                textoBotao="Novo Membro"
+                acaoPrimaria={() => setAbrirForm(true)}
+            />
 
-                        <span className="font-medium text-icf-primary-400">Status:</span>
-                        <div className="flex gap-4">
-                            {["todos", "ativos", "inativos"].map((filtro) => (
-                                <button
-                                    key={filtro}
-                                    onClick={() => { setPaginaAtual(0); setStatusSelecionado(filtro); }}
-                                    className={`px-6 py-2 rounded-lg text-sm font-medium ${statusSelecionado === filtro ? "bg-icf-primary-400 text-white" : "text-icf-primary-200 border border-icf-primary-200 hover:bg-icf-primary-50"}`}
-                                >
-                                    {filtro.charAt(0).toUpperCase() + filtro.slice(1)}
-                                </button>
-                            ))}
-                        </div>
+            {/* Content Card */}
+            <div className="bg-white rounded-xl shadow-sm">
+                {/* Filters */}
+                <div className="p-6 border-b border-icf-primary-50">
+                    <FilterBar
+                        searchPlaceholder="Buscar por nome, telefone ou email..."
+                        searchValue={buscaTexto}
+                        onSearchChange={(val) => { setPaginaAtual(0); setBuscaTexto(val); }}
+                        statusValue={statusSelecionado}
+                        onStatusChange={(val) => { setPaginaAtual(0); setStatusSelecionado(val); }}
+                        selectOptions={options}
+                        selectValue={fkMinisterio}
+                        onSelectChange={(val) => { setPaginaAtual(0); setFkMinisterio(val); }}
+                        selectPlaceholder="Todos..."
+                    />
+                </div>
 
-                        <FiFilter className="text-4xl cursor-pointer" onClick={resetarFiltros} />
-
-                        <div className="w-[40%]">
-                            <SelectIcf
-                                opt1={<option value="">Todos os ministérios</option>}
-                                opt2={<option value="null">Nenhum</option>}
-                                options={options}
-                                value={fkMinisterio}
-                                onChange={(val) => { setPaginaAtual(0); setFkMinisterio(val); }}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="flex justify-end">
-                        <ul className="flex flex-col gap-1 w-full">
-                            <li className="grid grid-cols-7 bg-icf-primary-100 text-icf-primary-400 font-bold p-4">
-                                {["Nome", "Email", "Celular", "Data Nascimento", "Ministério", "Status"].map((label) => (
-                                    <span key={label}>{label}</span>
-                                ))}
-                            </li>
-
+                {/* Table */}
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-icf-primary-50">
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Nome
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Celular
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Cargo
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Ministério
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th className="px-6 py-4 w-12"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-icf-primary-50">
                             {membros.length === 0 ? (
-                                <li className="text-center p-4 text-icf-primary-400">Nenhum membro encontrado</li>
+                                <tr>
+                                    <td colSpan={7} className="px-6 py-12 text-center">
+                                        <Users className="w-12 h-12 mx-auto mb-4 text-icf-primary-200" />
+                                        <p className="text-sm text-icf-primary-300">Nenhum membro encontrado</p>
+                                    </td>
+                                </tr>
                             ) : (
                                 membros.map((membro) => (
-                                    <LinhaMembro
-                                        key={membro.idExterno}
-                                        nome={transformationName(membro.nome)}
-                                        email={formatarEmail(membro.email)}
-                                        celular={formatarTelefone(membro.celular)}
-                                        nascimento={safeFormatDate(membro.dataNascimento)}
-                                        ministério={
-                                            membro.ministerios && membro.ministerios.length > 0 ? (
-                                                <div className="flex flex-col">
-                                                    {Array.from({ length: Math.ceil(membro.ministerios.length / 3) }).map((_, i) => (
-                                                        <span key={i}>
-                                                            {membro.ministerios
-                                                                .slice(i * 3, i * 3 + 3)
-                                                                .map(m => transformationName(m.nomeMinisterio))
-                                                                .join(", ")}
-                                                        </span>
-                                                    ))}
-                                                </div>
+                                    <tr key={membro.idExterno} className="hover:bg-icf-primary-50/50 transition-colors">
+                                        <td className="px-6 py-4 text-sm font-medium text-icf-primary-400">
+                                            {transformationName(membro.nome)}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-icf-primary-300">
+                                            <div className="flex items-center gap-2">
+                                                <Mail className="w-4 h-4 text-icf-primary-200" />
+                                                {membro.email?.toLowerCase() || "-"}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-icf-primary-300">
+                                            <div className="flex items-center gap-2">
+                                                <Phone className="w-4 h-4 text-icf-primary-200" />
+                                                {formatarTelefone(membro.celular) || "-"}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-icf-primary-300">
+                                            {formatarCargo(membro.cargo)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {membro.ministerios && membro.ministerios.length > 0 ? (
+                                                <MinisterioBadge 
+                                                    nome={transformationName(membro.ministerios[0]?.nomeMinisterio)}
+                                                    count={membro.ministerios.length - 1}
+                                                />
                                             ) : (
-                                                "Nenhum"
-                                            )
-                                        }
-                                        qtdMinistério={membro.ministerios?.length || 0}
-                                        status={formatarStatus(membro.status)}
-                                    />
+                                                <span className="text-sm text-icf-primary-200">-</span>
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <StatusBadge status={membro.status} />
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <button 
+                                                onClick={() => setMembroEditando(membro.idExterno)}
+                                                className="text-icf-primary-200 hover:text-icf-primary-400 transition-colors"
+                                            >
+                                                <ExternalLink className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
                                 ))
                             )}
-                        </ul>
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Pagination */}
+                {totalPaginas > 1 && (
+                    <div className="px-6 py-4 border-t border-icf-primary-50 flex items-center justify-center gap-4">
+                        <button
+                            onClick={() => setPaginaAtual((prev) => prev - 1)}
+                            disabled={paginaAtual === 0}
+                            className="px-4 py-2 text-sm font-medium text-icf-primary-400 bg-icf-primary-50 rounded-lg hover:bg-icf-primary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Anterior
+                        </button>
+                        <span className="text-sm text-icf-primary-300">
+                            Página {paginaAtual + 1} de {totalPaginas}
+                        </span>
+                        <button
+                            onClick={() => setPaginaAtual((prev) => prev + 1)}
+                            disabled={paginaAtual >= totalPaginas - 1}
+                            className="px-4 py-2 text-sm font-medium text-icf-primary-400 bg-icf-primary-50 rounded-lg hover:bg-icf-primary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Próxima
+                        </button>
                     </div>
-
-                    <div className="flex items-center gap-5 justify-center mt-4">
-                        {paginaAtual > 0 && (
-                            <button onClick={() => setPaginaAtual((prev) => prev - 1)} className="px-4 py-2 bg-icf-primary-200 text-icf-primary-400 rounded">Anterior</button>
-                        )}
-
-                        <span>Página {paginaAtual + 1}</span>
-
-                        {paginaAtual < totalPaginas - 1 && (
-                            <button onClick={() => setPaginaAtual(paginaAtual + 1)} className="px-4 py-2 bg-icf-primary-200 text-icf-primary-400 rounded">Próxima</button>
-                        )}
-                    </div>
-                </>
-            )}
+                )}
+            </div>
         </div>
-
     );
 }

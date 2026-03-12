@@ -23,7 +23,7 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
     { length: anoFim - anoInicio + 1 },
     (_, i) => anoInicio + i
   );
-  const cores = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"];
+  const cores = ["#1f2937", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb"];
 
   const mesesNome = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
@@ -93,14 +93,14 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
   // const anos = Array.from({ length: anoFim - anoInicio + 1 }, (_, i) => anoInicio + i);
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 w-full">
+    <div className="bg-white rounded-xl shadow-sm p-5">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Evolução de Membros do Ministério</h2>
+        <h2 className="font-semibold text-icf-primary-400">Evolução de Membros</h2>
 
         <select
           value={idMinisterioSelecionado || ""}
           onChange={(e) => setIdMinisterioSelecionado(e.target.value)}
-          className="border border-[#AEAEB2] rounded-lg text-[#AEAEB2] bg-white px-3 py-2"
+          className="border border-gray-300 rounded-lg text-gray-500 bg-white px-3 py-1.5 text-sm"
         >
           {ministerios.map((m) => (
             <option key={m.idExterno} value={m.idExterno}>
@@ -113,9 +113,25 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={dados}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
-          <XAxis dataKey="mes" />
-          <YAxis />
-          <Tooltip />
+          <XAxis 
+            dataKey="mes"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 11, fill: '#6b7280' }}
+          />
+          <YAxis 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 11, fill: '#6b7280' }}
+          />
+          <Tooltip 
+            contentStyle={{ 
+              backgroundColor: '#fff', 
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}
+          />
           <Legend />
 
           {anos.map((ano, index) => (
@@ -125,7 +141,7 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
               dataKey={ano}
               stroke={cores[index % cores.length]}
               strokeWidth={2}
-              dot={{ r: 4 }}
+              dot={{ r: 3 }}
               name={`${ano}`}
             />
           ))}

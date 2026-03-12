@@ -1,8 +1,9 @@
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
-import { TituloModal } from "../../atoms/ICF/TituloModal";
+import { BaseModal } from "../../atoms/ICF/BaseModal";
+import { Button } from "@/components/ui/button";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
     numero: "",
     apelido: "",
   });
+  const [modal, setModal] = useState(null);
 
   function salvar() {
     onSalvarEndereco(formData);
@@ -66,19 +68,45 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
           estado: response.data.uf,
         }));
       } else {
-        alert("CEP não encontrado.");
+        setModal({
+          type: "error",
+          title: "CEP não encontrado",
+          message: "CEP não encontrado."
+        });
       }
     } catch (error) {
-      alert("Erro ao buscar endereço pelo CEP.");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao buscar endereço pelo CEP."
+      });
     }
   };
 
   return (
-    <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-      <div className="w-[90%] flex flex-col gap-4">
-        <TituloModal titulo={local ? "Editar Local" : "Novo Local"} onClose={onClose}/>
-        <div className="border border-icf-primary-50"></div>
-        
+    <BaseModal
+      title={local ? "Editar Local" : "Novo Local"}
+      onClose={onClose}
+      size="md"
+      footer={
+        <div className="flex gap-3 w-full">
+          <Button
+            onClick={salvar}
+            className="flex-1 bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
+          >
+            Salvar
+          </Button>
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="flex-1 border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
+          >
+            Cancelar
+          </Button>
+        </div>
+      }
+    >
+      <div className="space-y-4">
         <InputIcf 
           name="cep" 
           value={formData.cep} 
@@ -94,7 +122,7 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
           placeholder={"Ex: Rua Japão"} 
           disabled={!!formData.rua}
         />
-        <div className="flex gap-8">
+        <div className="flex gap-4">
           <InputIcf 
             name="cidade" 
             value={formData.cidade} 
@@ -112,7 +140,7 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
             disabled={!!formData.bairro}
           />
         </div>
-        <div className="flex gap-8">
+        <div className="flex gap-4">
           <InputIcf  
             name="numero" 
             value={formData.numero} 
@@ -135,14 +163,8 @@ export function ModalLocal1({ onClose, onSalvarEndereco, local }) {
           label={"Apelido do Endereço"} 
           placeholder={"Ex: Igreja ICF"} 
         />
-        
-        <div className="w-full flex justify-end gap-4">
-          <div className="w-[60%] flex gap-5">
-            <BotaoIcf className="bg-icf-primary-400" onClick={salvar}>Salvar</BotaoIcf>
-            <BotaoIcf className="bg-icf-primary-200" onClick={onClose}>Cancelar</BotaoIcf>
-          </div>
-        </div>
       </div>
-    </div>
+      {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
+    </BaseModal>
   );
 }

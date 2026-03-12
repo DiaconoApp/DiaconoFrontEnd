@@ -1,11 +1,12 @@
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
+import { BaseModal } from "../../atoms/ICF/BaseModal";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
-import { TituloModal } from "../../atoms/ICF/TituloModal";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cadastrarMinisterio, atualizarMinisterio } from "../../../services/ministerios";
 import api from '../../../provider/api';
 import { transformationName } from "../../../utils/Utils";
 import Select from "react-select";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function ModalMinisterio({
     tipo = "criar",
@@ -17,6 +18,7 @@ export function ModalMinisterio({
     const [idLider, setIdLider] = useState("");
     const [status, setStatus] = useState("");
     const [carregando, setCarregando] = useState(false);
+    const [modal, setModal] = useState(null);
 
     // Listar os membros no select
     const [listaMembros, setListaMembros] = useState([]);
@@ -70,15 +72,31 @@ export function ModalMinisterio({
                     dados,
                     idMinisterio: ministerio.idExterno,
                 });
-                alert("Ministério editado com sucesso!");
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Ministério editado com sucesso!",
+                    autoClose: 2000
+                });
             } else {
                 resultado = await cadastrarMinisterio(dados);
-                alert("Ministério cadastrado com sucesso!");
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Ministério cadastrado com sucesso!",
+                    autoClose: 2000
+                });
             }
 
-            onSalvar(resultado);
+            setTimeout(() => {
+                onSalvar(resultado);
+            }, 2000);
         } catch (err) {
-            alert(`Erro ao ${tipo === "editar" ? "editar" : "salvar"} ministério.`);
+            setModal({
+                type: "error",
+                title: "Erro",
+                message: `Erro ao ${tipo === "editar" ? "editar" : "salvar"} ministério.`
+            });
         } finally {
             setCarregando(false);
         }
@@ -92,10 +110,33 @@ export function ModalMinisterio({
 
 
     return (
-        <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-140 py-8 px-4">
-            <div className="w-[90%] flex flex-col gap-5">
-                <TituloModal titulo={titulo} onClose={onCancelar} />
-
+        <BaseModal
+            title={titulo}
+            onClose={onCancelar}
+            size="md"
+            allowOverflow={true}
+            footer={
+                <>
+                    <Button
+                        variant="outline"
+                        onClick={onCancelar}
+                        className="border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
+                    >
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={handleSalvar}
+                        disabled={carregando}
+                        className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
+                    >
+                        {carregando
+                            ? tipo === "editar" ? "Editando..." : "Salvando..."
+                            : tipo === "editar" ? "Editar" : "Salvar"}
+                    </Button>
+                </>
+            }
+        >
+            <div className="space-y-5">
                 <InputIcf
                     label="Nome do Ministério"
                     placeholder="Digite o nome do ministério"
@@ -104,27 +145,30 @@ export function ModalMinisterio({
                 />
 
                 <div className="flex flex-col gap-1">
-                    Líder do Ministério
-                    <Select className="text-sm" styles={{
-                        control: (base) => ({
-                            ...base,
-                            padding: "4px",
-                        })
-                    }}
+                    <label className="text-sm font-medium text-icf-primary-400">Líder do Ministério</label>
+                    <Select 
+                        className="text-sm" 
+                        styles={{
+                            control: (base) => ({
+                                ...base,
+                                padding: "4px",
+                                borderColor: "#c9c9c9",
+                                borderRadius: "8px",
+                            })
+                        }}
                         options={options}
                         value={options.find((opt) => opt.value === idLider)}
                         onChange={(selected) => setIdLider(selected ? selected.value : "")}
                         placeholder="Selecione um líder"
                         isClearable
                     />
-
                 </div>
 
                 {tipo === "editar" && (
-                    <div>
+                    <div className="flex flex-col gap-1">
                         <label className="text-sm font-medium text-icf-primary-400">Status</label>
                         <select
-                            className="w-full mt-1 border border-icf-primary-200 rounded p-2 outline-none"
+                            className="w-full border border-icf-primary-200 rounded-lg p-1 outline-none focus:ring-1 focus:ring-icf-primary-200 text-xs"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                         >
@@ -133,27 +177,8 @@ export function ModalMinisterio({
                         </select>
                     </div>
                 )}
-
-                <div className="flex flex-col gap-6">
-                    <div className="flex justify-end gap-6 pt-4">
-                        <div className="w-[60%] flex gap-4">
-                            <BotaoIcf className="bg-icf-primary-200" onClick={onCancelar}>
-                                Cancelar
-                            </BotaoIcf>
-                            <BotaoIcf
-                                className="bg-icf-primary-400"
-                                onClick={handleSalvar}
-                                disabled={carregando}
-                            >
-                                {carregando
-                                    ? tipo === "editar" ? "Editando..." : "Salvando..."
-                                    : tipo === "editar" ? "Editar" : "Salvar"}
-
-                            </BotaoIcf>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
+            {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
+        </BaseModal>
     );
 }

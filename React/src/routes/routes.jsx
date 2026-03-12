@@ -43,8 +43,8 @@ export function AppRoutes() {
             children: [
                 { path: "cadastro/etapa1", element: <Cadastro1 /> },
                 { path: "cadastro/etapa2", element: <Cadastro2 /> },
-                { path: "cadastro/etapa3", element: <Cadastro3 /> },
-                { path: "cadastro/etapa4", element: <Cadastro4 /> },
+                { path: "cadastro/etapa3", element: <Cadastro4 /> },
+                { path: "cadastro/etapa4", element: <Cadastro3 /> },
 
             ],
             errorElement: <div>Error</div>,

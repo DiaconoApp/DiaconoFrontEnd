@@ -7,6 +7,7 @@ import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
+import api from "../../../provider/api";
 import { validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
 import { AlertModal } from "../../ui/AlertModal";
@@ -77,14 +78,32 @@ export function FormsCadastro3() {
             return;
         }
 
-        navigate("/cadastro/etapa4");
+        api.post("/register", dadosCadastro)
+            .then(() => {
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Cadastro concluído com sucesso!",
+                    autoClose: 2000
+                });
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            })
+            .catch(() => {
+                setModal({
+                    type: "error",
+                    title: "Erro",
+                    message: "Erro ao finalizar cadastro."
+                });
+            });
     };
 
     return (
 
         <div className="w-[55%] flex flex-col gap-5">
             <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-            <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-400 text-white" className3="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
+            <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className3="bg-diacono-blue-400 text-white" />
             <div className="flex flex-col gap-5">
                 <div>
                     <InputDiacono
@@ -120,8 +139,8 @@ export function FormsCadastro3() {
                 </div>
                 <div className='flex flex-col gap-3 items-end'>
                     <div className="w-full flex gap-40">
-                        <BotaoDiacono onClick={() => navigate('/cadastro/etapa2')}>Voltar</BotaoDiacono>
-                        <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
+                        <BotaoDiacono onClick={() => navigate('/cadastro/etapa3')}>Voltar</BotaoDiacono>
+                        <BotaoDiacono onClick={handleAvancar}>Finalizar cadastro</BotaoDiacono>
                     </div>
                     <BotaoGoogle>Entrar com o Google</BotaoGoogle>
                     <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />

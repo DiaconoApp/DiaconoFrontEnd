@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
-import { InputBuscar } from "../../atoms/ICF/InputBuscar";
-import { FiFilter } from "react-icons/fi";
-import { LinhaMinisterio } from "../../molecules/ICF/LinhaMinisterio";
-import { SelectIcf } from "../../atoms/ICF/SelectIcf";
+import { ExternalLink, Church } from "lucide-react";
 import { ModalMinisterio } from "../../molecules/ICF/ModalMinisterio";
 import { buscarMinisterios } from "../../../services/ministerios";
 import { safeFormatDate, transformationName } from "../../../utils/Utils";
+import { PageHeader } from "../../atoms/ICF/PageHeader";
+import { FilterBar } from "../../atoms/ICF/FilterBar";
+import { StatusBadge } from "../../atoms/ICF/DataTable";
 
 export function ListaMinisterios() {
     const [modalAberto, setModalAberto] = useState(false);
@@ -20,9 +19,7 @@ export function ListaMinisterios() {
 
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(1);
-    const [tamanhoPagina] = useState(6);
-
-    var governo = false;
+    const [tamanhoPagina] = useState(10);
 
     const abrirModalCriar = () => {
         setModoEdicao(false);
@@ -33,17 +30,6 @@ export function ListaMinisterios() {
         setModoEdicao(true);
         setMinisterioSelecionado(ministerio);
         setModalAberto(true);
-    };
-
-    const resetarFiltros = () => {
-        setBuscaTexto("");
-        setStatusSelecionado("todos");
-        setPaginaAtual(0);
-    };
-
-    const formatarStatus = (status) => {
-        if (!status) return "";
-        return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     };
 
     const adaptarStatus = (status) => {
@@ -82,113 +68,119 @@ export function ListaMinisterios() {
     }, [paginaAtual, buscaTexto, statusSelecionado, tamanhoPagina]);
 
     return (
-        <div className="h-full w-full bg-white p-4 flex flex-col gap-5">
-            {/* Botão */}
-            <div className="w-full flex justify-end">
-                <div className="w-[15%]">
-                    <BotaoIcf className="bg-icf-primary-400" onClick={abrirModalCriar}>Cadastrar Ministério +</BotaoIcf>
-                </div>
-            </div>
+        <div className="flex flex-col gap-6">
+            {/* Header */}
+            <PageHeader
+                titulo="Ministérios"
+                descricao="Gerencie todos os ministérios da igreja"
+                textoBotao="Novo Ministério"
+                acaoPrimaria={abrirModalCriar}
+            />
 
-            {/* Filtros */}
-            <div className="flex items-center gap-3 justify-end">
-                <div className="w-full">
-                    <InputBuscar
-                        placeholder="Buscar por nome"
-                        value={buscaTexto}
-                        onChange={(e) => { setPaginaAtual(0); setBuscaTexto(e.target.value); }}
+            {/* Content Card */}
+            <div className="bg-white rounded-xl shadow-sm">
+                {/* Filters */}
+                <div className="p-6 border-b border-icf-primary-50">
+                    <FilterBar
+                        searchPlaceholder="Buscar por nome do ministério..."
+                        searchValue={buscaTexto}
+                        onSearchChange={(val) => { setPaginaAtual(0); setBuscaTexto(val); }}
+                        statusValue={statusSelecionado}
+                        onStatusChange={(val) => { setPaginaAtual(0); setStatusSelecionado(val); }}
                     />
                 </div>
 
-                <span className="font-medium text-icf-primary-400">Status:</span>
-                <div className="flex gap-4">
-                    {["todos", "Ativo", "Inativo"].map((filtro) => (
-                        <button
-                            key={filtro}
-                            onClick={() => { setPaginaAtual(0); setStatusSelecionado(filtro.toLowerCase()); }}
-                            className={`px-6 py-2 rounded-lg text-sm font-medium ${statusSelecionado === filtro.toLowerCase()
-                                ? "bg-icf-primary-400 text-white"
-                                : "text-icf-primary-200 border border-icf-primary-200 hover:bg-icf-primary-50"}`}
-                        >
-                            {filtro.charAt(0).toUpperCase() + filtro.slice(1)}
-                        </button>
-                    ))}
+                {/* Table */}
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead>
+                            <tr className="border-b border-icf-primary-50">
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Nome do Ministério
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Líder
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th className="px-6 py-4 text-left text-xs font-semibold text-icf-primary-300 uppercase tracking-wider">
+                                    Data de Criação
+                                </th>
+                                <th className="px-6 py-4 w-12"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-icf-primary-50">
+                            {ministerios.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-12 text-center">
+                                        <Church className="w-12 h-12 mx-auto mb-4 text-icf-primary-200" />
+                                        <p className="text-sm text-icf-primary-300">Nenhum ministério encontrado</p>
+                                    </td>
+                                </tr>
+                            ) : (
+                                ministerios.map((m) => (
+                                    <tr key={m.idExterno} className="hover:bg-icf-primary-50/50 transition-colors">
+                                        <td className="px-6 py-4 text-sm font-medium text-icf-primary-400">
+                                            {transformationName(m.nome)}
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-icf-primary-300">
+                                            {transformationName(m.nomeLider)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <StatusBadge status={m.status} />
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-icf-primary-300">
+                                            {safeFormatDate(m.dataCriacao)}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <button
+                                                onClick={() => abrirModalEditar(m)}
+                                                className="text-icf-primary-200 hover:text-icf-primary-400 transition-colors"
+                                            >
+                                                <ExternalLink className="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
                 </div>
 
-                <FiFilter className="text-4xl cursor-pointer" onClick={resetarFiltros} />
-
-                {governo && (
-                    <div className="w-[40%]">
-                        <SelectIcf
-                            opt1={<option value="">Todos os ministérios</option>}
-                            opt2={<option value="null">Nenhum</option>}
-                            // options={options}
-                            // value={fkMinisterio}
-                            // onChange={(val) => { setPaginaAtual(0); setIdFiltroMinisterio(val); }}
-                        />
+                {/* Pagination */}
+                {totalPaginas > 1 && (
+                    <div className="px-6 py-4 border-t border-icf-primary-50 flex items-center justify-center gap-4">
+                        <button
+                            onClick={() => setPaginaAtual((prev) => prev - 1)}
+                            disabled={paginaAtual === 0}
+                            className="px-4 py-2 text-sm font-medium text-icf-primary-400 bg-icf-primary-50 rounded-lg hover:bg-icf-primary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Anterior
+                        </button>
+                        <span className="text-sm text-icf-primary-300">
+                            Página {paginaAtual + 1} de {totalPaginas}
+                        </span>
+                        <button
+                            onClick={() => setPaginaAtual((prev) => prev + 1)}
+                            disabled={paginaAtual >= totalPaginas - 1}
+                            className="px-4 py-2 text-sm font-medium text-icf-primary-400 bg-icf-primary-50 rounded-lg hover:bg-icf-primary-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >
+                            Próxima
+                        </button>
                     </div>
-                )
-                }
-            </div>
-
-            {/* Lista */}
-            <div className="flex justify-end">
-                <ul className="flex flex-col gap-1 w-full">
-                    <li className="grid grid-cols-4 bg-icf-primary-100 text-icf-primary-400 font-bold p-4">
-                        {["Nome do Ministério", "Líder", "Status", "Data de criação"].map((label) => (
-                            <span key={label}>{label}</span>
-                        ))}
-                    </li>
-
-                    {ministerios.length === 0 ? (
-                        <li className="text-center p-4 text-icf-primary-400">Nenhum ministério encontrado</li>
-                    ) : (
-                        ministerios.map((m) => (
-                            <LinhaMinisterio
-                                key={m.idExterno}
-                                nome={transformationName(m.nome)}
-                                lider={transformationName(m.nomeLider)}
-                                status={formatarStatus(m.status)}
-                                onEditar={() => abrirModalEditar(m)}
-                                dataCriacao={safeFormatDate(m.dataCriacao)}
-                            />
-                        ))
-                    )}
-                </ul> 
-            </div>
-
-            {/* Paginação */}
-            <div className="flex items-center gap-5 justify-center mt-4">
-                {paginaAtual > 0 && (
-                    <button
-                        onClick={() => setPaginaAtual((prev) => prev - 1)}
-                        className="px-4 py-2 bg-icf-primary-200 text-icf-primary-400 rounded"
-                    >
-                        Anterior
-                    </button>
-                )}
-
-                <span>Página {paginaAtual + 1} de {totalPaginas}</span>
-
-                {paginaAtual < totalPaginas - 1 && (
-                    <button
-                        onClick={() => setPaginaAtual((prev) => prev + 1)}
-                        className="px-4 py-2 bg-icf-primary-200 text-icf-primary-400 rounded"
-                    >
-                        Próxima
-                    </button>
                 )}
             </div>
+
+            {/* Modal */}
             {modalAberto && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
                     <ModalMinisterio
                         tipo={modoEdicao ? "editar" : "criar"}
                         ministerio={ministerioSelecionado}
-                        onSalvar={(dados) => {
-                            resetarFiltros();
+                        onSalvar={() => {
                             carregarMinisterios();
                             setModalAberto(false);
-                            setPaginaAtual(0);
                         }}
                         onCancelar={() => setModalAberto(false)}
                     />

@@ -238,3 +238,21 @@ export const formatarCargo = (cargo) => {
   }
 };
 
+export const formatarData = (data) => {
+  if (!data) return "";
+  const date = new Date(data);
+  return date.toLocaleDateString("pt-BR");
+};
+
+export const calcularIdade = (dataNascimento) => {
+  if (!dataNascimento) return null;
+  const hoje = new Date();
+  const nascimento = new Date(dataNascimento);
+  let idade = hoje.getFullYear() - nascimento.getFullYear();
+  const mes = hoje.getMonth() - nascimento.getMonth();
+  if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+    idade--;
+  }
+  return idade;
+};
+

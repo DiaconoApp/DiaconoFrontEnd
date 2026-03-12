@@ -19,7 +19,7 @@ const CTA = () => {
   }, []);
   
   return (
-    <section id="cta" className="py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
+    <section id="cta" className="py-16 sm:py-20 md:py-24 lg:py-32 relative overflow-hidden bg-diacono-blue-400" ref={ref}>
       {/* Dotted Background */}
       <div className="absolute inset-0 dotted-texture opacity-50"></div>
       
@@ -50,7 +50,7 @@ const CTA = () => {
             <Button
               size="lg"
               onClick={() => navigate('/cadastro/etapa1')}
-              className="bg-white text-[#1e3a5f] hover:bg-white/90 px-10 py-6 rounded-lg font-semibold shadow-lg text-base"
+              className="bg-white text-diacono-blue-400 hover:bg-white/90 px-10 py-6 rounded-lg font-semibold shadow-lg text-base"
             >
               Criar conta
             </Button>

@@ -23,7 +23,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="inicio" className="min-h-screen relative overflow-hidden bg-[#1e3a5f] flex items-center justify-center">
+    <section id="inicio" className="min-h-screen relative overflow-hidden bg-diacono-blue-400 flex items-center justify-center">
       {/* Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-[500px] h-[500px] bg-white/20 rounded-full blur-[150px] animate-pulse"></div>
@@ -63,7 +63,7 @@ const Hero = () => {
                 <Button
                   size="lg"
                   onClick={() => navigate('/cadastro/etapa1')}
-                  className="bg-white text-primary hover:bg-white/90 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] px-8 py-6 rounded-lg font-medium shadow-lg transition-all duration-300"
+                  className="bg-white text-diacono-blue-400 hover:bg-white/90 hover:shadow-[0_0_15px_rgba(255,255,255,0.4)] px-8 py-6 rounded-lg font-medium shadow-lg transition-all duration-300"
                 >
                   Criar conta
                 </Button>
@@ -120,7 +120,7 @@ const Hero = () => {
       {/* Bottom Wave */}
       <div className="absolute bottom-0 left-0 right-0 -mb-px">
         <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
-          <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 80C1200 80 1320 70 1380 65L1440 60V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="hsl(0 0% 96%)"/>
+          <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 80C1200 80 1320 70 1380 65L1440 60V120H1380C1320 120 1200 120 1OTH125C965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P965P9 sixty" fill="hsl(０ ０%９６%)"/>
         </svg>
       </div>
     </section>

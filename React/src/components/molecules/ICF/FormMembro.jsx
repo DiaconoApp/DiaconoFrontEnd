@@ -6,6 +6,9 @@ import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone, validaEmail } from "../../../utils/Utils";
 import { buscarMinisterios } from "../../../services/ministerios";
 import { cadastrarMembro } from "../../../services/membros";
+import { PageHeader } from "../../atoms/ICF/PageHeader";
+import { Button } from "@/components/ui/button";
+import { X, Save, User, Lock, Church, MapPin } from "lucide-react";
 
 export function FormMembro({ fecharFormulario }) {
     const [erros, setErros] = useState({});
@@ -182,17 +185,46 @@ export function FormMembro({ fecharFormulario }) {
     };
 
     return (
-        <div className="flex w-full">
-            <div className="bg-white rounded-l-lg p-6 w-[80%]">
-                <h2 className="text-2xl font-bold tracking-[-0.4px] mb-4">Cadastrar Membro</h2>
+        <div className="flex flex-col gap-6">
+            {/* Header */}
+            <PageHeader
+                titulo="Cadastrar Membro"
+                descricao="Preencha os dados do novo membro"
+            >
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={fecharFormulario}
+                    className="border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50 gap-2"
+                >
+                    <X className="w-4 h-4" />
+                    Cancelar
+                </Button>
+                <Button
+                    form="form-membro"
+                    type="submit"
+                    className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white gap-2"
+                >
+                    <Save className="w-4 h-4" />
+                    Cadastrar
+                </Button>
+            </PageHeader>
 
-                <div className="">
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-
-                        <div className="grid grid-cols-2 gap-4 w-full">
+            {/* Content Card */}
+            <div className="bg-white rounded-xl shadow-sm p-8">
+                <form id="form-membro" onSubmit={handleSubmit} className="flex flex-col gap-8">
+                    
+                    {/* Seção: Dados Pessoais */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 pb-2 border-b border-icf-primary-50">
+                            <User className="w-5 h-5 text-icf-primary-400" />
+                            <h3 className="font-semibold text-icf-primary-400">Dados Pessoais</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <InputIcf
                                 label="Nome Completo"
-                                placeholder={"Digite o nome completo"}
+                                placeholder="Digite o nome completo"
                                 value={dadosCadastro.nome}
                                 onChange={(e) => handleChange("nome", e.target.value)}
                                 onBlur={() => handleBlur("nome")}
@@ -200,17 +232,16 @@ export function FormMembro({ fecharFormulario }) {
                             <div className="w-full">
                                 <InputIcf
                                     label="CPF"
-                                    placeholder={"Digite o cpf"}
+                                    placeholder="Digite o CPF"
                                     value={formatarCpf(dadosCadastro.cpf) || dadosCadastro.cpf}
                                     onChange={(e) => handleChange("cpf", e.target.value)}
                                     onBlur={() => handleBlur("cpf")}
-
                                 />
-                                {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
+                                {erros.cpf && <div className="text-danger-500 text-sm mt-1">{erros.cpf}</div>}
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <InputIcf
                                 label="Data de Nascimento"
                                 type="date"
@@ -220,130 +251,159 @@ export function FormMembro({ fecharFormulario }) {
                             <div className="w-full">
                                 <InputIcf
                                     label="Celular"
-                                    placeholder={"Ex: (11) 91234-5678"}
+                                    placeholder="Ex: (11) 91234-5678"
                                     value={formatarTelefone(dadosCadastro.celular) || dadosCadastro.celular}
                                     onChange={(e) => handleChange("celular", e.target.value)}
                                     onBlur={() => handleBlur("celular")}
                                 />
-                                {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
+                                {erros.celular && <div className="text-danger-500 text-sm mt-1">{erros.celular}</div>}
                             </div>
                             <div className="w-full">
                                 <div className="flex flex-col gap-1">
-                                    <label className="text-icf-primary-400">Gênero *</label>
+                                    <label className="text-icf-primary-400 text-sm font-medium">Gênero *</label>
                                     <select
                                         value={dadosCadastro.generoMembro}
                                         onChange={(e) => handleChange("generoMembro", e.target.value)}
-                                        className="text-icf-primary-400 border border-icf-primary-200 bg-surface-50 rounded-lg p-[11px] focus:outline-none focus:border-icf-primary-200 focus:border-3 text-[14px]"
+                                        className="text-icf-primary-400 border border-icf-primary-200 bg-surface-50 rounded-lg p-[11px] focus:outline-none focus:ring-2 focus:ring-icf-primary-200 text-sm"
                                     >
-                                        <option value="" disabled>Selecione seu gênero</option>
+                                        <option value="" disabled>Selecione o gênero</option>
                                         <option value="MASCULINO">Masculino</option>
                                         <option value="FEMININO">Feminino</option>
                                     </select>
                                 </div>
                             </div>
-
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="w-full">
                                 <InputIcf
                                     label="Email"
-                                    placeholder={"Digite o email"}
+                                    placeholder="Digite o email"
                                     value={dadosCadastro.email}
                                     onChange={(e) => handleChange("email", e.target.value)}
                                     onBlur={() => handleBlur("email")}
                                 />
-                                {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
+                                {erros.email && <div className="text-danger-500 text-sm mt-1">{erros.email}</div>}
                             </div>
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4 w-full">
+                    {/* Seção: Credenciais */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 pb-2 border-b border-icf-primary-50">
+                            <Lock className="w-5 h-5 text-icf-primary-400" />
+                            <h3 className="font-semibold text-icf-primary-400">Credenciais de Acesso</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="w-full">
                                 <InputSenhaIcf
                                     texto="Senha"
-                                    placeholder={"Digite a senha"}
+                                    placeholder="Digite a senha"
                                     value={dadosCadastro.senha}
                                     onChange={(e) => handleChange("senha", e.target.value)}
                                     onBlur={() => handleBlur("senha")}
                                 />
-                                {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
+                                {erros.senha && <div className="text-danger-500 text-sm mt-1">{erros.senha}</div>}
                             </div>
                             <div className="w-full">
                                 <InputSenhaIcf
                                     texto="Confirmar Senha"
-                                    placeholder={"Confirme a senha"}
+                                    placeholder="Confirme a senha"
                                     value={dadosCadastro.confirmarSenha}
                                     onChange={(e) => handleChange("confirmarSenha", e.target.value)}
                                     onBlur={() => handleBlur("confirmarSenha")}
                                 />
-                                {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
+                                {erros.confirmarSenha && <div className="text-danger-500 text-sm mt-1">{erros.confirmarSenha}</div>}
                             </div>
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4 w-full">
+                    {/* Seção: Ministério */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 pb-2 border-b border-icf-primary-50">
+                            <Church className="w-5 h-5 text-icf-primary-400" />
+                            <h3 className="font-semibold text-icf-primary-400">Ministério e Cargo</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <SelectIcf
-                                opt1={<option value="">Nenhum</option>}
+                                placeholder="Nenhum"
                                 label="Ministério"
                                 options={options}
                                 value={dadosCadastro.idExternoMinisterios}
                                 onChange={(valor) => handleChange("idExternoMinisterios", valor)}
                             />
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-sm font-medium text-icf-primary-400">Cargo</label>
+                                <select
+                                    value={dadosCadastro.cargo}
+                                    onChange={(e) => handleChange("cargo", e.target.value)}
+                                    className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
+                                >
+                                    <option value="MEMBRO">Membro</option>
+                                    <option value="LIDER_MINISTERIO">Líder de Ministério</option>
+                                    <option value="GOVERNO">Governo</option>
+                                </select>
+                            </div>
                         </div>
+                    </div>
 
-                        <div className="grid grid-cols-3 gap-4 w-full">
+                    {/* Seção: Endereço */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 pb-2 border-b border-icf-primary-50">
+                            <MapPin className="w-5 h-5 text-icf-primary-400" />
+                            <h3 className="font-semibold text-icf-primary-400">Endereço</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <InputIcf
                                 label="CEP"
-                                placeholder={"Digite o CEP"}
+                                placeholder="Digite o CEP"
                                 value={dadosCadastro.cep}
                                 onChange={(e) => handleCepChange(e.target.value)}
                             />
                         </div>
-                        <div className="grid grid-cols-3 gap-4 w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <InputIcf
                                 label="Rua/Avenida"
-                                placeholder={"Digite a rua"}
+                                placeholder="Digite a rua"
                                 value={dadosCadastro.rua}
                                 onChange={(e) => handleChange("rua", e.target.value)}
                                 disabled={!!dadosCadastro.rua}
                             />
                             <InputIcf
                                 label="Bairro"
-                                placeholder={"Digite o bairro"}
+                                placeholder="Digite o bairro"
                                 value={dadosCadastro.bairro}
                                 onChange={(e) => handleChange("bairro", e.target.value)}
-                                disabled={!!dadosCadastro.bairro} />
+                                disabled={!!dadosCadastro.bairro}
+                            />
                             <InputIcf
                                 label="Cidade"
-                                placeholder={"Digite a cidade"}
+                                placeholder="Digite a cidade"
                                 value={dadosCadastro.cidade}
                                 onChange={(e) => handleChange("cidade", e.target.value)}
-                                disabled={!!dadosCadastro.cidade} />
+                                disabled={!!dadosCadastro.cidade}
+                            />
                         </div>
-                        <div className="grid grid-cols-3 gap-4 w-full">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <InputIcf
                                 label="Número"
-                                placeholder={"Digite o número"}
+                                placeholder="Digite o número"
                                 value={dadosCadastro.numero}
-                                onChange={(e) => handleChange("numero", e.target.value)} />
+                                onChange={(e) => handleChange("numero", e.target.value)}
+                            />
                             <InputIcf
                                 label="Complemento"
-                                placeholder={"Digite o complemento"}
+                                placeholder="Digite o complemento"
                                 value={dadosCadastro.complemento}
-                                onChange={(e) => handleChange("complemento", e.target.value)} />
+                                onChange={(e) => handleChange("complemento", e.target.value)}
+                            />
                         </div>
-
-                        <div className="flex gap-3 justify-end mt-4">
-                            <button onClick={fecharFormulario} type="button" className="px-8 py-3 rounded-lg bg-icf-primary-200 text-surface-50 text-base font-normal cursor-pointer hover:opacity-90">
-                                Cancelar
-                            </button>
-                            <button type="submit" className="py-3 px-8 rounded-lg bg-icf-primary-400 text-surface-50 text-base font-normal cursor-pointer hover:opacity-90">
-                                Cadastrar Membro
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
-            <div className="bg-white border-l rounded-r-lg py-4 px-9 border-icf-primary-100"></div>
         </div>
     );
 }

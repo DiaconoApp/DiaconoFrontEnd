@@ -57,3 +57,68 @@ export const cadastrarMembro = async (dados) => {
         throw err;
     }
 };
+
+export const buscarMembroPorId = async (idExterno) => {
+    try {
+        const res = await api.get(`/membros/${idExterno}`);
+        return res.data;
+    } catch (err) {
+        console.error("Erro ao buscar membro:", err);
+        throw err;
+    }
+};
+
+export const buscarPerfilLogado = async () => {
+    try {
+        // Tenta o endpoint /me primeiro
+        const res = await api.get('/membros/me');
+        return res.data;
+    } catch (err) {
+        // Fallback: tenta buscar pelo idUsuario do localStorage
+        const idUsuario = localStorage.getItem("idUsuario");
+        if (idUsuario) {
+            try {
+                const res = await api.get(`/membros/${idUsuario}`);
+                return res.data;
+            } catch (fallbackErr) {
+                console.error("Erro ao buscar perfil (fallback):", fallbackErr);
+                throw fallbackErr;
+            }
+        }
+        console.error("Erro ao buscar perfil:", err);
+        throw err;
+    }
+};
+
+export const atualizarMembro = async (idExterno, dados) => {
+    try {
+        const payload = {
+            nome: dados.nome,
+            cpf: dados.cpf,
+            dataNascimento: typeof dados.dataNascimento === "string"
+                ? dados.dataNascimento
+                : dados.dataNascimento.toISOString().slice(0, 10),
+            email: dados.email?.trim(),
+            celular: dados.celular,
+            cargo: dados.cargo,
+            funcaoMembro: dados.funcaoMembro,
+            generoMembro: dados.generoMembro,
+            confirmacaoFe: dados.confirmacaoFe,
+            membroEnderecoDTO: {
+                cep: dados.cep,
+                bairro: dados.bairro,
+                cidade: dados.cidade,
+                rua: dados.rua,
+                estado: dados.estado,
+                numero: dados.numero,
+                complemento: dados.complemento,
+            },
+        };
+
+        const res = await api.put(`/membros/${idExterno}`, payload);
+        return res.data;
+    } catch (err) {
+        console.error("Erro ao atualizar membro:", err);
+        throw err;
+    }
+};

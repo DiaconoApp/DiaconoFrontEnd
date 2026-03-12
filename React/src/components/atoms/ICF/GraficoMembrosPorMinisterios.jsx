@@ -5,22 +5,9 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Cell,
-  LabelList
 } from "recharts";
 import { useState, useEffect } from "react";
 import { getQtdMembrosMinisterios } from "../../../services/dashboards";
-
-const cores = [
-  "#A3D9A5",
-  "#80C47C",
-  "#5FAF59",
-  "#4A9B48",
-  "#3C893C",
-  "#2F7731",
-  "#25662A",
-  "#1D5523",
-];
 
 export function GraficoMembrosPorMinisterios({ anoInicio, anoFim }) {
   const [dados, setDados] = useState([]);
@@ -45,38 +32,42 @@ export function GraficoMembrosPorMinisterios({ anoInicio, anoFim }) {
   }, [ anoInicio, anoFim ]);
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 w-full">
-      <h2 className="text-xl font-semibold mb-4">Membros por ministério</h2>
+    <div className="bg-white rounded-xl shadow-sm p-5">
+      <h2 className="font-semibold text-icf-primary-400 mb-4">Membros por Ministério</h2>
 
-      <ResponsiveContainer width="100%" height={330}>
+      <ResponsiveContainer width="100%" height={280}>
         <BarChart 
           data={dados} 
-          margin={{ top: 20, right: 10, bottom: 50, left: 10 }}
+          margin={{ top: 10, right: 10, bottom: 40, left: 0 }}
         >
           <XAxis 
             dataKey="nome"
-            tick={{ fontSize: 12 }}
+            tick={{ fontSize: 11, fill: '#6b7280' }}
             interval={0}
             angle={-20}
             textAnchor="end"
-            height={60}
+            axisLine={false}
+            tickLine={false}
           />
 
-          <YAxis allowDecimals={false} />
+          <YAxis 
+            allowDecimals={false} 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 11, fill: '#6b7280' }}
+          />
 
-          <Tooltip formatter={(v) => [`${v} membros`, "Quantidade"]} />
+          <Tooltip 
+            formatter={(v) => [`${v} membros`, "Quantidade"]}
+            contentStyle={{ 
+              backgroundColor: '#fff', 
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}
+          />
 
-          <Bar dataKey="qtd" radius={[6, 6, 0, 0]}>
-            {dados.map((_, i) => (
-              <Cell key={i} fill={cores[i % cores.length]} />
-            ))}
-
-            <LabelList 
-              dataKey="qtd" 
-              position="top"
-              style={{ fill: "#333", fontSize: 12 }}
-            />
-          </Bar>
+          <Bar dataKey="qtd" radius={[4, 4, 0, 0]} fill="#1f2937" />
         </BarChart>
       </ResponsiveContainer>
     </div>

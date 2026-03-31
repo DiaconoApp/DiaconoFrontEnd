@@ -27,6 +27,7 @@ export function FormMembro({ fecharFormulario }) {
         confirmarSenha: "",
         idExternoMinisterios: "",
         cargo: "MEMBRO",
+        ministerios: [],
         generoMembro: "",
         cep: "",
         rua: "",
@@ -73,6 +74,37 @@ export function FormMembro({ fecharFormulario }) {
         }
 
         setDadosCadastro((prev) => ({ ...prev, [campo]: novoValor }));
+    };
+
+    const handleAddMinisterio = () => {
+        setDadosCadastro((prev) => ({
+            ...prev,
+            ministerios: [
+                ...prev.ministerios,
+                {
+                    idExternoMinisterio: "",
+                    cargo: "MEMBRO",
+                },
+            ],
+        }));
+    };
+
+    const handleUpdateMinisterio = (index, campo, valor) => {
+        setDadosCadastro((prev) => {
+            const ministerios = [...prev.ministerios];
+            ministerios[index] = { ...ministerios[index], [campo]: valor };
+            return {
+                ...prev,
+                ministerios,
+            };
+        });
+    };
+
+    const handleRemoveMinisterio = (index) => {
+        setDadosCadastro((prev) => ({
+            ...prev,
+            ministerios: prev.ministerios.filter((_, i) => i !== index),
+        }));
     };
 
     const handleBlur = (campo) => {
@@ -184,6 +216,7 @@ export function FormMembro({ fecharFormulario }) {
                 confirmarSenha: "",
                 idExternoMinisterios: "",
                 cargo: "MEMBRO",
+                ministerios: [],
                 generoMembro: "",
                 cep: "",
                 rua: "",
@@ -341,30 +374,61 @@ export function FormMembro({ fecharFormulario }) {
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 pb-2 border-b border-icf-primary-50">
                             <Church className="w-5 h-5 text-icf-primary-400" />
-                            <h3 className="font-semibold text-icf-primary-400">Ministério e Cargo</h3>
+                            <h3 className="font-semibold text-icf-primary-400">Ministérios e Cargo por Ministério</h3>
                         </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <SelectIcf
-                                placeholder="Nenhum"
-                                label="Ministério"
-                                options={options}
-                                value={dadosCadastro.idExternoMinisterios}
-                                onChange={(valor) => handleChange("idExternoMinisterios", valor)}
-                            />
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-icf-primary-400">Cargo</label>
-                                <select
-                                    value={dadosCadastro.cargo}
-                                    onChange={(e) => handleChange("cargo", e.target.value)}
-                                    className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
-                                >
-                                    <option value="MEMBRO">Membro</option>
-                                    <option value="LIDER_MINISTERIO">Líder de Ministério</option>
-                                    <option value="GOVERNO">Governo</option>
-                                </select>
+
+                        {dadosCadastro.ministerios.length === 0 ? (
+                            <p className="text-sm text-icf-primary-300">Nenhum ministério selecionado.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {dadosCadastro.ministerios.map((item, index) => (
+                                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                                        <div>
+                                            <label className="text-sm font-medium text-icf-primary-400">Ministério</label>
+                                            <select
+                                                value={item.idExternoMinisterio}
+                                                onChange={(e) => handleUpdateMinisterio(index, "idExternoMinisterio", e.target.value)}
+                                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
+                                            >
+                                                <option value="">Selecione o ministério</option>
+                                                {options.map((opt) => (
+                                                    <option key={opt.idExterno} value={opt.idExterno}>
+                                                        {opt.nome}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-icf-primary-400">Cargo no ministério</label>
+                                            <select
+                                                value={item.cargo}
+                                                onChange={(e) => handleUpdateMinisterio(index, "cargo", e.target.value)}
+                                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
+                                            >
+                                                <option value="MEMBRO">Membro</option>
+                                                <option value="LIDER_MINISTERIO">Líder de Ministério</option>
+                                                <option value="GOVERNO">Governo</option>
+                                            </select>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveMinisterio(index)}
+                                            className="text-danger-500 hover:text-danger-600 font-medium"
+                                        >
+                                            Remover
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
-                        </div>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={handleAddMinisterio}
+                            className="px-4 py-2 rounded-lg bg-icf-primary-100 text-icf-primary-400 hover:bg-icf-primary-200 transition-colors"
+                        >
+                            + Adicionar ministério
+                        </button>
                     </div>
 
                     {/* Seção: Endereço */}

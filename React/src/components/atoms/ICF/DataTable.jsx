@@ -74,8 +74,8 @@ export function StatusBadge({ status }) {
       className={cn(
         "inline-flex px-3 py-1 text-xs font-medium rounded-full",
         isActive
-          ? "bg-success-100 text-success-600"
-          : "bg-icf-primary-100 text-icf-primary-300"
+          ? "bg-green-100 text-green-600"
+          : "bg-red-100 text-red-600"
       )}
     >
       {isActive ? "Ativo" : "Inativo"}

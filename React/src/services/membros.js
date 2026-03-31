@@ -26,6 +26,13 @@ export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", stat
 
 export const cadastrarMembro = async (dados) => {
     try {
+        const ministeriosPayload = (dados.ministerios || [])
+            .filter((m) => m.idExternoMinisterio)
+            .map((m) => ({
+                idExternoMinisterio: m.idExternoMinisterio,
+                cargo: m.cargo || "MEMBRO",
+            }));
+
         const payload = {
             fkIgreja: dados.fkIgreja,
             nome: dados.nome,
@@ -36,8 +43,8 @@ export const cadastrarMembro = async (dados) => {
             email: dados.email.trim(),
             celular: dados.celular,
             senha: dados.senha,
-            idExternoMinisterios: dados.idExternoMinisterios,
-            cargo: dados.cargo,
+            idExternoMinisterios: ministeriosPayload[0]?.idExternoMinisterio || dados.idExternoMinisterios || "",
+            cargo: ministeriosPayload[0]?.cargo || dados.cargo,
             generoMembro: dados.generoMembro,
             membroEnderecoDTO: {
                 cep: dados.cep,
@@ -50,8 +57,30 @@ export const cadastrarMembro = async (dados) => {
             },
         };
 
+        // Primeiro, cadastrar o membro
         const res = await api.post("/membros", payload);
-        return res.data;
+        const membroCadastrado = res.data;
+
+        // Depois, adicionar os ministérios restantes (se houver mais de um)
+        if (ministeriosPayload.length > 1) {
+            const { adicionarMembroMinisterio } = await import("./ministerios");
+
+            for (let i = 1; i < ministeriosPayload.length; i++) {
+                const ministerio = ministeriosPayload[i];
+                try {
+                    await adicionarMembroMinisterio({
+                        dados: { idMembro: membroCadastrado.idExterno },
+                        idMinisterio: ministerio.idExternoMinisterio,
+                    });
+                    console.log(`Membro adicionado ao ministério ${ministerio.idExternoMinisterio}`);
+                } catch (err) {
+                    console.error(`Erro ao adicionar membro ao ministério ${ministerio.idExternoMinisterio}:`, err);
+                    // Continua tentando os outros ministérios mesmo se um falhar
+                }
+            }
+        }
+
+        return membroCadastrado;
     } catch (err) {
         console.error("Erro ao cadastrar membro:", err);
         throw err;

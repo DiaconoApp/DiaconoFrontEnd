@@ -224,35 +224,37 @@ export function validaEmail(email) {
 }
 
 export const formatarCargo = (cargo) => {
-  if (!cargo) return "";
+    if (!cargo) return "";
 
-  switch (cargo.toUpperCase()) {
-    case "LIDER_MINISTERIO":
-      return "Líder";
-    case "MEMBRO_MINISTERIO":
-      return "Membro";
-    case "GOVERNO":
-      return "Governo";
-    default:
-      return cargo; 
-  }
+    switch (cargo.toUpperCase()) {
+        case "LIDER_MINISTERIO":
+            return "Líder";
+        case "MEMBRO_MINISTERIO":
+            return "Membro";
+        case "MEMBRO":
+            return "Membro";
+        case "GOVERNO":
+            return "Governo";
+        default:
+            return cargo;
+    }
 };
 
 export const formatarData = (data) => {
-  if (!data) return "";
-  const date = new Date(data);
-  return date.toLocaleDateString("pt-BR");
+    if (!data) return "";
+    const date = new Date(data);
+    return date.toLocaleDateString("pt-BR");
 };
 
 export const calcularIdade = (dataNascimento) => {
-  if (!dataNascimento) return null;
-  const hoje = new Date();
-  const nascimento = new Date(dataNascimento);
-  let idade = hoje.getFullYear() - nascimento.getFullYear();
-  const mes = hoje.getMonth() - nascimento.getMonth();
-  if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
-    idade--;
-  }
-  return idade;
+    if (!dataNascimento) return null;
+    const hoje = new Date();
+    const nascimento = new Date(dataNascimento);
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    const mes = hoje.getMonth() - nascimento.getMonth();
+    if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+        idade--;
+    }
+    return idade;
 };
 

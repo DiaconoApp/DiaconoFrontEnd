@@ -21,7 +21,29 @@ export function ValidacaoSenha({ senha = "" }) {
 
   const forca = getForca();
 
-  if (!senha) return null;
+  if (!senha) {
+    return (
+      <div className="flex flex-col gap-3 mt-4 opacity-0 pointer-events-none">
+        {/* Barra de progresso placeholder */}
+        <div className="w-full h-1.5 bg-diacono-blue-50 rounded-full overflow-hidden">
+          <div className="h-full bg-gray-300" style={{ width: '0%' }} />
+        </div>
+        {/* Força da senha placeholder */}
+        <p className="text-diacono-blue-400 font-semibold">
+          Senha fraca. <span className="font-normal text-diacono-blue-300">Deve conter:</span>
+        </p>
+        {/* Lista de validações placeholder */}
+        <ul className="flex flex-col gap-1.5">
+          {validacoes.map((item, index) => (
+            <li key={index} className="flex items-center gap-2">
+              <X className="w-4 h-4 text-diacono-blue-200" />
+              <span className="text-sm text-diacono-blue-200">{item.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3 mt-4">

@@ -48,11 +48,7 @@ export function FormsLogin() {
                     placeholder={"Digite sua senha"}
                     value={senha}
                     onChange={e => setSenha(e.target.value)}
-                >
-                    <div className='flex justify-end'>
-                        <span className="cursor-pointer flex text-diacono-blue-200">Esqueci minha senha</span>
-                    </div>
-                </InputSenhaDiacono>
+                />
             </div>
 
             <div className='flex flex-col gap-6'>

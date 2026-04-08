@@ -22,10 +22,6 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "Como funciona o período de teste?",
-      answer: "Oferecemos 30 dias gratuitos para você experimentar todas as funcionalidades da plataforma sem compromisso.",
-    },
-    {
       question: "É necessário instalar algum software?",
       answer: "Não! O Diácono é 100% online. Basta acessar pelo navegador de qualquer dispositivo com internet.",
     },

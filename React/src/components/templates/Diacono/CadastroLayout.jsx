@@ -49,7 +49,7 @@ export function CadastroLayout({
           <BotaoDiacono onClick={onVoltar}>Voltar</BotaoDiacono>
           <BotaoDiacono onClick={onProximo}>{textoBotaoProximo}</BotaoDiacono>
         </div>
-        <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+        {import.meta.env.VITE_GOOGLE_CLIENT_ID && <BotaoGoogle>Entrar com o Google</BotaoGoogle>}
         <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
       </div>
     </div>

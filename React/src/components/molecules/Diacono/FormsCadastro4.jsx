@@ -37,11 +37,6 @@ export function FormsCadastro4() {
 
      const handleSubmit = () => {
         const camposObrigatorios = ["cep", "rua", "bairro", "cidade", "numero"];
-        const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]); 
-    }
-
-    const handleAvancar = () => {
-        const camposObrigatorios = ["cep", "rua", "bairro", "cidade", "numero"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
         if (camposVazios.length > 0) {
@@ -67,18 +62,20 @@ export function FormsCadastro4() {
         }
     };
 
-    const loginGoogle = useGoogleLogin({
-        onSuccess: handleGoogleSuccess,
-        onError: (err) => console.error("Google login falhou", err),
-        onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
-    });
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const loginGoogle = googleClientId
+        ? useGoogleLogin({
+            onSuccess: handleGoogleSuccess,
+            onError: (err) => console.error("Google login falhou", err),
+            onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+        })
+        : null; // evita inicializar hook sem clientId
 
     return (
         <CadastroLayout
-            etapaAtual={3}
-            onVoltar={() => navigate('/cadastro/etapa3')}
+            etapaAtual={2}
+            onVoltar={() => navigate('/cadastro/etapa2')}
             onProximo={handleSubmit}
-            textoBotaoProximo="Finalizar cadastro"
         >
             <label className="font-semibold text-diacono-blue-400">Endereço</label>
             <div className="grid grid-cols-2 gap-6">

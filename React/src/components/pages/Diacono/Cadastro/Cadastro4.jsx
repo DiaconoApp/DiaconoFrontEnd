@@ -1,4 +1,4 @@
-import { FormsCadastro4 } from "../../../molecules/Diacono/FormsCadastro4";
+import { FormsCadastro3 } from "../../../molecules/Diacono/FormsCadastro3";
 import { TelaAzulDiacono } from "../../../templates/Diacono/TelaAzulDiacono";
 
 export function Cadastro4() {
@@ -8,7 +8,7 @@ export function Cadastro4() {
         <div className="flex min-h-screen">
             {/* lado esquero */}
             <div className="w-1/2 flex items-center justify-center">
-                <FormsCadastro4/>
+                <FormsCadastro3/>
             </div>
 
 

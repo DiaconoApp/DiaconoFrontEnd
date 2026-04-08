@@ -105,17 +105,21 @@ export function FormsCadastro3() {
         }
     };
 
-    const loginGoogle = useGoogleLogin({
-        onSuccess: handleGoogleSuccess,
-        onError: (err) => console.error("Google login falhou", err),
-        onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
-    });
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const loginGoogle = googleClientId
+        ? useGoogleLogin({
+            onSuccess: handleGoogleSuccess,
+            onError: (err) => console.error("Google login falhou", err),
+            onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+        })
+        : null; // evita inicializar hook sem clientId
 
     return (
         <CadastroLayout
-            etapaAtual={2}
-            onVoltar={() => navigate('/cadastro/etapa2')}
+            etapaAtual={3}
+            onVoltar={() => navigate('/cadastro/etapa3')}
             onProximo={handleAvancar}
+            textoBotaoProximo="Finalizar cadastro"
         >
             <div>
                 <InputDiacono

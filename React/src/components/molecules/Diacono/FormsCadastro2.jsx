@@ -103,11 +103,11 @@ export function FormsCadastro2() {
     }
   };
 
-  const loginGoogle = useGoogleLogin({
-    onSuccess: handleGoogleSuccess,
-    onError: (err) => console.error("Google login falhou", err),
-    onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
-  });
+  // const loginGoogle = useGoogleLogin({
+  //   onSuccess: handleGoogleSuccess,
+  //   onError: (err) => console.error("Google login falhou", err),
+  //   onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+  // });
 
   // debug: show global google object if available
   useEffect(() => {

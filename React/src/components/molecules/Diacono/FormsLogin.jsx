@@ -6,8 +6,9 @@ import { LinkAcesso } from '../../atoms/Global/LinkAcesso';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSpinner } from "react-icons/fa";
-import { login } from '../../../services/login';
+import { login, loginWithGoogle } from '../../../services/login';
 import { useAuth } from '../../../routes/AuthContext.jsx';
+import { useGoogleLogin } from '@react-oauth/google';
 
 export function FormsLogin() {
     const [email, setEmail] = useState("");
@@ -31,6 +32,27 @@ export function FormsLogin() {
             setLoading(false);
         }
     };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const idToken = credentialResponse.credential;
+        try {
+            const { user } = await loginWithGoogle(idToken);
+            setUser(user);
+            navigate("/eventos");
+        } catch (e) {
+            console.error("erro google login", e);
+            setErro("Erro ao fazer login com Google");
+        }
+    };
+
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const loginGoogle = googleClientId
+        ? useGoogleLogin({
+            onSuccess: handleGoogleSuccess,
+            onError: (err) => console.error("Google login falhou", err),
+            onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+        })
+        : null;
 
     return (
         <form onSubmit={handleSubmit} className="w-100 h-auto flex flex-col gap-8">
@@ -56,7 +78,7 @@ export function FormsLogin() {
                 <BotaoDiacono type="submit" disabled={loading}>
                     {loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}
                 </BotaoDiacono>
-                <BotaoGoogle>Entrar com Google</BotaoGoogle>
+                <BotaoGoogle onClick={() => loginGoogle && loginGoogle()}>Entrar com Google</BotaoGoogle>
                 <LinkAcesso
                     onClick={() => navigate('/cadastro/etapa1')}
                     label={"Não tem uma conta?"}

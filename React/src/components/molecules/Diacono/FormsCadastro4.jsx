@@ -76,6 +76,7 @@ export function FormsCadastro4() {
             etapaAtual={2}
             onVoltar={() => navigate('/cadastro/etapa2')}
             onProximo={handleSubmit}
+            onGoogleLogin={loginGoogle}
         >
             <label className="font-semibold text-diacono-blue-400">Endereço</label>
             <div className="grid grid-cols-2 gap-6">

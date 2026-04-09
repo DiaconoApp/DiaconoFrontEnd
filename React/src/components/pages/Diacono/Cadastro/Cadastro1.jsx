@@ -8,12 +8,16 @@ import { useCadastro } from "../../../../context/CadastroContext";
 import { BotaoGoogle } from "../../../atoms/Global/BotaoGoogle";
 import { LinkAcesso } from "../../../atoms/Global/LinkAcesso";
 import Select from "react-select";
+import { useGoogleLogin } from "@react-oauth/google";
+import { loginWithGoogle } from "../../../../services/login";
+import { useAuth } from "../../../../routes/AuthContext.jsx";
 
 export function Cadastro1() {
     const [listaIgrejas, setListaIgrejas] = useState([]);
     const [erroIgreja, setErroIgreja] = useState(false);
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const navigate = useNavigate();
+    const { setUser } = useAuth();
 
     const opcoesIgrejas = listaIgrejas.map((igreja) => ({
         value: igreja.idExterno,
@@ -58,6 +62,26 @@ export function Cadastro1() {
     const handleChange = (e) => {
         setDadosCadastro({ ...dadosCadastro, fkIgreja: e.target.value });
     };
+
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const idToken = credentialResponse.credential;
+        try {
+            const { user } = await loginWithGoogle(idToken);
+            setUser(user);
+            navigate("/cadastro/etapa2");
+        } catch (e) {
+            console.error("erro no login Google", e);
+        }
+    };
+
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const loginGoogle = googleClientId
+        ? useGoogleLogin({
+            onSuccess: handleGoogleSuccess,
+            onError: (err) => console.error("Google login falhou", err),
+            onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+        })
+        : null;
 
     return (
         <div className="flex min-h-screen">
@@ -106,7 +130,7 @@ export function Cadastro1() {
 
                     <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
                     <div className='flex flex-col gap-3 items-end'>
-                        <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+                        <BotaoGoogle onClick={() => loginGoogle && loginGoogle()}>Entrar com o Google</BotaoGoogle>
                         <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
                     </div>
                 </div>

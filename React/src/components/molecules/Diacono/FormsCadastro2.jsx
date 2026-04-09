@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone } from "../../../utils/Utils";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AlertModal } from "../../ui/AlertModal";
 import { useGoogleLogin } from "@react-oauth/google";
 import { loginWithGoogle } from "../../../services/login";
@@ -91,34 +91,32 @@ export function FormsCadastro2() {
     navigate("/cadastro/etapa3");
   };
 
-  // callback invoked by the Google hook when the user successfully logs in
   const handleGoogleSuccess = async (credentialResponse) => {
-    const idToken = credentialResponse.credential; // new library returns `credential`
+    const idToken = credentialResponse.credential;
     try {
       const { payload, user } = await loginWithGoogle(idToken);
       setUser(user);
-      handleAvancar();
+      navigate("/cadastro/etapa3");
     } catch (e) {
       console.error("erro no login Google", e);
     }
   };
 
-  // const loginGoogle = useGoogleLogin({
-  //   onSuccess: handleGoogleSuccess,
-  //   onError: (err) => console.error("Google login falhou", err),
-  //   onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
-  // });
-
-  // debug: show global google object if available
-  useEffect(() => {
-    console.log('window.google at mount', window.google);
-  }, []);
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const loginGoogle = googleClientId
+    ? useGoogleLogin({
+      onSuccess: handleGoogleSuccess,
+      onError: (err) => console.error("Google login falhou", err),
+      onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
+    })
+    : null;
 
   return (
     <CadastroLayout
       etapaAtual={1}
       onVoltar={() => navigate('/cadastro/etapa1')}
       onProximo={handleAvancar}
+      onGoogleLogin={loginGoogle}
     >
       <InputDiacono
         label="Nome Completo *"

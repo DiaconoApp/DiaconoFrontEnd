@@ -120,6 +120,7 @@ export function FormsCadastro3() {
             onVoltar={() => navigate('/cadastro/etapa3')}
             onProximo={handleAvancar}
             textoBotaoProximo="Finalizar cadastro"
+            onGoogleLogin={loginGoogle}
         >
             <div>
                 <InputDiacono

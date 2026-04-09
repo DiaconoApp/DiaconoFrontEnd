@@ -9,7 +9,8 @@ export function CadastroLayout({
   children, 
   onVoltar, 
   onProximo, 
-  textoBotaoProximo = "Próximo" 
+  textoBotaoProximo = "Próximo",
+  onGoogleLogin
 }) {
   const navigate = useNavigate();
 
@@ -49,7 +50,7 @@ export function CadastroLayout({
           <BotaoDiacono onClick={onVoltar}>Voltar</BotaoDiacono>
           <BotaoDiacono onClick={onProximo}>{textoBotaoProximo}</BotaoDiacono>
         </div>
-        {import.meta.env.VITE_GOOGLE_CLIENT_ID && <BotaoGoogle>Entrar com o Google</BotaoGoogle>}
+        {import.meta.env.VITE_GOOGLE_CLIENT_ID && <BotaoGoogle onClick={() => onGoogleLogin && onGoogleLogin()}>Entrar com o Google</BotaoGoogle>}
         <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
       </div>
     </div>

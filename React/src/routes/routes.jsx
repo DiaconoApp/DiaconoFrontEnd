@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { CadastroProvider } from "../context/CadastroContext";
 import { Login } from "../components/pages/Diacono/Login";
 import { Cadastro1 } from "../components/pages/Diacono/Cadastro/Cadastro1";
@@ -31,6 +31,7 @@ function CadastroWrapper() {
 
 export function AppRoutes() {
     const routes = createBrowserRouter([
+        { path: "/", element: <Navigate to="/home" replace /> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
         { path: "/home", element: <LandingPage />, errorElement: <div>Error</div> },
 

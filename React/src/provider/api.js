@@ -2,7 +2,7 @@ import axios from "axios";
 
 let baseURL;
 if (import.meta.env.VITE_API_IP === undefined || import.meta.env.VITE_API_PORT === undefined) {
-  baseURL = "/api";
+  baseURL = import.meta.env.DEV ? "http://localhost:8080" : "/api";
 } else {
   baseURL = `http://${import.meta.env.VITE_API_IP}:${import.meta.env.VITE_API_PORT}`;
 }
@@ -10,6 +10,10 @@ if (import.meta.env.VITE_API_IP === undefined || import.meta.env.VITE_API_PORT =
 const api = axios.create({ baseURL });
 
 api.interceptors.request.use(config => {
+  if (config.baseURL?.endsWith("/api") && config.url?.startsWith("/api/")) {
+    config.url = config.url.replace("/api/", "/");
+  }
+
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;

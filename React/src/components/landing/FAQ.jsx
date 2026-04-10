@@ -28,11 +28,7 @@ const FAQ = () => {
     {
       question: "Meus dados estão seguros?",
       answer: "Sim! Utilizamos criptografia de ponta e servidores seguros. Seus dados são protegidos com os mais altos padrões de segurança.",
-    },
-    {
-      question: "Há suporte técnico disponível?",
-      answer: "Sim! Oferecemos suporte técnico por e-mail, chat e telefone em horário comercial.",
-    },
+    }
   ];
 
   return (

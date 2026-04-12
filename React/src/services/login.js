@@ -3,7 +3,7 @@ import { jwtDecode } from "jwt-decode";
 
 export const login = async (email, senha) => {
   try {
-    const response = await api.post("/api/v1/auth/login", { email, senha });
+    const response = await api.post("/v1/auth/login", { email, senha });
 
     const token = response.data.acessToken;
     if (!token) throw new Error("Token não retornado pelo servidor");
@@ -45,7 +45,7 @@ export const logout = () => {
 
 export const loginWithGoogle = async (idToken) => {
   try {
-    const res = await api.post("/api/v1/auth/google", { idToken });
+    const res = await api.post("/v1/auth/google", { idToken });
     const token = res.data.acessToken;
     if (!token) throw new Error("Token não retornado pelo servidor");
 

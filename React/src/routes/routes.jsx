@@ -32,7 +32,7 @@ function CadastroWrapper() {
 export function AppRoutes() {
     const routes = createBrowserRouter([
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
-        { path: "/home", element: <LandingPage />, errorElement: <div>Error</div> },
+        { path: "/", element: <LandingPage />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
         {

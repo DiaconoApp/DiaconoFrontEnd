@@ -1,6 +1,5 @@
 import { EtapasCadastro } from "../../molecules/Global/EtapasCadastro";
 import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
-import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
 import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +9,7 @@ export function CadastroLayout({
   onVoltar, 
   onProximo, 
   textoBotaoProximo = "Próximo",
-  onGoogleLogin
+  googleComponent
 }) {
   const navigate = useNavigate();
 
@@ -50,7 +49,7 @@ export function CadastroLayout({
           <BotaoDiacono onClick={onVoltar}>Voltar</BotaoDiacono>
           <BotaoDiacono onClick={onProximo}>{textoBotaoProximo}</BotaoDiacono>
         </div>
-        {import.meta.env.VITE_GOOGLE_CLIENT_ID && <BotaoGoogle onClick={() => onGoogleLogin && onGoogleLogin()}>Entrar com o Google</BotaoGoogle>}
+        {googleComponent}
         <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
       </div>
     </div>

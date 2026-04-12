@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaSpinner } from "react-icons/fa";
 import { login, loginWithGoogle } from '../../../services/login';
 import { useAuth } from '../../../routes/AuthContext.jsx';
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 
 export function FormsLogin() {
     const [email, setEmail] = useState("");
@@ -34,25 +34,26 @@ export function FormsLogin() {
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
-        const idToken = credentialResponse.credential;
+        const idToken = credentialResponse?.credential;
+        if (!idToken) {
+            console.error('Google response sem credential', credentialResponse);
+            setErro('Erro ao fazer login com Google');
+            return;
+        }
+
+        setLoading(true);
+        setErro("");
         try {
             const { user } = await loginWithGoogle(idToken);
             setUser(user);
             navigate("/eventos");
-        } catch (e) {
-            console.error("erro google login", e);
-            setErro("Erro ao fazer login com Google");
+        } catch (err) {
+            console.error("erro google login", err);
+            setErro(err.message || "Erro ao fazer login com Google");
+        } finally {
+            setLoading(false);
         }
     };
-
-    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    const loginGoogle = googleClientId
-        ? useGoogleLogin({
-            onSuccess: handleGoogleSuccess,
-            onError: (err) => console.error("Google login falhou", err),
-            onNonOAuthError: (nonOAuth) => console.error("Google non-OAuth error", nonOAuth),
-        })
-        : null;
 
     return (
         <form onSubmit={handleSubmit} className="w-100 h-auto flex flex-col gap-8">
@@ -78,7 +79,21 @@ export function FormsLogin() {
                 <BotaoDiacono type="submit" disabled={loading}>
                     {loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}
                 </BotaoDiacono>
-                <BotaoGoogle onClick={() => loginGoogle && loginGoogle()}>Entrar com Google</BotaoGoogle>
+                <div className='relative w-full'>
+                    <BotaoGoogle disabled={loading}>Entrar com Google</BotaoGoogle>
+                    <div className={`absolute inset-0 ${loading ? 'pointer-events-none' : ''} opacity-0`}>
+                        <GoogleLogin
+                            onSuccess={handleGoogleSuccess}
+                            onError={(err) => {
+                                console.error('Google login falhou', err);
+                                setErro('Erro ao fazer login com Google');
+                            }}
+                            width="100%"
+                            className="w-full h-full"
+                            style={{ width: '100%', height: '100%' }}
+                        />
+                    </div>
+                </div>
                 <LinkAcesso
                     onClick={() => navigate('/cadastro/etapa1')}
                     label={"Não tem uma conta?"}

@@ -13,7 +13,7 @@ const saveUserData = (token, payload) => {
 
 export const login = async (email, senha) => {
   try {
-    const response = await api.post("/v1/auth/login", { email, senha });
+    const response = await api.post("api/v1/auth/login", { email, senha });
 
     const token = getTokenFromResponse(response.data);
     if (!token) throw new Error("Token não retornado pelo servidor");

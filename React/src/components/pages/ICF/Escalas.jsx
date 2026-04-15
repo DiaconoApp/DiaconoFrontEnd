@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { buscarEscalas } from "../../../services/escalas";
+import { buscarTodosMinisterios } from "../../../services/ministerios";
 import { CardEscala } from "../../molecules/ICF/CardEscala";
 import { formatarDataHora } from "../../../utils/Utils";
 import { ModalVisualizarEvento } from "../../molecules/ICF/ModalVisualizarEvento";
-import api from "../../../provider/api";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { FilterBar } from "../../atoms/ICF/FilterBar";
@@ -53,8 +53,12 @@ export function Escalas() {
     // Listar os ministérios no select
     const [options, setOptions] = useState([]);
     useEffect(() => {
-        api.get('/api/v1/ministerios/lider-ministerio')
-            .then((res) => setOptions(res.data?.content || res.data || []));
+        buscarTodosMinisterios()
+            .then((data) => setOptions(Array.isArray(data) ? data : data?.content || []))
+            .catch((err) => {
+                console.error("Erro ao buscar ministérios para filtro:", err);
+                setOptions([]);
+            });
     }, []);
 
     const [eventoSelecionado, setEventoSelecionado] = useState(null);
@@ -93,7 +97,7 @@ export function Escalas() {
                         selectOptions={options}
                         selectValue={fkMinisterio}
                         onSelectChange={setFkMinisterio}
-                        selectPlaceholder="Todos..."
+                        selectPlaceholder="Todos os ministérios"
                     >
                         {/* Status Select customizado */}
                         <Select value={statusFiltro || "__all__"} onValueChange={(val) => setStatusFiltro(val === "__all__" ? "" : val)}>

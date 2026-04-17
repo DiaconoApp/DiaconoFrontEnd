@@ -9,8 +9,10 @@ import { ChevronLeft, ChevronRight, Users } from "lucide-react";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { FilterBar } from "../../atoms/ICF/FilterBar";
 import { StatusToggle } from "../../atoms/ICF/StatusToggle";
+import { useNavigate } from "react-router-dom";
 
 export function Escalas() {
+    const navigate = useNavigate();
     const cargo = localStorage.getItem("cargo");
     console.log("Cargo do usuário:", cargo);
     const isGoverno = cargo === "GOVERNO";
@@ -117,6 +119,7 @@ export function Escalas() {
 
     const handleVerDetalhes = (escala) => {
         setEventoSelecionado({
+            id: escala.idExterno || escala.idExternoEvento,
             titulo: escala.nome || escala.nomeReuniao,
             organizador: escala.organizador || "N/A",
             publicoAlvo: escala.publicoAlvo || "N/A",
@@ -127,6 +130,12 @@ export function Escalas() {
             local: escala.local || "N/A",
             descricao: escala.descricao || "N/A",
         }); 
+    };
+
+    const handleEditarEvento = (idEvento) => {
+        if (!idEvento) return;
+        setEventoSelecionado(null);
+        navigate(`/eventos/editar/${idEvento}`);
     };
 
     const handleGerenciarMinisterios = (escala) => {
@@ -238,7 +247,7 @@ export function Escalas() {
                     <ModalVisualizarEvento
                         evento={eventoSelecionado}
                         onClose={handleCloseModal}
-                        onEdit={() => {}}
+                        onEdit={() => handleEditarEvento(eventoSelecionado.id)}
                     />
                 </div>
             )}

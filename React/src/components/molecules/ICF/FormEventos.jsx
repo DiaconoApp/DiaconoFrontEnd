@@ -114,6 +114,9 @@ export function FormEventos() {
     buscarEventoPorId(idEvento).then(evento => {
       if (!evento) return;
 
+      // Em edição, usar o nome do organizador retornado pelo endpoint do evento
+      setNome(evento?.organizador?.nome || localStorage.getItem("nome") || "");
+
       setFormData({
         titulo: evento.nome,
         descricao: evento.descricao,

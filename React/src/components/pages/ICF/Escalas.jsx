@@ -10,6 +10,7 @@ import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { FilterBar } from "../../atoms/ICF/FilterBar";
 import { StatusToggle } from "../../atoms/ICF/StatusToggle";
 import { useNavigate } from "react-router-dom";
+import { buscarEventoPorId } from "../../../services/eventos";
 
 export function Escalas() {
     const navigate = useNavigate();
@@ -117,19 +118,41 @@ export function Escalas() {
         };
     };
 
-    const handleVerDetalhes = (escala) => {
-        setEventoSelecionado({
-            id: escala.idExterno || escala.idExternoEvento,
-            titulo: escala.nome || escala.nomeReuniao,
-            organizador: escala.organizador || "N/A",
-            publicoAlvo: escala.publicoAlvo || "N/A",
-            dataInicio: escala.dataHoraInicio,
-            horaInicio: escala.horaInicio,
-            horaFim: escala.horaFim,
-            custo: escala.custo || "N/A",
-            local: escala.local || "N/A",
-            descricao: escala.descricao || "N/A",
-        }); 
+    const handleVerDetalhes = async (escala) => {
+        const idEvento = escala.idExterno || escala.idExternoEvento;
+        if (!idEvento) return;
+
+        try {
+            const eventoCompleto = await buscarEventoPorId(idEvento);
+            if (!eventoCompleto) return;
+
+            const dataInicio = eventoCompleto.dataHoraInicio;
+            const dataFim = eventoCompleto.dataHoraFim;
+
+            setEventoSelecionado({
+                id: idEvento,
+                titulo: eventoCompleto.nome || escala.nome || escala.nomeReuniao,
+                organizador: eventoCompleto?.organizador?.nome || "N/A",
+                publicoAlvo: eventoCompleto.publicoAlvo || "N/A",
+                dataInicio,
+                dataFim,
+                horaInicio: dataInicio
+                    ? new Date(dataInicio).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+                    : "00:00",
+                horaFim: dataFim
+                    ? new Date(dataFim).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+                    : "00:00",
+                custo: eventoCompleto?.custo ?? 0,
+                local:
+                    eventoCompleto?.enderecoEvento?.apelido ||
+                    eventoCompleto?.enderecoEvento?.rua ||
+                    "N/A",
+                descricao: eventoCompleto.descricao || "N/A",
+                ministerios: eventoCompleto?.ministerios || [],
+            });
+        } catch (err) {
+            console.error("Erro ao carregar detalhes do evento:", err);
+        }
     };
 
     const handleEditarEvento = (idEvento) => {

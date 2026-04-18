@@ -25,6 +25,7 @@ export function Perfil() {
     const [editando, setEditando] = useState(false);
     const [dadosEdicao, setDadosEdicao] = useState({});
     const [ministerios, setMinisterios] = useState([]);
+    const [feedback, setFeedback] = useState(null);
 
     useEffect(() => {
         carregarPerfil();
@@ -65,10 +66,11 @@ export function Perfil() {
             await atualizarMembro(membro.idExterno, dadosEdicao);
             setMembro(dadosEdicao);
             setEditando(false);
-            alert("Perfil atualizado com sucesso!");
+            setFeedback({ tipo: "sucesso", mensagem: "Perfil atualizado com sucesso!" });
+            setTimeout(() => setFeedback(null), 4000);
         } catch (err) {
-            alert("Erro ao atualizar perfil.");
             console.error(err);
+            setFeedback({ tipo: "erro", mensagem: "Erro ao atualizar perfil." });
         }
     };
 
@@ -96,6 +98,11 @@ export function Perfil() {
 
     return (
         <div className="flex flex-col gap-6">
+            {feedback && (
+                <div className={`px-4 py-3 rounded-lg text-sm font-medium ${feedback.tipo === "sucesso" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+                    {feedback.mensagem}
+                </div>
+            )}
             {/* Card do Perfil */}
             <div className="bg-white rounded-xl shadow-sm">
                 {/* Header do Perfil */}
@@ -139,12 +146,6 @@ export function Perfil() {
                         >
                             Ministérios
                         </TabsTrigger>
-                        <TabsTrigger 
-                            value="familia"
-                            className="rounded-none border-b-2 border-transparent data-[state=active]:border-icf-primary-400 data-[state=active]:bg-transparent px-6 py-3"
-                        >
-                            Família
-                        </TabsTrigger>
                     </TabsList>
 
                     {/* Tab: Dados Pessoais */}
@@ -157,8 +158,8 @@ export function Perfil() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <InputIcf
                                             label="Celular"
-                                            value={formatarTelefone(dadosEdicao.celular) || dadosEdicao.celular || ""}
-                                            onChange={(e) => handleChange("celular", e.target.value)}
+                                            value={formatarTelefone(dadosEdicao.celular) || ""}
+                                            onChange={(e) => handleChange("celular", e.target.value.replace(/\D/g, ''))}
                                         />
                                         <InputIcf
                                             label="Email"
@@ -345,14 +346,6 @@ export function Perfil() {
                                 ))}
                             </div>
                         )}
-                    </TabsContent>
-
-                    {/* Tab: Família */}
-                    <TabsContent value="familia" className="p-6">
-                        <div className="py-12 flex flex-col items-center justify-center text-icf-primary-200">
-                            <Users className="w-12 h-12 mb-4" />
-                            <p className="text-sm">Nenhum familiar cadastrado</p>
-                        </div>
                     </TabsContent>
                 </Tabs>
             </div>

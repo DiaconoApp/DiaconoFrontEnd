@@ -5,7 +5,6 @@ export async function buscarEventos(mes, ano) {
     const res = await api.get('api/v1/eventos', {
       params: { mes, ano }
     });
-    console.log(res.data);
     return res.data;
   } catch (error) {
     console.error('Erro ao buscar eventos AQUI:', error);

@@ -26,6 +26,10 @@ export default defineConfig(({ mode }) => {
           target: `http://${apiHost}:${apiPort}`,
           changeOrigin: true,
         },
+        "/register": {
+          target: `http://${apiHost}:${apiPort}`,
+          changeOrigin: true,
+        },
       },
     },
     build: {

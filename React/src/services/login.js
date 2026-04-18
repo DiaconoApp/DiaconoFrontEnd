@@ -21,11 +21,7 @@ export const login = async (email, senha) => {
     let payload = null;
     try { payload = jwtDecode(token); } catch { throw new Error("Token inválido"); }
 
-    console.log("login payload:", payload);
-
-    const user = {
-      cargo: payload.scope,
-    };
+    const user = { cargo: payload.scope };
 
     saveUserData(token, payload);
     return { token, payload, user };
@@ -40,9 +36,15 @@ export const login = async (email, senha) => {
   }
 };
 
-export const logout = () => {
-  localStorage.clear();
-  window.location.reload();
+export const logout = async () => {
+  try {
+    await api.post("/api/v1/auth/logout");
+  } catch {
+    // ignora erro — limpa o estado local de qualquer forma
+  } finally {
+    localStorage.clear();
+    window.location.href = "/login";
+  }
 };
 
 export const loginWithGoogle = async (idTokenOrResponse) => {
@@ -63,11 +65,7 @@ export const loginWithGoogle = async (idTokenOrResponse) => {
     let payload = null;
     try { payload = jwtDecode(token); } catch { throw new Error("Token inválido"); }
 
-    console.log("login payload:", payload);
-
-    const user = {
-      cargo: payload.scope,
-    };
+    const user = { cargo: payload.scope };
 
     saveUserData(token, payload);
     return { token, payload, user };

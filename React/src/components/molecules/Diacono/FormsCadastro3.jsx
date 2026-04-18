@@ -74,7 +74,12 @@ export function FormsCadastro3() {
             return;
         }
 
-        api.post("/register", dadosCadastro)
+        const payload = {
+            ...dadosCadastro,
+            celular: dadosCadastro.celular?.replace(/\D/g, ''),
+            cpf: dadosCadastro.cpf?.replace(/\D/g, ''),
+        };
+        api.post("/register", payload)
             .then(() => {
                 setModal({
                     type: "success",

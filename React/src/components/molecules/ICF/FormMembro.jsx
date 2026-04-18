@@ -8,7 +8,7 @@ import { buscarMinisterios } from "../../../services/ministerios";
 import { cadastrarMembro } from "../../../services/membros";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { Button } from "@/components/ui/button";
-import { X, Save, User, Lock, Church, MapPin } from "lucide-react";
+import { X, Save, User, Lock, Church, MapPin, Trash2 } from "lucide-react";
 import { AlertModal } from "../../ui/AlertModal";
 
 export function FormMembro({ fecharFormulario }) {
@@ -413,8 +413,9 @@ export function FormMembro({ fecharFormulario }) {
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveMinisterio(index)}
-                                            className="text-danger-500 hover:text-danger-600 font-medium"
+                                            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-danger-50 text-danger-600 hover:bg-danger-100 hover:text-danger-700 font-medium transition-colors text-sm"
                                         >
+                                            <Trash2 className="w-4 h-4" />
                                             Remover
                                         </button>
                                     </div>
@@ -486,8 +487,6 @@ export function FormMembro({ fecharFormulario }) {
                     </div>
                 </form>
             </div>
-            <div className="bg-white border-l rounded-r-lg py-4 px-9 border-icf-primary-100"></div>
-            {modal && <AlertModal {...modal} onClose={() => setModalAviso(null)} />}
         </div>
     );
 }

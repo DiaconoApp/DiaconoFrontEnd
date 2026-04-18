@@ -30,7 +30,7 @@ export function ModalMinisterio({
 
             try {
                 while (page < totalPages) {
-                    const res = await api.get(`/membros?page=${page}&size=50&sort=nome`);
+                    const res = await api.get(`/api/v1/membros?page=${page}&size=50&sort=nome`);
                     const { content, totalPages: tp } = res.data;
                     allMembros = [...allMembros, ...content];
                     totalPages = tp;
@@ -47,12 +47,12 @@ export function ModalMinisterio({
     }, []);
 
     useEffect(() => {
-        if (tipo === "editar" && ministerio && listaMembros.length > 0) {
-            setNome(ministerio.nome);
-            setIdLider(ministerio.idLider);
-            setStatus(ministerio.status);
+        if (tipo === "editar" && ministerio) {
+            setNome(ministerio.nome || "");
+            setIdLider(ministerio.idLider || "");
+            setStatus(ministerio.status || "ATIVO");
         }
-    }, [tipo, ministerio, listaMembros]);
+    }, [tipo, ministerio]);
 
     const titulo = tipo === "editar" ? "Editar Ministério" : "Adicionar Ministério";
 
@@ -108,6 +108,10 @@ export function ModalMinisterio({
         label: transformationName(membro.nome),
     }));
 
+    const nomeValido = nome.trim().length > 0;
+    const statusValido = tipo !== "editar" || Boolean(status);
+    const formularioValido = nomeValido && statusValido;
+
 
     return (
         <BaseModal
@@ -126,7 +130,7 @@ export function ModalMinisterio({
                     </Button>
                     <Button
                         onClick={handleSalvar}
-                        disabled={carregando}
+                        disabled={carregando || !formularioValido}
                         className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
                     >
                         {carregando
@@ -151,9 +155,25 @@ export function ModalMinisterio({
                         styles={{
                             control: (base) => ({
                                 ...base,
-                                padding: "4px",
-                                borderColor: "#c9c9c9",
+                                minHeight: "44px",
+                                borderColor: "#d4d8dd",
                                 borderRadius: "8px",
+                                boxShadow: "none",
+                                ":hover": {
+                                    borderColor: "#7cb8b4",
+                                },
+                            }),
+                            valueContainer: (base) => ({
+                                ...base,
+                                padding: "2px 12px",
+                            }),
+                            placeholder: (base) => ({
+                                ...base,
+                                color: "#9ca3af",
+                            }),
+                            menu: (base) => ({
+                                ...base,
+                                zIndex: 30,
                             })
                         }}
                         options={options}
@@ -167,14 +187,32 @@ export function ModalMinisterio({
                 {tipo === "editar" && (
                     <div className="flex flex-col gap-1">
                         <label className="text-sm font-medium text-icf-primary-400">Status</label>
-                        <select
-                            className="w-full border border-icf-primary-200 rounded-lg p-1 outline-none focus:ring-1 focus:ring-icf-primary-200 text-xs"
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                        >
-                            <option value="ATIVO">Ativo</option>
-                            <option value="INATIVO">Inativo</option>
-                        </select>
+                        <div className="grid grid-cols-2 gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setStatus("ATIVO")}
+                                aria-pressed={status === "ATIVO"}
+                                className={`h-11 rounded-lg border text-sm font-medium transition-colors ${
+                                    status === "ATIVO"
+                                        ? "bg-green-100 border-green-300 text-green-700"
+                                        : "bg-white border-icf-primary-200 text-icf-primary-300 hover:bg-green-50 hover:border-green-200"
+                                }`}
+                            >
+                                Ativo
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setStatus("INATIVO")}
+                                aria-pressed={status === "INATIVO"}
+                                className={`h-11 rounded-lg border text-sm font-medium transition-colors ${
+                                    status === "INATIVO"
+                                        ? "bg-red-100 border-red-300 text-red-700"
+                                        : "bg-white border-icf-primary-200 text-icf-primary-300 hover:bg-red-50 hover:border-red-200"
+                                }`}
+                            >
+                                Inativo
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

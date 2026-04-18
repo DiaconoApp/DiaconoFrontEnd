@@ -11,8 +11,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  User,
-  DollarSign
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -25,8 +24,7 @@ const navItems = [
   { key: "escalas", name: 'Escalas', path: '/escalas', icon: Clock },
   { key: "membros", name: 'Membros', path: '/membros', icon: Users },
   { key: "ministerios", name: 'Ministérios', path: '/ministerios', icon: Church },
-  { key: "financeiro", name: 'Financeiro', path: '/financeiro', icon: DollarSign },
-  { key: "dashboards", name: 'Dashboards', path: '/dashboard', icon: LayoutDashboard }
+{ key: "dashboards", name: 'Dashboards', path: '/dashboard', icon: LayoutDashboard }
 ];
 
 export function Menu() {
@@ -135,7 +133,7 @@ export function Menu() {
             )}
           </NavLink>
           <button
-            onClick={logout}
+            onClick={() => logout()}
             className="flex items-center gap-3 mx-2 px-3 py-2.5 rounded-lg text-icf-primary-200 hover:bg-icf-primary-300/20 hover:text-white transition-all duration-200 w-full"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />

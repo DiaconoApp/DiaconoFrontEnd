@@ -8,7 +8,7 @@ const dadosDistribuicao = [
   { name: "Visitantes", value: 2 },
 ];
 
-const cores = ["#1f2937", "#6b7280", "#d1d5db"];
+const cores = ["#10b981", "#059669", "#047857"];
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {

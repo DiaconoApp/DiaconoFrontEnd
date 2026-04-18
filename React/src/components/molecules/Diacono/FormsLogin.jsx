@@ -79,21 +79,23 @@ export function FormsLogin() {
                 <BotaoDiacono type="submit" disabled={loading}>
                     {loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}
                 </BotaoDiacono>
-                <div className='relative w-full'>
-                    <BotaoGoogle disabled={loading}>Entrar com Google</BotaoGoogle>
-                    <div className={`absolute inset-0 ${loading ? 'pointer-events-none' : ''} opacity-0`}>
-                        <GoogleLogin
-                            onSuccess={handleGoogleSuccess}
-                            onError={(err) => {
-                                console.error('Google login falhou', err);
-                                setErro('Erro ao fazer login com Google');
-                            }}
-                            width="100%"
-                            className="w-full h-full"
-                            style={{ width: '100%', height: '100%' }}
-                        />
+                {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+                    <div className='relative w-full'>
+                        <BotaoGoogle disabled={loading}>Entrar com Google</BotaoGoogle>
+                        <div className={`absolute inset-0 ${loading ? 'pointer-events-none' : ''} opacity-0`}>
+                            <GoogleLogin
+                                onSuccess={handleGoogleSuccess}
+                                onError={(err) => {
+                                    console.error('Google login falhou', err);
+                                    setErro('Erro ao fazer login com Google');
+                                }}
+                                width="100%"
+                                className="w-full h-full"
+                                style={{ width: '100%', height: '100%' }}
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
                 <LinkAcesso
                     onClick={() => navigate('/cadastro/etapa1')}
                     label={"Não tem uma conta?"}

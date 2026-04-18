@@ -15,6 +15,7 @@ export function CadastroProvider({ children }) {
     confirmarSenha: "",
     cargo: "MEMBRO",
     cep: "",
+    estado: "",
     rua: "",
     bairro: "",
     cidade: "",

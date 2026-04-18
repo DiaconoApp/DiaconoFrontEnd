@@ -5,9 +5,12 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Cell,
 } from "recharts";
 import { useState, useEffect } from "react";
 import { getQtdMembrosMinisterios } from "../../../services/dashboards";
+
+const coresVerdes = ['#10b981', '#059669', '#047857', '#065f46', '#0a5f45', '#064e40', '#063d35', '#022d27'];
 
 export function GraficoMembrosPorMinisterios({ anoInicio, anoFim }) {
   const [dados, setDados] = useState([]);
@@ -67,7 +70,11 @@ export function GraficoMembrosPorMinisterios({ anoInicio, anoFim }) {
             }}
           />
 
-          <Bar dataKey="qtd" radius={[4, 4, 0, 0]} fill="#1f2937" />
+          <Bar dataKey="qtd" radius={[4, 4, 0, 0]}>
+            {dados.map((_, index) => (
+              <Cell key={`cell-${index}`} fill={coresVerdes[index % coresVerdes.length]} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

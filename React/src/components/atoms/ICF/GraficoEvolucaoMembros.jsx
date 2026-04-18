@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { getEvolucaoMembros } from "../../../services/dashboards";
 
 const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+const coresVerdes = ['#10b981', '#059669', '#047857', '#065f46'];
 
 function transformarParaMultiLinha(dados, anoInicio, anoFim) {
   const estrutura = MESES.map(m => ({ mes: m }));
@@ -77,9 +78,9 @@ export default function GraficoEvolucaoMembros({ anoInicio, anoFim }) {
                 type="monotone"
                 dataKey={ano}
                 strokeWidth={2}
-                stroke="#1f2937"
-                dot={{ r: 4, fill: '#fff', stroke: '#1f2937', strokeWidth: 2 }}
-                activeDot={{ r: 6, fill: '#1f2937' }}
+                stroke={coresVerdes[i % coresVerdes.length]}
+                dot={{ r: 4, fill: '#fff', stroke: coresVerdes[i % coresVerdes.length], strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: coresVerdes[i % coresVerdes.length] }}
                 name={`${ano}`}
               />
             );

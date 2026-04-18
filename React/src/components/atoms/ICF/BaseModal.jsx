@@ -95,12 +95,13 @@ export function ConfirmModal({
     onCancel,
     confirmText = "Confirmar",
     cancelText = "Cancelar",
-    variant = "danger" // danger | warning | info
+    variant = "danger", // danger | warning | info
+    confirmIcon = null // Icone opcional para o botao de confirmacao
 }) {
     const variantClasses = {
-        danger: "bg-danger-500 hover:bg-danger-600",
-        warning: "bg-warning-500 hover:bg-warning-600",
-        info: "bg-icf-primary-400 hover:bg-icf-primary-500",
+        danger: "bg-red-500 hover:bg-red-600 text-white",
+        warning: "bg-warning-500 hover:bg-warning-600 text-white",
+        info: "bg-icf-primary-400 hover:bg-icf-primary-500 text-white",
     };
 
     return (
@@ -109,21 +110,22 @@ export function ConfirmModal({
             onClose={onCancel}
             size="sm"
             footer={
-                <>
+                <div className="flex gap-3 w-full">
                     <Button
                         variant="outline"
                         onClick={onCancel}
-                        className="border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
+                        className="flex-1 border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
                     >
                         {cancelText}
                     </Button>
                     <Button
                         onClick={onConfirm}
-                        className={cn("text-white", variantClasses[variant])}
+                        className={cn("flex-1 gap-2", variantClasses[variant])}
                     >
+                        {confirmIcon && confirmIcon}
                         {confirmText}
                     </Button>
-                </>
+                </div>
             }
         >
             <p className="text-icf-primary-300 text-center">{message}</p>

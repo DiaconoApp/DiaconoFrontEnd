@@ -16,7 +16,7 @@ import { FormEventos } from "../components/molecules/ICF/FormEventos";
 import { Calendario } from "../components/templates/ICF/Calendario";
 import { Dashboard } from "../components/pages/ICF/Dashboard";
 import { Perfil } from "../components/pages/ICF/Perfil";
-import { Financeiro } from "../components/pages/ICF/Financeiro";
+import { Configuracoes } from "../components/pages/ICF/Configuracoes";
 import { LandingPage } from "../components/pages/Diacono/LandingPage";
 
 // Wrapper para rotas que compartilham o CadastroProvider
@@ -113,14 +113,6 @@ export function AppRoutes() {
                     ),
                 },
                 {
-                    path: "financeiro",
-                    element: (
-                        <ProtectedRoute required={"financeiro"}>
-                            <Financeiro />
-                        </ProtectedRoute>
-                    ),
-                },
-                {
                     path: "dashboard",
                     element: (
                         <ProtectedRoute required={"dashboards"}>
@@ -131,6 +123,10 @@ export function AppRoutes() {
                 {
                     path: "perfil",
                     element: <Perfil />,
+                },
+                {
+                    path: "configuracoes",
+                    element: <Configuracoes />,
                 },
             ],
         },

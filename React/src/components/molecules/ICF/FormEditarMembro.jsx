@@ -5,7 +5,8 @@ import { formatarCpf, formatarTelefone, validaEmail } from "../../../utils/Utils
 import { buscarMembroPorId, atualizarMembro } from "../../../services/membros";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { Button } from "@/components/ui/button";
-import { X, Save, ChevronLeft } from "lucide-react";
+import { AlertModal } from "../../ui/AlertModal";
+import { X, Save, ChevronLeft, ChevronDown } from "lucide-react";
 
 const cargosOptions = [
     { value: "MEMBRO", label: "Membro" },
@@ -26,6 +27,7 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
     const [erros, setErros] = useState({});
     const [carregando, setCarregando] = useState(true);
     const [salvando, setSalvando] = useState(false);
+    const [modal, setModal] = useState(null);
     const { validarNome, validarCpf, buscarEnderecoPorCep } = useValidacaoCadastro();
 
     const [dadosMembro, setDadosMembro] = useState({
@@ -62,7 +64,7 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                     cargo: membro.cargo || "MEMBRO",
                     funcaoMembro: membro.funcaoMembro || "",
                     generoMembro: membro.generoMembro || "",
-                    confirmacaoFe: membro.confirmacaoFe || "",
+                    confirmacaoFe: membro.dataRegistro || "",
                     cep: membro.membroEnderecoDTO?.cep || "",
                     rua: membro.membroEnderecoDTO?.rua || "",
                     bairro: membro.membroEnderecoDTO?.bairro || "",
@@ -72,7 +74,7 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                 });
             } catch (err) {
                 console.error("Erro ao carregar membro:", err);
-                alert("Erro ao carregar dados do membro");
+                setModal({ type: "error", title: "Erro", message: "Erro ao carregar dados do membro." });
             } finally {
                 setCarregando(false);
             }
@@ -133,17 +135,17 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
 
         // Validar campos
         if (!dadosMembro.nome?.trim()) {
-            alert("Nome é obrigatório");
+            setModal({ type: "warning", title: "Campo obrigatório", message: "Nome é obrigatório." });
             return;
         }
 
         try {
             setSalvando(true);
             await atualizarMembro(idMembro, dadosMembro);
-            alert("Membro atualizado com sucesso!");
-            fecharFormulario();
+            setModal({ type: "success", title: "Sucesso", message: "Membro atualizado com sucesso!", autoClose: 1500 });
+            setTimeout(() => fecharFormulario(), 1500);
         } catch (err) {
-            alert("Erro ao atualizar membro. Tente novamente.");
+            setModal({ type: "error", title: "Erro", message: "Erro ao atualizar membro. Tente novamente." });
             console.error(err);
         } finally {
             setSalvando(false);
@@ -158,8 +160,11 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
         );
     }
 
+    const modalEl = modal && <AlertModal {...modal} onClose={() => setModal(null)} />;
+
     return (
         <div className="flex flex-col gap-6">
+            {modalEl}
             {/* Header */}
             <div className="flex items-center justify-between bg-white rounded-xl shadow-sm p-6">
                 <div className="flex items-center gap-4">
@@ -254,15 +259,20 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium text-icf-primary-400">Sexo</label>
-                            <select
-                                value={dadosMembro.generoMembro}
-                                onChange={(e) => handleChange("generoMembro", e.target.value)}
-                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
-                            >
-                                <option value="">Selecione</option>
-                                <option value="MASCULINO">Masculino</option>
-                                <option value="FEMININO">Feminino</option>
-                            </select>
+                            <div className="relative">
+                                <select
+                                    value={dadosMembro.generoMembro}
+                                    onChange={(e) => handleChange("generoMembro", e.target.value)}
+                                    className="w-full appearance-none text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 pr-11 focus:outline-none focus:ring-2 focus:ring-icf-primary-200 focus:border-icf-primary-300 transition-colors"
+                                >
+                                    <option value="">Selecione</option>
+                                    <option value="MASCULINO">Masculino</option>
+                                    <option value="FEMININO">Feminino</option>
+                                </select>
+                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-icf-primary-300">
+                                    <ChevronDown className="w-4 h-4" />
+                                </span>
+                            </div>
                         </div>
                         <InputIcf
                             label="Confirmação na Fé"
@@ -276,15 +286,20 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium text-icf-primary-400">Função do Membro</label>
-                            <select
-                                value={dadosMembro.funcaoMembro}
-                                onChange={(e) => handleChange("funcaoMembro", e.target.value)}
-                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
-                            >
-                                {funcoesOptions.map((f) => (
-                                    <option key={f.value} value={f.value}>{f.label}</option>
-                                ))}
-                            </select>
+                            <div className="relative">
+                                <select
+                                    value={dadosMembro.funcaoMembro}
+                                    onChange={(e) => handleChange("funcaoMembro", e.target.value)}
+                                    className="w-full appearance-none text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 pr-11 focus:outline-none focus:ring-2 focus:ring-icf-primary-200 focus:border-icf-primary-300 transition-colors"
+                                >
+                                    {funcoesOptions.map((f) => (
+                                        <option key={f.value} value={f.value}>{f.label}</option>
+                                    ))}
+                                </select>
+                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-icf-primary-300">
+                                    <ChevronDown className="w-4 h-4" />
+                                </span>
+                            </div>
                         </div>
                     </div>
 

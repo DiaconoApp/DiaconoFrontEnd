@@ -111,3 +111,72 @@ export async function getEvolucaoMembros(anoInicio, anoFim) {
     throw error;
   }
 }
+
+// Aniversariantes do mês
+export async function getAniversariantesMes(mes, ano) {
+  try {
+    const res = await api.get("/api/v1/dashboards/membros/aniversariantes", {
+      params: { mes, ano }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Erro ao buscar aniversariantes do mês:", error);
+    throw error;
+  }
+}
+
+// =============================
+//  ENGAJAMENTO
+// =============================
+
+// KPIs de engajamento
+export async function getKpisEngajamento(anoInicio, anoFim) {
+  try {
+    const res = await api.get("/api/v1/dashboards/engajamento/kpis", {
+      params: { anoInicio, anoFim }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Erro ao buscar KPIs de engajamento:", error);
+    throw error;
+  }
+}
+
+// Evolução do engajamento
+export async function getEvolucaoEngajamento(anoInicio, anoFim) {
+  try {
+    const res = await api.get("/api/v1/dashboards/engajamento/evolucao", {
+      params: { anoInicio, anoFim }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Erro ao buscar evolução de engajamento:", error);
+    throw error;
+  }
+}
+
+// Engajamento por ministério (top 3)
+export async function getEngajamentoPorMinisterio(anoInicio, anoFim) {
+  try {
+    const res = await api.get("/api/v1/dashboards/engajamento/por-ministerio", {
+      params: { anoInicio, anoFim }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Erro ao buscar engajamento por ministério:", error);
+    throw error;
+  }
+}
+
+// Membros desengajados
+export async function getMembrosDesengajados(anoInicio, anoFim, limitePercentual = 50) {
+  try {
+    const res = await api.get("/api/v1/dashboards/engajamento/membros-desengajados", {
+      params: { anoInicio, anoFim, limitePercentual }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Erro ao buscar membros desengajados:", error);
+    throw error;
+  }
+}

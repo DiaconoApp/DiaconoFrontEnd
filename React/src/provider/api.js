@@ -7,7 +7,7 @@ if (import.meta.env.VITE_API_IP === undefined || import.meta.env.VITE_API_PORT =
   baseURL = `http://${import.meta.env.VITE_API_IP}:${import.meta.env.VITE_API_PORT}`;
 }
 
-const api = axios.create({ baseURL });
+const api = axios.create({ baseURL, timeout: 10000, withCredentials: true });
 
 api.interceptors.request.use(config => {
   // Evita /api/api/... quando baseURL ja inclui /api.

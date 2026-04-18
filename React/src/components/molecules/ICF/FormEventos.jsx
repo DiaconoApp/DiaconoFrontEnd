@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { X, Save, Trash2 } from "lucide-react";
+import { X, Save, Trash2, MapPin, ChevronDown } from "lucide-react";
 
 import { ModalExclusao } from "./ModalExclusao";
 import { ModalExclusaoRecorrencia } from "./ModalExclusaoRecorrencia";
@@ -376,18 +376,21 @@ export function FormEventos() {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-icf-primary-400">Público-alvo</label>
-                <select
-                  name="publicoAlvo"
-                  value={formData.publicoAlvo}
-                  onChange={handleChange}
-                  className="mt-1.5 w-full text-sm disabled:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
-                >
-                  <option value="" disabled>Selecione...</option>
-                  <option value="Todos">Todos</option>
-                  <option value="Geral">Membros e visitantes</option>
-                  <option value="Membros">Membros</option>
-                  <option value="Lideranças">Líderes e Pastores</option>
-                </select>
+                <div className="relative mt-1.5">
+                  <select
+                    name="publicoAlvo"
+                    value={formData.publicoAlvo}
+                    onChange={handleChange}
+                    className="w-full text-sm disabled:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 pr-10 focus:outline-none focus:border-icf-primary-300 transition-colors appearance-none cursor-pointer"
+                  >
+                    <option value="" disabled>Selecione...</option>
+                    <option value="Todos">Todos</option>
+                    <option value="Geral">Membros e visitantes</option>
+                    <option value="Membros">Membros</option>
+                    <option value="Lideranças">Líderes e Pastores</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-icf-primary-300 pointer-events-none" />
+                </div>
               </div>
 
               <div className="dropdown-ministerios relative">
@@ -505,7 +508,7 @@ export function FormEventos() {
                   onClick={() => setModalLocalAberto(true)}
                   className="mt-1.5 w-full text-left text-sm text-icf-primary-300 bg-surface-50 border border-icf-primary-100 hover:border-icf-primary-200 rounded-lg py-3 px-4 flex items-center gap-2 transition-colors"
                 >
-                  <span className="text-icf-primary-200">📍</span>
+                  <MapPin className="w-4 h-4 text-icf-primary-200" />
                   {endereco?.apelido || "Adicionar local"}
                 </button>
               </div>

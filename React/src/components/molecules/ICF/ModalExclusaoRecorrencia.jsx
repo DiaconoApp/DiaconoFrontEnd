@@ -15,17 +15,17 @@ export function ModalExclusaoRecorrencia({
             footer={
                 <div className="flex gap-3 w-full">
                     <Button
-                        onClick={onConfirm}
-                        className="flex-1 bg-red-500 hover:bg-red-600 text-white"
-                    >
-                        Excluir
-                    </Button>
-                    <Button
                         onClick={onClose}
                         variant="outline"
                         className="flex-1 border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50"
                     >
                         Cancelar
+                    </Button>
+                    <Button
+                        onClick={onConfirm}
+                        className="flex-1 bg-red-500 hover:bg-red-600 text-white"
+                    >
+                        Excluir
                     </Button>
                 </div>
             }

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { buscarEscalas, buscarEscalasGoverno } from "../../../services/escalas";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { buscarEscalas, buscarEscalasGoverno, buscarEscalasLider } from "../../../services/escalas";
 import { buscarTodosMinisterios, buscarMinisteriosQueLidero } from "../../../services/ministerios";
 import { CardEscala } from "../../molecules/ICF/CardEscala";
 import { ModalEscalarMinisterios } from "../../molecules/ICF/ModalEscalarMinisterios";
+import { ModalGerenciarEscala } from "../../molecules/ICF/ModalGerenciarEscala";
 import { formatarDataHora } from "../../../utils/Utils";
 import { ModalVisualizarEvento } from "../../molecules/ICF/ModalVisualizarEvento";
 import { ChevronLeft, ChevronRight, Users } from "lucide-react";
@@ -26,12 +27,14 @@ export function Escalas() {
 
     const [escalas, setEscalas] = useState([]);
 
+    const usaNovoFormatoEscalas = isGoverno || isLider;
+
     const [currentDate, setCurrentDate] = useState(new Date());
     const renderTitle = (date) =>
         date.toLocaleString("pt-BR", { month: "long", year: "numeric" });
     const [currentTitle, setCurrentTitle] = useState(renderTitle(currentDate));
 
-    const carregarEscalas = async (mes, ano) => {
+    const carregarEscalas = useCallback(async (mes, ano) => {
         try {
             let escalasData = [];
 
@@ -46,6 +49,16 @@ export function Escalas() {
                 });
                 // API retorna array diretamente
                 setEscalas(Array.isArray(escalasData) ? escalasData : []);
+            } else if (isLider) {
+                // Visão Líder: usar endpoint de líder seguindo estrutura da visão governo
+                escalasData = await buscarEscalasLider({
+                    mes,
+                    ano,
+                    status: statusFiltro === "todos" ? "" : statusFiltro.toUpperCase(),
+                    ministerioId: fkMinisterio,
+                    nomeEvento: buscaTexto
+                });
+                setEscalas(Array.isArray(escalasData) ? escalasData : []);
             } else {
                 // Visão Lider e Membro: usar endpoint antigo
                 const res = await buscarEscalas({ mes, ano, idMinisterio: fkMinisterio || null });
@@ -55,11 +68,28 @@ export function Escalas() {
             console.error("Erro ao carregar escalas:", err);
             setEscalas([]);
         }
-    };
+    }, [isGoverno, isLider, statusFiltro, fkMinisterio, buscaTexto]);
 
+    const timeoutRef = useRef(null);
+
+    // Carrega escalas com debounce para evitar múltiplas requisições
     useEffect(() => {
-        carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
-    }, [fkMinisterio, currentDate, statusFiltro, buscaTexto, cargo]);
+        // Cancelar requisição anterior se existir
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+
+        // Aguardar um pouco para evitar múltiplas requisições em rápida sucessão
+        timeoutRef.current = setTimeout(() => {
+            carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
+        }, 300);
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [currentDate, fkMinisterio, statusFiltro, buscaTexto, cargo, carregarEscalas]);
 
     const handlePrev = () => {
         const prev = new Date(currentDate);
@@ -103,6 +133,7 @@ export function Escalas() {
 
     const [eventoSelecionado, setEventoSelecionado] = useState(null);
     const [eventoGerenciando, setEventoGerenciando] = useState(null);
+    const [escalaGerenciando, setEscalaGerenciando] = useState(null);
 
     // Função para mapear dados do novo formato (visão governo)
     const mapearEscalaGoverno = (escala) => {
@@ -118,8 +149,22 @@ export function Escalas() {
         };
     };
 
+    const mapearEscalaLider = (escala) => {
+        return {
+            idExterno: escala.idEvento,
+            idExternoEscalaEvento: escala.idExternoEscalaEvento,
+            nome: escala.nomeReuniao,
+            nomeMinisterio: escala.nomeMinisterio,
+            dataHoraInicio: escala.dataHoraInicio,
+            dataHoraFim: escala.dataHoraFim,
+            totalEventoMinisterios: escala.membrosEscalados || 0,
+            totalEventosMinisterioConfirmados: escala.membrosEscaladosConfirmados || 0,
+            status: escala.status,
+        };
+    };
+
     const handleVerDetalhes = async (escala) => {
-        const idEvento = escala.idExterno || escala.idExternoEvento;
+        const idEvento = escala.idExterno || escala.idExternoEvento || escala.idEvento;
         if (!idEvento) return;
 
         try {
@@ -170,14 +215,25 @@ export function Escalas() {
         });
         console.log("eventoGerenciando setado:", { idExterno: escala.idExterno, nome: escala.nome || escala.nomeReuniao });
     };
+
+    const handleGerenciarEscala = (escala) => {
+        setEscalaGerenciando({
+            idExterno: escala.idExterno,
+            idExternoEscalaEvento: escala.idExternoEscalaEvento,
+            nome: escala.nome || escala.nomeReuniao,
+            fkMinisterio: fkMinisterio,
+        });
+    };
     
     const handleCloseModal = () => setEventoSelecionado(null);
     const handleCloseGerenciarMinisterios = () => setEventoGerenciando(null);
 
     // Mapeia escalas para o formato esperado
-    const escalasMapeadas = escalas.map(escala => 
-        isGoverno ? mapearEscalaGoverno(escala) : escala
-    );
+    const escalasMapeadas = escalas.map((escala) => {
+        if (isGoverno) return mapearEscalaGoverno(escala);
+        if (isLider) return mapearEscalaLider(escala);
+        return escala;
+    });
 
     return (
         <div className="flex flex-col gap-6">
@@ -199,10 +255,10 @@ export function Escalas() {
                         selectOptions={options}
                         selectValue={fkMinisterio}
                         onSelectChange={setFkMinisterio}
-                        selectPlaceholder={isGoverno ? "Todos os ministérios" : "Ministérios"}
+                        selectPlaceholder={"Todos os ministérios"}
                     >
-                        {/* Status Toggle Buttons - apenas para visão Governo */}
-                        {isGoverno && (
+                        {/* Status Toggle Buttons - apenas para visão Governo e Líder */}
+                        {usaNovoFormatoEscalas && (
                             <StatusToggle
                                 value={statusFiltro}
                                 onChange={setStatusFiltro}
@@ -244,18 +300,26 @@ export function Escalas() {
                             <p className="text-sm">Nenhuma escala encontrada para este mês</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-fr">
                             {escalasMapeadas.map((escala) => (
                                 <CardEscala
-                                    key={escala.idExterno}
+                                    key={`${escala.idExterno}-${escala.idExternoEscalaEvento || escala.nome || escala.dataHoraInicio}`}
+                                    className="w-full min-w-0"
                                     nomeEvento={escala.nome || escala.nomeReuniao}
-                                    status={isGoverno ? escala.status : "Pendente"}
+                                    nomeMinisterio={isLider ? escala.nomeMinisterio : undefined}
+                                    status={usaNovoFormatoEscalas ? escala.status : "Pendente"}
                                     dataHoraInicio={formatarDataHora(escala.dataHoraInicio)}
                                     dataHoraFim={formatarDataHora(escala.dataHoraFim)}
                                     ministeriosConfirmados={escala.totalEventosMinisterioConfirmados}
                                     ministeriosEscalados={escala.totalEventoMinisterios}
                                     onVerDetalhes={() => handleVerDetalhes(escala)}
-                                    onGerenciarMinisterios={isGoverno ? () => handleGerenciarMinisterios(escala) : undefined}
+                                    onGerenciarMinisterios={
+                                        isGoverno
+                                            ? () => handleGerenciarMinisterios(escala)
+                                            : isLider
+                                                ? () => handleGerenciarEscala(escala)
+                                                : undefined
+                                    }
                                     eventoId={escala.idExterno}
                                 />
                             ))}
@@ -283,6 +347,19 @@ export function Escalas() {
                         onClose={handleCloseGerenciarMinisterios}
                         onConfirm={() => {
                             // Recarregar escalas após confirmar
+                            carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
+                        }}
+                    />
+                </div>
+            )}
+
+            {escalaGerenciando && isLider && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+                    <ModalGerenciarEscala
+                        idExternoEscalaEvento={escalaGerenciando.idExternoEscalaEvento}
+                        onClose={() => setEscalaGerenciando(null)}
+                        onConfirm={() => {
+                            setEscalaGerenciando(null);
                             carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
                         }}
                     />

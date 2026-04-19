@@ -3,6 +3,7 @@ import { BotaoIcf } from '../../atoms/ICF/BotaoIcf'
 
 export function CardEscala({
     nomeEvento,
+    nomeMinisterio,
     status,
     dataHoraInicio,
     dataHoraFim,
@@ -43,12 +44,19 @@ export function CardEscala({
     };
 
     return (
-        <div className="bg-white border border-icf-primary-100 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow">
+        <div className={`bg-white border border-icf-primary-100 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow h-full ${className}`}>
             {/* Header com título e badge de status */}
             <div className="flex items-start justify-between gap-4">
-                <h3 className="text-xl font-bold text-icf-primary-400 leading-tight">
-                    {nomeEvento}
-                </h3>
+                <div className="flex flex-col gap-2">
+                    <h3 className="text-xl font-bold text-icf-primary-400 leading-tight">
+                        {nomeEvento}
+                    </h3>
+                    {nomeMinisterio && (
+                        <span className="inline-flex w-fit items-center rounded-full bg-icf-primary-50 px-3 py-1 text-xs font-semibold text-icf-primary-300">
+                            {nomeMinisterio}
+                        </span>
+                    )}
+                </div>
                 <span className={`${getStatusColor(status)} text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap`}>
                     {status}
                 </span>
@@ -66,7 +74,7 @@ export function CardEscala({
 
             {/* Ministérios */}
             <div className="text-sm text-icf-primary-200">
-                {ministeriosConfirmados}/{ministeriosEscalados} Ministérios Confirmados
+                {ministeriosConfirmados}/{ministeriosEscalados} membros confirmados
             </div>
 
             {/* Botões */}
@@ -83,7 +91,7 @@ export function CardEscala({
                     disabled={!onGerenciarMinisterios}
                     style={{ opacity: onGerenciarMinisterios ? 1 : 0.5, cursor: onGerenciarMinisterios ? 'pointer' : 'not-allowed' }}
                 >
-                    Gerenciar Ministérios
+                    Gerenciar Escala
                 </BotaoIcf>
             </div>
         </div>

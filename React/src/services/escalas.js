@@ -44,6 +44,46 @@ export const buscarEscalasGoverno = async ({ mes, ano, status = "", ministerioId
     }
 };
 
+export const buscarEscalasLider = async ({ mes, ano, status = "", ministerioId = "", nomeEvento = "" }) => {
+    try {
+        let url = `/api/v1/escalas-ministerio/lider-ministerio?mes=${mes}&ano=${ano}`;
+
+        if (status && status !== "__all__") {
+            url += `&status=${status}`;
+        }
+
+        if (ministerioId) {
+            url += `&ministerioId=${ministerioId}`;
+        }
+
+        if (nomeEvento && nomeEvento.trim()) {
+            url += `&nomeEvento=${encodeURIComponent(nomeEvento.trim())}`;
+        }
+
+        const res = await api.get(url);
+        return res.data || [];
+    } catch (err) {
+        console.error("Erro ao buscar escalas (visão líder):", err);
+        return [];
+    }
+};
+
+export const buscarMembrosEscalaLider = async (idExternoEscalaEvento) => {
+    try {
+        if (!idExternoEscalaEvento) {
+            console.log("idExternoEscalaEvento não definido");
+            return [];
+        }
+
+        const url = `/api/v1/escalas-ministerio/lider-ministerio/${idExternoEscalaEvento}`;
+        const res = await api.get(url);
+        return res.data || [];
+    } catch (err) {
+        console.error(`Erro ao buscar membros da escala ${idExternoEscalaEvento}:`, err);
+        return [];
+    }
+};
+
 export const buscarMinisteriosEvento = async (eventoId) => {
     console.log("buscarMinisteriosEvento chamado com eventoId:", eventoId);
     if (!eventoId) {
@@ -69,6 +109,49 @@ export const atualizarMinisteriosEvento = async (eventoId, ministerios) => {
         return res.data;
     } catch (err) {
         console.error(`Erro ao atualizar ministérios do evento ${eventoId}:`, err);
+        throw err;
+    }
+};
+
+export const atualizarEscalaMembroLider = async (idExternoEscalaEvento, membrosSelecionados) => {
+    try {
+        if (!idExternoEscalaEvento) {
+            throw new Error("idExternoEscalaEvento não definido");
+        }
+
+        // Construir payload com apenas os membros selecionados
+        // membrosSelecionados é um objeto: { [membroMinisterioId]: boolean }
+        const membrosPayload = Object.entries(membrosSelecionados)
+            .filter(([_, selecionado]) => selecionado)
+            .map(([membroId]) => ({
+                idExternoMembroMinisterio: membroId,
+                status: "CONFIRMADO"
+            }));
+
+        const url = `/api/v1/escalas-ministerio/lider-ministerio/${idExternoEscalaEvento}`;
+        const res = await api.patch(url, membrosPayload);
+        return res.data;
+    } catch (err) {
+        console.error(`Erro ao atualizar escala ${idExternoEscalaEvento}:`, err);
+        throw err;
+    }
+};
+
+export const gerarEscalaAleatoriaLider = async (idExternoEscalaEvento, tamanhoEquipe) => {
+    try {
+        if (!idExternoEscalaEvento) {
+            throw new Error("idExternoEscalaEvento não definido");
+        }
+
+        if (!tamanhoEquipe || Number(tamanhoEquipe) < 1) {
+            throw new Error("Tamanho da equipe inválido");
+        }
+
+        const url = `/api/v1/escalas-ministerio/lider-ministerio/${idExternoEscalaEvento}/${Number(tamanhoEquipe)}`;
+        const res = await api.get(url);
+        return Array.isArray(res.data) ? res.data : [];
+    } catch (err) {
+        console.error(`Erro ao gerar escala aleatória ${idExternoEscalaEvento}:`, err);
         throw err;
     }
 };

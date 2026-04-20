@@ -13,7 +13,9 @@ export function CardEscala({
     onVerDetalhes,
     onGerenciarMinisterios,
     eventoId,
-    isGoverno = false
+    isGoverno = false,
+    exibirResumoConfirmacao = true,
+    exibirBotaoGerenciar = true,
 }) {
     const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
@@ -117,9 +119,11 @@ export function CardEscala({
             )}
 
             {/* Ministérios */}
-            <div className="text-sm text-icf-primary-200">
-                {ministeriosConfirmados}/{ministeriosEscalados} {textoConfirmacao}
-            </div>
+            {exibirResumoConfirmacao && (
+                <div className="text-sm text-icf-primary-200">
+                    {ministeriosConfirmados}/{ministeriosEscalados} {textoConfirmacao}
+                </div>
+            )}
 
             {/* Botões */}
             <div className="flex gap-3 mt-2">
@@ -129,14 +133,16 @@ export function CardEscala({
                 >
                     Ver Detalhes
                 </BotaoIcf>
-                <BotaoIcf 
-                    className="bg-icf-primary-100 flex-1 text-icf-primary-400 font-semibold py-2"
-                    onClick={onGerenciarMinisterios}
-                    disabled={!onGerenciarMinisterios}
-                    style={{ opacity: onGerenciarMinisterios ? 1 : 0.5, cursor: onGerenciarMinisterios ? 'pointer' : 'not-allowed' }}
-                >
-                    {textoBotaoGerenciar}
-                </BotaoIcf>
+                {exibirBotaoGerenciar && (
+                    <BotaoIcf 
+                        className="bg-icf-primary-100 flex-1 text-icf-primary-400 font-semibold py-2"
+                        onClick={onGerenciarMinisterios}
+                        disabled={!onGerenciarMinisterios}
+                        style={{ opacity: onGerenciarMinisterios ? 1 : 0.5, cursor: onGerenciarMinisterios ? 'pointer' : 'not-allowed' }}
+                    >
+                        {textoBotaoGerenciar}
+                    </BotaoIcf>
+                )}
             </div>
         </div>
     );

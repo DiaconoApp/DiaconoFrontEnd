@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { buscarEscalas, buscarEscalasGoverno, buscarEscalasLider } from "../../../services/escalas";
-import { buscarTodosMinisterios, buscarMinisteriosQueLidero } from "../../../services/ministerios";
+import { buscarEscalas, buscarEscalasGoverno, buscarEscalasLider, buscarEscalasMembro } from "../../../services/escalas";
+import { buscarTodosMinisterios, buscarMinisteriosQueLidero, buscarMinisteriosMembro } from "../../../services/ministerios";
 import { CardEscala } from "../../molecules/ICF/CardEscala";
 import { ModalEscalarMinisterios } from "../../molecules/ICF/ModalEscalarMinisterios";
 import { ModalGerenciarEscala } from "../../molecules/ICF/ModalGerenciarEscala";
@@ -20,6 +20,7 @@ export function Escalas() {
     const isGoverno = cargo === "GOVERNO";
     console.log("isGoverno:", isGoverno);
     const isLider = cargo === "LIDER_MINISTERIO";
+    const isMembro = !isGoverno && !isLider;
 
     const [fkMinisterio, setFkMinisterio] = useState("");
     const [buscaTexto, setBuscaTexto] = useState("");
@@ -60,9 +61,15 @@ export function Escalas() {
                 });
                 setEscalas(Array.isArray(escalasData) ? escalasData : []);
             } else {
-                // Visão Lider e Membro: usar endpoint antigo
-                const res = await buscarEscalas({ mes, ano, idMinisterio: fkMinisterio || null });
-                setEscalas(res?.content || []);
+                // Visão Membro: usar endpoint dedicado
+                escalasData = await buscarEscalasMembro({
+                    mes,
+                    ano,
+                    status: statusFiltro === "todos" ? "" : statusFiltro.toUpperCase(),
+                    ministerioId: fkMinisterio,
+                    nomeEvento: buscaTexto
+                });
+                setEscalas(Array.isArray(escalasData) ? escalasData : []);
             }
         } catch (err) {
             console.error("Erro ao carregar escalas:", err);
@@ -119,8 +126,9 @@ export function Escalas() {
                     const data = await buscarMinisteriosQueLidero();
                     setOptions(Array.isArray(data) ? data : data?.content || []);
                 } else {
-                    // Visão Membro: nenhum filtro de ministério necessário
-                    setOptions([]);
+                    // Visão Membro: ministérios que o membro pertence
+                    const data = await buscarMinisteriosMembro();
+                    setOptions(Array.isArray(data) ? data : []);
                 }
             } catch (err) {
                 console.error("Erro ao buscar ministérios para filtro:", err);
@@ -160,6 +168,23 @@ export function Escalas() {
             totalEventoMinisterios: escala.membrosEscalados || 0,
             totalEventosMinisterioConfirmados: escala.membrosEscaladosConfirmados || 0,
             status: escala.status,
+        };
+    };
+
+    const mapearEscalaMembro = (escala) => {
+        const status = escala.status || "PENDENTE";
+        const confirmado = String(status).toUpperCase() === "CONFIRMADO" ? 1 : 0;
+
+        return {
+            idExterno: escala.idEvento || escala.idExternoEvento || "",
+            idExternoEscalaEvento: escala.idExternoEscalaMinisterio,
+            nome: escala.nomeReuniao,
+            nomeMinisterio: escala.nomeMinisterio,
+            dataHoraInicio: escala.dataHoraInicio,
+            dataHoraFim: escala.dataHoraFim,
+            totalEventoMinisterios: 1,
+            totalEventosMinisterioConfirmados: confirmado,
+            status,
         };
     };
 
@@ -267,7 +292,7 @@ export function Escalas() {
     const escalasMapeadas = escalas.map((escala) => {
         if (isGoverno) return mapearEscalaGoverno(escala);
         if (isLider) return mapearEscalaLider(escala);
-        return escala;
+        return mapearEscalaMembro(escala);
     });
 
     return (
@@ -287,7 +312,7 @@ export function Escalas() {
                         searchValue={buscaTexto}
                         onSearchChange={setBuscaTexto}
                         showStatus={false}
-                        selectOptions={options}
+                        selectOptions={!isMembro ? options : options}
                         selectValue={fkMinisterio}
                         onSelectChange={setFkMinisterio}
                         selectPlaceholder={"Todos os ministérios"}
@@ -338,12 +363,14 @@ export function Escalas() {
                         <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-fr">
                             {escalasMapeadas.map((escala) => (
                                 <CardEscala
-                                    key={`${escala.idExterno}-${escala.idExternoEscalaEvento || escala.nome || escala.dataHoraInicio}`}
+                                    key={`${escala.idExternoEscalaEvento || escala.idExterno}-${escala.nome || escala.dataHoraInicio}`}
                                     className="w-full min-w-0"
                                     nomeEvento={escala.nome || escala.nomeReuniao}
-                                    nomeMinisterio={isLider ? escala.nomeMinisterio : undefined}
+                                    nomeMinisterio={(isLider || !isGoverno) ? escala.nomeMinisterio : undefined}
                                     isGoverno={isGoverno}
-                                    status={usaNovoFormatoEscalas ? escala.status : "Pendente"}
+                                    exibirResumoConfirmacao={!isMembro}
+                                    exibirBotaoGerenciar={!isMembro}
+                                    status={escala.status || "PENDENTE"}
                                     dataHoraInicio={formatarDataHora(escala.dataHoraInicio)}
                                     dataHoraFim={formatarDataHora(escala.dataHoraFim)}
                                     ministeriosConfirmados={escala.totalEventosMinisterioConfirmados}

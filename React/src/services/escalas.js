@@ -68,6 +68,30 @@ export const buscarEscalasLider = async ({ mes, ano, status = "", ministerioId =
     }
 };
 
+export const buscarEscalasMembro = async ({ mes, ano, status = "", ministerioId = "", nomeEvento = "" }) => {
+    try {
+        let url = `/api/v1/escalas-ministerio/membro?mes=${mes}&ano=${ano}`;
+
+        if (status && status !== "__all__") {
+            url += `&status=${status}`;
+        }
+
+        if (ministerioId) {
+            url += `&ministerioId=${ministerioId}`;
+        }
+
+        if (nomeEvento && nomeEvento.trim()) {
+            url += `&nomeEvento=${encodeURIComponent(nomeEvento.trim())}`;
+        }
+
+        const res = await api.get(url);
+        return res.data || [];
+    } catch (err) {
+        console.error("Erro ao buscar escalas (visão membro):", err);
+        return [];
+    }
+};
+
 export const buscarMembrosEscalaLider = async (idExternoEscalaEvento) => {
     try {
         if (!idExternoEscalaEvento) {

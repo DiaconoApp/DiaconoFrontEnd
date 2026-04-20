@@ -77,6 +77,16 @@ export const buscarMinisteriosQueLidero = async () => {
   }
 };
 
+export const buscarMinisteriosMembro = async () => {
+  try {
+    const res = await api.get("/api/v1/ministerios/membro");
+    return res.data;
+  } catch (err) {
+    console.error("Erro ao buscar ministérios do membro:", err);
+    return [];
+  }
+};
+
 export const removerMembroMinisterio = async ({idMinisterio, idMembro}) => {
   try {
     const res = await api.delete(`/api/v1/ministerios/lider-ministerio/${idMinisterio}/${idMembro}`);

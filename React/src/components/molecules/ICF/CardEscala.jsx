@@ -12,7 +12,8 @@ export function CardEscala({
     className = "",
     onVerDetalhes,
     onGerenciarMinisterios,
-    eventoId
+    eventoId,
+    isGoverno = false
 }) {
     // Formata data e hora completa com dia da semana
     const formatarDataHoraCompleta = (dataStr) => {
@@ -42,6 +43,9 @@ export function CardEscala({
         if (statusUpper === "CONCLUIDO") return "bg-icf-primary-200";
         return "bg-icf-primary-200";
     };
+
+    const textoConfirmacao = isGoverno ? "ministérios confirmados" : "membros confirmados";
+    const textoBotaoGerenciar = isGoverno ? "Gerenciar Ministérios" : "Gerenciar Escala";
 
     return (
         <div className={`bg-white border border-icf-primary-100 rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow h-full ${className}`}>
@@ -74,7 +78,7 @@ export function CardEscala({
 
             {/* Ministérios */}
             <div className="text-sm text-icf-primary-200">
-                {ministeriosConfirmados}/{ministeriosEscalados} membros confirmados
+                {ministeriosConfirmados}/{ministeriosEscalados} {textoConfirmacao}
             </div>
 
             {/* Botões */}
@@ -91,7 +95,7 @@ export function CardEscala({
                     disabled={!onGerenciarMinisterios}
                     style={{ opacity: onGerenciarMinisterios ? 1 : 0.5, cursor: onGerenciarMinisterios ? 'pointer' : 'not-allowed' }}
                 >
-                    Gerenciar Escala
+                    {textoBotaoGerenciar}
                 </BotaoIcf>
             </div>
         </div>

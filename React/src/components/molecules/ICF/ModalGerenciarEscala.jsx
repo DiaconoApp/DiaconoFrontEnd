@@ -3,7 +3,7 @@ import { BaseModal } from '../../atoms/ICF/BaseModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { buscarMembrosEscalaLider, atualizarEscalaMembroLider, gerarEscalaAleatoriaLider } from '../../../services/escalas';
+import { buscarMembrosEscalaLider, atualizarEscalaMembroLider, gerarEscalaAleatoriaLider, revisarRandomizacaoMembroLider } from '../../../services/escalas';
 import { Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -16,8 +16,10 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
     const [carregando, setCarregando] = useState(false);
     const [membrosSelecionados, setMembrosSelecionados] = useState({});
     const [membrosSorteados, setMembrosSorteados] = useState([]);
+    const [mensagemSorteio, setMensagemSorteio] = useState("");
     const [carregandoSorteio, setCarregandoSorteio] = useState(false);
     const [carregandoConfirmar, setCarregandoConfirmar] = useState(false);
+    const [membrosTrocando, setMembrosTrocando] = useState({});
     const { toast } = useToast();
 
     // Carregar membros quando modo muda para 'manual'
@@ -116,6 +118,7 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
 
         try {
             setCarregandoSorteio(true);
+            setMensagemSorteio("");
             const sorteados = await gerarEscalaAleatoriaLider(idExternoEscalaEvento, tamanhoEquipe);
             setMembrosSorteados(sorteados);
 
@@ -138,6 +141,13 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
             console.error("Erro ao gerar escala aleatória:", err);
             setMembrosSorteados([]);
             setMembrosSelecionados({});
+
+            const mensagemApi = err?.response?.data?.message || err?.apiMessage;
+            if (mensagemApi) {
+                setMensagemSorteio(mensagemApi);
+                return;
+            }
+
             toast({
                 title: "Erro",
                 description: "Falha ao gerar escala aleatória. Tente novamente.",
@@ -187,6 +197,83 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
         }
     };
 
+    const handleTrocarMembroSorteado = async (membroAtual) => {
+        const membroIdAtual = membroAtual?.idExternoMembroMinisterio || membroAtual?.membroMinisterioId;
+
+        if (!idExternoEscalaEvento || !membroIdAtual) {
+            toast({
+                title: "Erro",
+                description: "Não foi possível identificar o membro para troca.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        try {
+            setMembrosTrocando((prev) => ({ ...prev, [membroIdAtual]: true }));
+
+            const respostaTroca = await revisarRandomizacaoMembroLider(
+                idExternoEscalaEvento,
+                membroIdAtual,
+                membrosSorteados
+            );
+
+            if (!respostaTroca) {
+                throw new Error("Nenhum membro retornado na revisão da randomização");
+            }
+
+            if (Array.isArray(respostaTroca)) {
+                setMembrosSorteados(respostaTroca);
+
+                const selecionadosAtualizados = respostaTroca.reduce((acc, membro) => {
+                    const id = membro?.idExternoMembroMinisterio || membro?.membroMinisterioId;
+                    if (id) {
+                        acc[id] = true;
+                    }
+                    return acc;
+                }, {});
+
+                setMembrosSelecionados(selecionadosAtualizados);
+            } else {
+                const membroNovo = respostaTroca;
+                const novoId = membroNovo?.idExternoMembroMinisterio || membroNovo?.membroMinisterioId;
+                if (!novoId) {
+                    throw new Error("Membro retornado sem identificador");
+                }
+
+                setMembrosSorteados((prev) =>
+                    prev.map((membro) => {
+                        const id = membro?.idExternoMembroMinisterio || membro?.membroMinisterioId;
+                        return id === membroIdAtual ? membroNovo : membro;
+                    })
+                );
+
+                setMembrosSelecionados((prev) => {
+                    const atualizados = { ...prev };
+                    delete atualizados[membroIdAtual];
+                    atualizados[novoId] = true;
+                    return atualizados;
+                });
+            }
+
+            toast({
+                title: "Sucesso",
+                description: "Membro trocado com sucesso!",
+                variant: "success"
+            });
+        } catch (err) {
+            console.error("Erro ao trocar membro sorteado:", err);
+            const mensagemApi = err?.response?.data?.message || err?.apiMessage;
+            toast({
+                title: "Erro",
+                description: mensagemApi || "Falha ao trocar membro sorteado. Tente novamente.",
+                variant: "destructive"
+            });
+        } finally {
+            setMembrosTrocando((prev) => ({ ...prev, [membroIdAtual]: false }));
+        }
+    };
+
     const getButtonClass = (variant, disabled) => {
         const baseClass = "px-4 py-1 rounded-lg text-sm font-medium transition-colors";
 
@@ -229,6 +316,7 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
                         onClick={() => {
                             setModo('aleatorio');
                             setMembrosSelecionados({});
+                            setMensagemSorteio("");
                         }}
                         className={cn(
                             "flex-1 h-full rounded-md text-sm font-medium transition-colors",
@@ -244,6 +332,7 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
                             setModo('manual');
                             setMembrosSorteados([]);
                             setMembrosSelecionados({});
+                            setMensagemSorteio("");
                         }}
                         className={cn(
                             "flex-1 h-full rounded-md text-sm font-medium transition-colors",
@@ -278,7 +367,11 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
                         </div>
 
                         <div className="space-y-2 max-h-[250px] overflow-y-auto">
-                            {membrosSorteados.length > 0 ? (
+                            {mensagemSorteio ? (
+                                <label className="block text-center py-4 text-sm font-medium text-warning-300">
+                                    {mensagemSorteio}
+                                </label>
+                            ) : membrosSorteados.length > 0 ? (
                                 membrosSorteados.map((membro) => (
                                     <div
                                         key={membro.idExternoMembroMinisterio || membro.membroMinisterioId}
@@ -287,9 +380,15 @@ export function ModalGerenciarEscala({ onClose, onConfirm, idExternoEscalaEvento
                                         <span className="text-sm font-medium text-icf-primary-400">
                                             {membro.nomeMembro}
                                         </span>
-                                        <span className="px-3 py-1 rounded-lg text-xs font-semibold bg-success-500 text-white">
-                                            Sorteado
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleTrocarMembroSorteado(membro)}
+                                                disabled={carregandoConfirmar || carregandoSorteio || Boolean(membrosTrocando[membro.idExternoMembroMinisterio || membro.membroMinisterioId])}
+                                                className="px-3 py-1 rounded-lg text-xs font-semibold bg-icf-primary-100 text-icf-primary-400 hover:bg-icf-primary-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                            >
+                                                {Boolean(membrosTrocando[membro.idExternoMembroMinisterio || membro.membroMinisterioId]) ? "Trocando..." : "Trocar"}
+                                            </button>
+                                        </div>
                                     </div>
                                 ))
                             ) : (

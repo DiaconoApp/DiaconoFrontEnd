@@ -149,9 +149,39 @@ export const gerarEscalaAleatoriaLider = async (idExternoEscalaEvento, tamanhoEq
 
         const url = `/api/v1/escalas-ministerio/lider-ministerio/${idExternoEscalaEvento}/${Number(tamanhoEquipe)}`;
         const res = await api.get(url);
-        return Array.isArray(res.data) ? res.data : [];
+
+        if (Array.isArray(res.data)) {
+            return res.data;
+        }
+
+        if (res.data?.status === "BAD_REQUEST" && res.data?.message) {
+            const error = new Error(res.data.message);
+            error.apiMessage = res.data.message;
+            throw error;
+        }
+
+        return [];
     } catch (err) {
         console.error(`Erro ao gerar escala aleatória ${idExternoEscalaEvento}:`, err);
+        throw err;
+    }
+};
+
+export const revisarRandomizacaoMembroLider = async (idExternoEscalaEvento, idExternoMembroMinisterio, membrosEscalaPayload = []) => {
+    try {
+        if (!idExternoEscalaEvento) {
+            throw new Error("idExternoEscalaEvento não definido");
+        }
+
+        if (!idExternoMembroMinisterio) {
+            throw new Error("idExternoMembroMinisterio não definido");
+        }
+
+        const url = `/api/v1/escalas-ministerio/lider-ministerio/${idExternoEscalaEvento}/revisar-randomizacao/${idExternoMembroMinisterio}`;
+        const res = await api.post(url, membrosEscalaPayload);
+        return res.data || null;
+    } catch (err) {
+        console.error(`Erro ao revisar randomização para membro ${idExternoMembroMinisterio}:`, err);
         throw err;
     }
 };

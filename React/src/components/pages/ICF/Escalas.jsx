@@ -307,6 +307,7 @@ export function Escalas() {
                                     className="w-full min-w-0"
                                     nomeEvento={escala.nome || escala.nomeReuniao}
                                     nomeMinisterio={isLider ? escala.nomeMinisterio : undefined}
+                                    isGoverno={isGoverno}
                                     status={usaNovoFormatoEscalas ? escala.status : "Pendente"}
                                     dataHoraInicio={formatarDataHora(escala.dataHoraInicio)}
                                     dataHoraFim={formatarDataHora(escala.dataHoraFim)}

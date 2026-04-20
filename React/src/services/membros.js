@@ -2,7 +2,7 @@ import api from "../provider/api";
 
 export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", status = "", fkMinisterio = "" }) => {
     try {
-        let url = `/membros?page=${pagina}&size=${tamanho}&sort=nome,asc`;
+        let url = `/api/v1/membros?page=${pagina}&size=${tamanho}&sort=nome,asc`;
 
         if (busca.trim()) {
             url += `&buscaGeral=${encodeURIComponent(busca.trim())}`;
@@ -28,10 +28,9 @@ export const cadastrarMembro = async (dados) => {
     try {
         const ministeriosPayload = (dados.ministerios || [])
             .filter((m) => m.idExternoMinisterio)
-            .map((m) => ({
-                idExternoMinisterio: m.idExternoMinisterio,
-                cargo: m.cargo || "MEMBRO",
-            }));
+            .map((m) => (
+                m.idExternoMinisterio
+            ));
 
         const payload = {
             fkIgreja: dados.fkIgreja,
@@ -43,10 +42,10 @@ export const cadastrarMembro = async (dados) => {
             email: dados.email.trim(),
             celular: dados.celular,
             senha: dados.senha,
-            idExternoMinisterios: ministeriosPayload[0]?.idExternoMinisterio || dados.idExternoMinisterios || "",
-            cargo: ministeriosPayload[0]?.cargo || dados.cargo,
+            cargo: dados.cargo || ministeriosPayload[0]?.cargo || "MEMBRO",
             generoMembro: dados.generoMembro,
-            membroEnderecoDTO: {
+            idExternoMinisterios: ministeriosPayload,
+            enderecoMembroDTO: {
                 cep: dados.cep,
                 bairro: dados.bairro,
                 cidade: dados.cidade,
@@ -58,27 +57,8 @@ export const cadastrarMembro = async (dados) => {
         };
 
         // Primeiro, cadastrar o membro
-        const res = await api.post("/membros", payload);
+        const res = await api.post("/api/v1/membros", payload);
         const membroCadastrado = res.data;
-
-        // Depois, adicionar os ministérios restantes (se houver mais de um)
-        if (ministeriosPayload.length > 1) {
-            const { adicionarMembroMinisterio } = await import("./ministerios");
-
-            for (let i = 1; i < ministeriosPayload.length; i++) {
-                const ministerio = ministeriosPayload[i];
-                try {
-                    await adicionarMembroMinisterio({
-                        dados: { idMembro: membroCadastrado.idExterno },
-                        idMinisterio: ministerio.idExternoMinisterio,
-                    });
-                    console.log(`Membro adicionado ao ministério ${ministerio.idExternoMinisterio}`);
-                } catch (err) {
-                    console.error(`Erro ao adicionar membro ao ministério ${ministerio.idExternoMinisterio}:`, err);
-                    // Continua tentando os outros ministérios mesmo se um falhar
-                }
-            }
-        }
 
         return membroCadastrado;
     } catch (err) {
@@ -89,7 +69,7 @@ export const cadastrarMembro = async (dados) => {
 
 export const buscarMembroPorId = async (idExterno) => {
     try {
-        const res = await api.get(`/membros/${idExterno}`);
+        const res = await api.get(`/api/v1/membros/${idExterno}`);
         return res.data;
     } catch (err) {
         console.error("Erro ao buscar membro:", err);
@@ -97,54 +77,9 @@ export const buscarMembroPorId = async (idExterno) => {
     }
 };
 
-export const buscarPerfilLogado = async () => {
+export const atualizarMembro = async (idExterno, dadosAlterados) => {
     try {
-        // Tenta o endpoint /me primeiro
-        const res = await api.get('/membros/me');
-        return res.data;
-    } catch (err) {
-        // Fallback: tenta buscar pelo idUsuario do localStorage
-        const idUsuario = localStorage.getItem("idUsuario");
-        if (idUsuario) {
-            try {
-                const res = await api.get(`/membros/${idUsuario}`);
-                return res.data;
-            } catch (fallbackErr) {
-                console.error("Erro ao buscar perfil (fallback):", fallbackErr);
-                throw fallbackErr;
-            }
-        }
-        console.error("Erro ao buscar perfil:", err);
-        throw err;
-    }
-};
-
-export const atualizarMembro = async (idExterno, dados) => {
-    try {
-        const payload = {
-            nome: dados.nome,
-            cpf: dados.cpf,
-            dataNascimento: typeof dados.dataNascimento === "string"
-                ? dados.dataNascimento
-                : dados.dataNascimento.toISOString().slice(0, 10),
-            email: dados.email?.trim(),
-            celular: dados.celular,
-            cargo: dados.cargo,
-            funcaoMembro: dados.funcaoMembro,
-            generoMembro: dados.generoMembro,
-            confirmacaoFe: dados.confirmacaoFe,
-            membroEnderecoDTO: {
-                cep: dados.cep,
-                bairro: dados.bairro,
-                cidade: dados.cidade,
-                rua: dados.rua,
-                estado: dados.estado,
-                numero: dados.numero,
-                complemento: dados.complemento,
-            },
-        };
-
-        const res = await api.put(`/membros/${idExterno}`, payload);
+        const res = await api.patch(`/api/v1/membros/${idExterno}`, dadosAlterados);
         return res.data;
     } catch (err) {
         console.error("Erro ao atualizar membro:", err);

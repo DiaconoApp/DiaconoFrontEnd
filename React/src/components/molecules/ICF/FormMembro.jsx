@@ -406,8 +406,6 @@ export function FormMembro({ fecharFormulario }) {
                                                 className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
                                             >
                                                 <option value="MEMBRO">Membro</option>
-                                                <option value="LIDER_MINISTERIO">Líder de Ministério</option>
-                                                <option value="GOVERNO">Governo</option>
                                             </select>
                                         </div>
                                         <button

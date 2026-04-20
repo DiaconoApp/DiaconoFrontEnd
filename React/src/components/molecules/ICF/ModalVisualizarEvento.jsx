@@ -16,6 +16,26 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
     const cargo = localStorage.getItem("cargo");
     const podeEditar = cargo === "LIDER_MINISTERIO" || cargo === "GOVERNO";
 
+    const dataInicioObj = evento?.dataInicio ? new Date(evento.dataInicio) : null;
+    const dataFimObj = evento?.dataFim ? new Date(evento.dataFim) : null;
+    const dataInicioValida = dataInicioObj && !isNaN(dataInicioObj);
+    const dataFimValida = dataFimObj && !isNaN(dataFimObj);
+
+    const ehMesmoDia = dataInicioValida && dataFimValida
+        ? dataInicioObj.toDateString() === dataFimObj.toDateString()
+        : true;
+
+    const formatarDataHora = (data) => {
+        if (!data || isNaN(data)) return "Não informado";
+        return data.toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+
     return (
         <div className="bg-white rounded-xl shadow-xl w-[480px] max-w-[95vw] max-h-[90vh] overflow-y-auto">
             {/* Header */}
@@ -52,13 +72,20 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
                 )}
 
                 {/* Data e Horários */}
-                <div className="grid grid-cols-3 gap-4">
-                    <InfoLabel label="Data">
-                        {new Date(evento.dataInicio).toLocaleDateString('pt-BR')}
-                    </InfoLabel>
-                    <InfoLabel label="Início">{evento.horaInicio || "00:00"}</InfoLabel>
-                    <InfoLabel label="Fim">{evento.horaFim || "00:00"}</InfoLabel>
-                </div>
+                {ehMesmoDia ? (
+                    <div className="grid grid-cols-3 gap-4">
+                        <InfoLabel label="Data">
+                            {dataInicioValida ? dataInicioObj.toLocaleDateString("pt-BR") : "Não informado"}
+                        </InfoLabel>
+                        <InfoLabel label="Início">{evento.horaInicio || "00:00"}</InfoLabel>
+                        <InfoLabel label="Fim">{evento.horaFim || "00:00"}</InfoLabel>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                        <InfoLabel label="Data início">{formatarDataHora(dataInicioObj)}</InfoLabel>
+                        <InfoLabel label="Data fim">{formatarDataHora(dataFimObj)}</InfoLabel>
+                    </div>
+                )}
 
                 {/* Recorrência - comentado por enquanto */}
                 {/* <p className="text-icf-primary-200 text-sm italic">Ocorre a cada Sábado até o dia de XX/XXXX</p> */}
@@ -68,7 +95,7 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
                     <InfoLabel label="Valor do Ingresso">
                         {evento.custo === 0 || !evento.custo ? "Gratuito" : `R$ ${evento.custo}`}
                     </InfoLabel>
-                    <InfoLabel label="Local">{evento.local || "Não informado"}</InfoLabel>
+                    <InfoLabel label="Endereço">{evento.local || "Não informado"}</InfoLabel>
                 </div>
 
                 <InfoLabel label="Descrição">

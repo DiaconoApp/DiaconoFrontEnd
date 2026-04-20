@@ -163,6 +163,44 @@ export function Escalas() {
         };
     };
 
+    const formatarEnderecoEvento = (enderecoEvento) => {
+        if (!enderecoEvento) return "N/A";
+
+        const rua = enderecoEvento?.rua?.trim();
+        const numero = enderecoEvento?.numero?.trim();
+        const complemento = enderecoEvento?.complemento?.trim();
+        const bairro = enderecoEvento?.bairro?.trim();
+        const cidade = enderecoEvento?.cidade?.trim();
+
+        const partes = [];
+
+        if (rua) {
+            partes.push(`Rua ${rua}`);
+        }
+
+        if (numero) {
+            partes.push(`${numero}`);
+        }
+
+        if (complemento) {
+            partes.push(complemento);
+        }
+
+        if (bairro) {
+            partes.push(bairro);
+        }
+
+        if (cidade) {
+            partes.push(cidade);
+        }
+
+        if (partes.length > 0) {
+            return partes.join(", ");
+        }
+
+        return enderecoEvento?.apelido || "N/A";
+    };
+
     const handleVerDetalhes = async (escala) => {
         const idEvento = escala.idExterno || escala.idExternoEvento || escala.idEvento;
         if (!idEvento) return;
@@ -188,10 +226,7 @@ export function Escalas() {
                     ? new Date(dataFim).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
                     : "00:00",
                 custo: eventoCompleto?.custo ?? 0,
-                local:
-                    eventoCompleto?.enderecoEvento?.apelido ||
-                    eventoCompleto?.enderecoEvento?.rua ||
-                    "N/A",
+                local: formatarEnderecoEvento(eventoCompleto?.enderecoEvento),
                 descricao: eventoCompleto.descricao || "N/A",
                 ministerios: eventoCompleto?.ministerios || [],
             });

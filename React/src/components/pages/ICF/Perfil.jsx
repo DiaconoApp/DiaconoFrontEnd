@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { buscarPerfilLogado, atualizarMembro } from "../../../services/membros";
-import { formatarCpf, formatarTelefone, formatarCargo, calcularIdade, formatarData } from "../../../utils/Utils";
+import { buscarPerfilLogado, atualizarPerfilLogado, buscarEnderecoPorCep } from "../../../services/perfil";
+import { formatarCpf, formatarTelefone, formatarCargo, calcularIdade, safeFormatDate } from "../../../utils/Utils";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
     User, 
     Phone, 
@@ -14,17 +13,15 @@ import {
     Church, 
     Edit2, 
     Save, 
-    X,
-    Users
+    X
 } from "lucide-react";
-import api from "../../../provider/api";
 
 export function Perfil() {
     const [membro, setMembro] = useState(null);
     const [loading, setLoading] = useState(true);
     const [editando, setEditando] = useState(false);
     const [dadosEdicao, setDadosEdicao] = useState({});
-    const [ministerios, setMinisterios] = useState([]);
+    const [feedback, setFeedback] = useState(null);
 
     useEffect(() => {
         carregarPerfil();
@@ -36,10 +33,6 @@ export function Perfil() {
             const dados = await buscarPerfilLogado();
             setMembro(dados);
             setDadosEdicao(dados);
-            // Carregar ministérios após ter o id do membro
-            if (dados?.idExterno) {
-                carregarMinisterios(dados.idExterno);
-            }
         } catch (err) {
             console.error("Erro ao carregar perfil:", err);
         } finally {
@@ -47,28 +40,137 @@ export function Perfil() {
         }
     };
 
-    const carregarMinisterios = async (idMembro) => {
-        try {
-            const res = await api.get(`/api/v1/membro-ministerio/membro/${idMembro}`);
-            setMinisterios(res.data?.content || res.data || []);
-        } catch (err) {
-            console.error("Erro ao carregar ministérios:", err);
-        }
-    };
-
     const handleChange = (campo, valor) => {
         setDadosEdicao((prev) => ({ ...prev, [campo]: valor }));
     };
 
+    const normalizarDataNascimentoParaInput = (dataNascimento) => {
+        if (!dataNascimento) return "";
+
+        const dataStr = String(dataNascimento);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dataStr)) {
+            return dataStr;
+        }
+
+        const dataBr = safeFormatDate(dataStr);
+        const matchDataBr = dataBr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+        if (!matchDataBr) {
+            return "";
+        }
+
+        const [, dia, mes, ano] = matchDataBr;
+        return `${ano}-${mes}-${dia}`;
+    };
+
+    const handleCepChange = async (valorCep) => {
+        const cepLimpo = (valorCep || "").replace(/\D/g, "");
+        handleChange("cep", cepLimpo);
+
+        if (cepLimpo.length !== 8) {
+            return;
+        }
+
+        const endereco = await buscarEnderecoPorCep(cepLimpo);
+        if (!endereco) {
+            return;
+        }
+
+        setDadosEdicao((prev) => ({
+            ...prev,
+            cep: cepLimpo,
+            rua: endereco.logradouro || prev.rua || prev.membroEnderecoDTO?.rua || "",
+            bairro: endereco.bairro || prev.bairro || prev.membroEnderecoDTO?.bairro || "",
+            cidade: endereco.localidade || prev.cidade || prev.membroEnderecoDTO?.cidade || "",
+            estado: endereco.uf || prev.estado || prev.membroEnderecoDTO?.estado || "",
+            complemento: endereco.complemento || prev.complemento || prev.membroEnderecoDTO?.complemento || "",
+        }));
+    };
+
+    const montarPayloadAlterado = () => {
+        const payload = {};
+        const enderecoOriginal = membro?.membroEnderecoDTO || {};
+        const enderecoEdicao = {
+            cep: dadosEdicao.cep ?? dadosEdicao.membroEnderecoDTO?.cep,
+            bairro: dadosEdicao.bairro ?? dadosEdicao.membroEnderecoDTO?.bairro,
+            cidade: dadosEdicao.cidade ?? dadosEdicao.membroEnderecoDTO?.cidade,
+            rua: dadosEdicao.rua ?? dadosEdicao.membroEnderecoDTO?.rua,
+            estado: dadosEdicao.estado ?? dadosEdicao.membroEnderecoDTO?.estado,
+            numero: dadosEdicao.numero ?? dadosEdicao.membroEnderecoDTO?.numero,
+            complemento: dadosEdicao.complemento ?? dadosEdicao.membroEnderecoDTO?.complemento,
+        };
+
+        const camposSimples = [
+            "nome",
+            "cpf",
+            "email",
+            "celular",
+            "cargo",
+            "funcaoMembro",
+            "generoMembro",
+            "confirmacaoFe",
+        ];
+
+        camposSimples.forEach((campo) => {
+            const valorOriginal = membro?.[campo] ?? "";
+            const valorAtual = dadosEdicao?.[campo] ?? "";
+            if (String(valorOriginal ?? "") !== String(valorAtual ?? "")) {
+                payload[campo] = valorAtual;
+            }
+        });
+
+        const dataOriginal = normalizarDataNascimentoParaInput(membro?.dataNascimento);
+        const dataAtual = normalizarDataNascimentoParaInput(dadosEdicao?.dataNascimento);
+        if (dataOriginal !== dataAtual && dataAtual) {
+            payload.dataNascimento = dataAtual;
+        }
+
+        const enderecoAlterado = Object.entries(enderecoEdicao).some(([campo, valorAtual]) => {
+            const valorOriginal = enderecoOriginal?.[campo] ?? "";
+            return String(valorOriginal ?? "") !== String(valorAtual ?? "");
+        });
+
+        if (enderecoAlterado) {
+            payload.membroEnderecoDTO = enderecoEdicao;
+        }
+
+        return payload;
+    };
+
     const handleSalvar = async () => {
         try {
-            await atualizarMembro(membro.idExterno, dadosEdicao);
-            setMembro(dadosEdicao);
+            const payloadAlterado = montarPayloadAlterado();
+
+            if (Object.keys(payloadAlterado).length === 0) {
+                setEditando(false);
+                return;
+            }
+
+            await atualizarPerfilLogado(payloadAlterado);
+
+            let membroAtualizado;
+            try {
+                const perfilRecarregado = await buscarPerfilLogado();
+                membroAtualizado = perfilRecarregado;
+            } catch (reloadErr) {
+                console.error("Erro ao recarregar perfil após salvar:", reloadErr);
+                membroAtualizado = {
+                    ...membro,
+                    ...payloadAlterado,
+                    membroEnderecoDTO: payloadAlterado.membroEnderecoDTO
+                        ? { ...membro?.membroEnderecoDTO, ...payloadAlterado.membroEnderecoDTO }
+                        : membro?.membroEnderecoDTO,
+                };
+            }
+
+            setMembro(membroAtualizado);
+            setDadosEdicao(membroAtualizado);
             setEditando(false);
-            alert("Perfil atualizado com sucesso!");
+            setFeedback({ tipo: "sucesso", mensagem: "Perfil atualizado com sucesso!" });
+            setTimeout(() => setFeedback(null), 4000);
         } catch (err) {
-            alert("Erro ao atualizar perfil.");
             console.error(err);
+            setFeedback({ tipo: "erro", mensagem: "Erro ao atualizar perfil." });
         }
     };
 
@@ -76,6 +178,8 @@ export function Perfil() {
         setDadosEdicao(membro);
         setEditando(false);
     };
+
+    const campoDataNascimento = normalizarDataNascimentoParaInput(dadosEdicao?.dataNascimento);
 
     if (loading) {
         return (
@@ -96,6 +200,11 @@ export function Perfil() {
 
     return (
         <div className="flex flex-col gap-6">
+            {feedback && (
+                <div className={`px-4 py-3 rounded-lg text-sm font-medium ${feedback.tipo === "sucesso" ? "bg-green-50 text-green-700 border border-green-200" : "bg-red-50 text-red-700 border border-red-200"}`}>
+                    {feedback.mensagem}
+                </div>
+            )}
             {/* Card do Perfil */}
             <div className="bg-white rounded-xl shadow-sm">
                 {/* Header do Perfil */}
@@ -123,32 +232,7 @@ export function Perfil() {
                         </div>
                     </div>
                 </div>
-
-                {/* Tabs */}
-                <Tabs defaultValue="dados" className="w-full">
-                    <TabsList className="w-full justify-start border-b border-icf-primary-50 rounded-none bg-transparent h-auto p-0">
-                        <TabsTrigger 
-                            value="dados" 
-                            className="rounded-none border-b-2 border-transparent data-[state=active]:border-icf-primary-400 data-[state=active]:bg-transparent px-6 py-3"
-                        >
-                            Dados pessoais
-                        </TabsTrigger>
-                        <TabsTrigger 
-                            value="ministerios"
-                            className="rounded-none border-b-2 border-transparent data-[state=active]:border-icf-primary-400 data-[state=active]:bg-transparent px-6 py-3"
-                        >
-                            Ministérios
-                        </TabsTrigger>
-                        <TabsTrigger 
-                            value="familia"
-                            className="rounded-none border-b-2 border-transparent data-[state=active]:border-icf-primary-400 data-[state=active]:bg-transparent px-6 py-3"
-                        >
-                            Família
-                        </TabsTrigger>
-                    </TabsList>
-
-                    {/* Tab: Dados Pessoais */}
-                    <TabsContent value="dados" className="p-6">
+                <div className="p-6">
                         {editando ? (
                             // Modo de edição
                             <div className="space-y-6">
@@ -157,8 +241,8 @@ export function Perfil() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <InputIcf
                                             label="Celular"
-                                            value={formatarTelefone(dadosEdicao.celular) || dadosEdicao.celular || ""}
-                                            onChange={(e) => handleChange("celular", e.target.value)}
+                                            value={dadosEdicao.celular || ""}
+                                            onChange={(e) => handleChange("celular", e.target.value.replace(/\D/g, ''))}
                                         />
                                         <InputIcf
                                             label="Email"
@@ -168,7 +252,7 @@ export function Perfil() {
                                         <InputIcf
                                             label="Data de Nascimento"
                                             type="date"
-                                            value={dadosEdicao.dataNascimento || ""}
+                                            value={campoDataNascimento}
                                             onChange={(e) => handleChange("dataNascimento", e.target.value)}
                                         />
                                     </div>
@@ -179,37 +263,37 @@ export function Perfil() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <InputIcf
                                             label="CEP"
-                                            value={dadosEdicao.membroEnderecoDTO?.cep || dadosEdicao.cep || ""}
-                                            onChange={(e) => handleChange("cep", e.target.value)}
+                                            value={dadosEdicao.cep ?? dadosEdicao.membroEnderecoDTO?.cep ?? ""}
+                                            onChange={(e) => handleCepChange(e.target.value)}
                                         />
                                         <InputIcf
                                             label="Estado"
-                                            value={dadosEdicao.membroEnderecoDTO?.estado || dadosEdicao.estado || ""}
+                                            value={dadosEdicao.estado ?? dadosEdicao.membroEnderecoDTO?.estado ?? ""}
                                             onChange={(e) => handleChange("estado", e.target.value)}
                                         />
                                         <InputIcf
                                             label="Cidade"
-                                            value={dadosEdicao.membroEnderecoDTO?.cidade || dadosEdicao.cidade || ""}
+                                            value={dadosEdicao.cidade ?? dadosEdicao.membroEnderecoDTO?.cidade ?? ""}
                                             onChange={(e) => handleChange("cidade", e.target.value)}
                                         />
                                         <InputIcf
                                             label="Bairro"
-                                            value={dadosEdicao.membroEnderecoDTO?.bairro || dadosEdicao.bairro || ""}
+                                            value={dadosEdicao.bairro ?? dadosEdicao.membroEnderecoDTO?.bairro ?? ""}
                                             onChange={(e) => handleChange("bairro", e.target.value)}
                                         />
                                         <InputIcf
                                             label="Rua"
-                                            value={dadosEdicao.membroEnderecoDTO?.rua || dadosEdicao.rua || ""}
+                                            value={dadosEdicao.rua ?? dadosEdicao.membroEnderecoDTO?.rua ?? ""}
                                             onChange={(e) => handleChange("rua", e.target.value)}
                                         />
                                         <InputIcf
                                             label="Número"
-                                            value={dadosEdicao.membroEnderecoDTO?.numero || dadosEdicao.numero || ""}
+                                            value={dadosEdicao.numero ?? dadosEdicao.membroEnderecoDTO?.numero ?? ""}
                                             onChange={(e) => handleChange("numero", e.target.value)}
                                         />
                                         <InputIcf
                                             label="Complemento"
-                                            value={dadosEdicao.membroEnderecoDTO?.complemento || dadosEdicao.complemento || ""}
+                                            value={dadosEdicao.complemento ?? dadosEdicao.membroEnderecoDTO?.complemento ?? ""}
                                             onChange={(e) => handleChange("complemento", e.target.value)}
                                             className="md:col-span-2"
                                         />
@@ -233,7 +317,7 @@ export function Perfil() {
                                         </div>
                                         <div>
                                             <p className="text-xs text-icf-primary-300 uppercase tracking-wide mb-1">Data de Nascimento</p>
-                                            <p className="text-icf-primary-400">{formatarData(membro.dataNascimento) || "-"}</p>
+                                            <p className="text-icf-primary-400">{safeFormatDate(membro.dataNascimento) || "-"}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs text-icf-primary-300 uppercase tracking-wide mb-1">Idade</p>
@@ -309,52 +393,8 @@ export function Perfil() {
                                     Editar
                                 </Button>
                             )}
-                            
-                            <p className="text-sm text-icf-primary-300">
-                                Membro desde {formatarData(membro.dataCadastro) || "-"}
-                            </p>
                         </div>
-                    </TabsContent>
-
-                    {/* Tab: Ministérios */}
-                    <TabsContent value="ministerios" className="p-6">
-                        {ministerios.length === 0 ? (
-                            <div className="py-12 flex flex-col items-center justify-center text-icf-primary-200">
-                                <Church className="w-12 h-12 mb-4" />
-                                <p className="text-sm">Nenhum ministério encontrado</p>
-                            </div>
-                        ) : (
-                            <div className="space-y-4">
-                                {ministerios.map((min, index) => (
-                                    <div 
-                                        key={min.idExterno || index}
-                                        className="flex items-center gap-4 p-4 bg-icf-primary-50 rounded-lg"
-                                    >
-                                        <div className="w-10 h-10 rounded-full bg-icf-primary-200 flex items-center justify-center">
-                                            <Church className="w-5 h-5 text-icf-primary-400" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="font-medium text-icf-primary-400">
-                                                {min.nomeMinisterio || min.ministerio?.nome || "Ministério"}
-                                            </p>
-                                            <p className="text-sm text-icf-primary-300">
-                                                {formatarCargo(min.funcao || min.funcaoMembro) || "Membro"}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </TabsContent>
-
-                    {/* Tab: Família */}
-                    <TabsContent value="familia" className="p-6">
-                        <div className="py-12 flex flex-col items-center justify-center text-icf-primary-200">
-                            <Users className="w-12 h-12 mb-4" />
-                            <p className="text-sm">Nenhum familiar cadastrado</p>
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                </div>
             </div>
         </div>
     );

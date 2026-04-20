@@ -3,29 +3,17 @@ import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, validaEmail } from "../../../utils/Utils";
 import { buscarMembroPorId, atualizarMembro } from "../../../services/membros";
+import { buscarMinisterios } from "../../../services/ministerios";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { Button } from "@/components/ui/button";
-import { X, Save, ChevronLeft } from "lucide-react";
-
-const cargosOptions = [
-    { value: "MEMBRO", label: "Membro" },
-    { value: "LIDER_MINISTERIO", label: "Líder de Ministério" },
-    { value: "GOVERNO", label: "Governo" },
-];
-
-const funcoesOptions = [
-    { value: "", label: "Nenhuma" },
-    { value: "MUSICO", label: "Músico" },
-    { value: "CANTOR", label: "Cantor" },
-    { value: "PREGADOR", label: "Pregador" },
-    { value: "INTERCESSOR", label: "Intercessor" },
-    { value: "DIACONO", label: "Diácono" },
-];
+import { Save, ChevronLeft, Church } from "lucide-react";
 
 export function FormEditarMembro({ idMembro, fecharFormulario }) {
     const [erros, setErros] = useState({});
     const [carregando, setCarregando] = useState(true);
     const [salvando, setSalvando] = useState(false);
+    const [dadosOriginais, setDadosOriginais] = useState(null);
+    const [optionsMinisterios, setOptionsMinisterios] = useState([]);
     const { validarNome, validarCpf, buscarEnderecoPorCep } = useValidacaoCadastro();
 
     const [dadosMembro, setDadosMembro] = useState({
@@ -39,12 +27,23 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
         generoMembro: "",
         confirmacaoFe: "",
         cep: "",
+        estado: "",
         rua: "",
         bairro: "",
         cidade: "",
         numero: "",
         complemento: "",
+        ministerios: [],
     });
+
+    useEffect(() => {
+        buscarMinisterios({})
+            .then((res) => setOptionsMinisterios(res.content || []))
+            .catch((err) => {
+                console.error("Erro ao buscar ministérios:", err);
+                setOptionsMinisterios([]);
+            });
+    }, []);
 
     // Carregar dados do membro
     useEffect(() => {
@@ -52,10 +51,10 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
             try {
                 setCarregando(true);
                 const membro = await buscarMembroPorId(idMembro);
-                
-                setDadosMembro({
+
+                const dadosMapeados = {
                     nome: membro.nome || "",
-                    dataNascimento: membro.dataNascimento || "",
+                    dataNascimento: membro.dataNascimento ? String(membro.dataNascimento).slice(0, 10) : "",
                     cpf: membro.cpf || "",
                     email: membro.email || "",
                     celular: membro.celular || "",
@@ -64,12 +63,20 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                     generoMembro: membro.generoMembro || "",
                     confirmacaoFe: membro.confirmacaoFe || "",
                     cep: membro.membroEnderecoDTO?.cep || "",
+                    estado: membro.membroEnderecoDTO?.estado || "",
                     rua: membro.membroEnderecoDTO?.rua || "",
                     bairro: membro.membroEnderecoDTO?.bairro || "",
                     cidade: membro.membroEnderecoDTO?.cidade || "",
                     numero: membro.membroEnderecoDTO?.numero || "",
                     complemento: membro.membroEnderecoDTO?.complemento || "",
-                });
+                    ministerios: (membro.ministerios || []).map((ministerio) => ({
+                        idExternoMinisterio: ministerio.idExternoMinisterio || ministerio.idExterno || "",
+                        cargo: "MEMBRO",
+                    })),
+                };
+
+                setDadosMembro(dadosMapeados);
+                setDadosOriginais(dadosMapeados);
             } catch (err) {
                 console.error("Erro ao carregar membro:", err);
                 alert("Erro ao carregar dados do membro");
@@ -91,6 +98,7 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                 handleChange("rua", endereco.rua);
                 handleChange("bairro", endereco.bairro);
                 handleChange("cidade", endereco.cidade);
+                handleChange("estado", endereco.uf);
             }
         }
     };
@@ -128,6 +136,112 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
         }
     };
 
+    const handleAddMinisterio = () => {
+        setDadosMembro((prev) => ({
+            ...prev,
+            ministerios: [
+                ...prev.ministerios,
+                {
+                    idExternoMinisterio: "",
+                    cargo: "MEMBRO",
+                },
+            ],
+        }));
+    };
+
+    const handleUpdateMinisterio = (index, campo, valor) => {
+        setDadosMembro((prev) => {
+            const ministerios = [...(prev.ministerios || [])];
+            ministerios[index] = { ...ministerios[index], [campo]: valor };
+            return {
+                ...prev,
+                ministerios,
+            };
+        });
+    };
+
+    const handleRemoveMinisterio = (index) => {
+        setDadosMembro((prev) => ({
+            ...prev,
+            ministerios: (prev.ministerios || []).filter((_, i) => i !== index),
+        }));
+    };
+
+    const montarPayloadAlterado = () => {
+        if (!dadosOriginais) return {};
+
+        const payload = {};
+        const camposSimples = [
+            "nome",
+            "cpf",
+            "email",
+            "celular",
+            "cargo",
+            "funcaoMembro",
+            "generoMembro",
+            "confirmacaoFe",
+        ];
+
+        camposSimples.forEach((campo) => {
+            const original = dadosOriginais?.[campo] ?? "";
+            const atual = dadosMembro?.[campo] ?? "";
+            if (String(original) !== String(atual)) {
+                payload[campo] = atual;
+            }
+        });
+
+        const dataOriginal = dadosOriginais?.dataNascimento ? String(dadosOriginais.dataNascimento).slice(0, 10) : "";
+        const dataAtual = dadosMembro?.dataNascimento ? String(dadosMembro.dataNascimento).slice(0, 10) : "";
+        if (dataOriginal !== dataAtual && dataAtual) {
+            payload.dataNascimento = dataAtual;
+        }
+
+        const enderecoAtual = {
+            cep: dadosMembro.cep,
+            estado: dadosMembro.estado,
+            bairro: dadosMembro.bairro,
+            cidade: dadosMembro.cidade,
+            rua: dadosMembro.rua,
+            numero: dadosMembro.numero,
+            complemento: dadosMembro.complemento,
+        };
+
+        const enderecoOriginal = {
+            cep: dadosOriginais.cep,
+            estado: dadosOriginais.estado,
+            bairro: dadosOriginais.bairro,
+            cidade: dadosOriginais.cidade,
+            rua: dadosOriginais.rua,
+            numero: dadosOriginais.numero,
+            complemento: dadosOriginais.complemento,
+        };
+
+        const houveAlteracaoEndereco = Object.keys(enderecoAtual).some((campo) => {
+            const original = enderecoOriginal?.[campo] ?? "";
+            const atual = enderecoAtual?.[campo] ?? "";
+            return String(original) !== String(atual);
+        });
+
+        if (houveAlteracaoEndereco) {
+            payload.membroEnderecoDTO = enderecoAtual;
+        }
+
+        const ministeriosOriginais = (dadosOriginais.ministerios || [])
+            .map((m) => m.idExternoMinisterio)
+            .filter(Boolean)
+            .sort();
+        const ministeriosAtuais = (dadosMembro.ministerios || [])
+            .map((m) => m.idExternoMinisterio)
+            .filter(Boolean)
+            .sort();
+
+        if (JSON.stringify(ministeriosOriginais) !== JSON.stringify(ministeriosAtuais)) {
+            payload.idExternoMinisterios = ministeriosAtuais;
+        }
+
+        return payload;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -139,7 +253,14 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
 
         try {
             setSalvando(true);
-            await atualizarMembro(idMembro, dadosMembro);
+            const payloadAlterado = montarPayloadAlterado();
+
+            if (Object.keys(payloadAlterado).length === 0) {
+                alert("Nenhuma alteração para salvar");
+                return;
+            }
+
+            await atualizarMembro(idMembro, payloadAlterado);
             alert("Membro atualizado com sucesso!");
             fecharFormulario();
         } catch (err) {
@@ -250,7 +371,7 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                         {erros.email && <div className="text-danger-500 text-sm mt-1">{erros.email}</div>}
                     </div>
 
-                    {/* Sexo e Confirmação na Fé */}
+                    {/* Sexo */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium text-icf-primary-400">Sexo</label>
@@ -264,42 +385,115 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                                 <option value="FEMININO">Feminino</option>
                             </select>
                         </div>
-                        <InputIcf
-                            label="Confirmação na Fé"
-                            type="date"
-                            value={dadosMembro.confirmacaoFe}
-                            onChange={(e) => handleChange("confirmacaoFe", e.target.value)}
-                        />
                     </div>
 
-                    {/* Função do Membro */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-1.5">
-                            <label className="text-sm font-medium text-icf-primary-400">Função do Membro</label>
-                            <select
-                                value={dadosMembro.funcaoMembro}
-                                onChange={(e) => handleChange("funcaoMembro", e.target.value)}
-                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
-                            >
-                                {funcoesOptions.map((f) => (
-                                    <option key={f.value} value={f.value}>{f.label}</option>
-                                ))}
-                            </select>
+                    {/* Seção: Ministério */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 pb-2 border-b border-icf-primary-50">
+                            <Church className="w-5 h-5 text-icf-primary-400" />
+                            <h3 className="font-semibold text-icf-primary-400">Ministérios e Cargo por Ministério</h3>
                         </div>
+
+                        {(dadosMembro.ministerios || []).length === 0 ? (
+                            <p className="text-sm text-icf-primary-300">Nenhum ministério selecionado.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {(dadosMembro.ministerios || []).map((item, index) => (
+                                    <div key={index} className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+                                        <div>
+                                            <label className="text-sm font-medium text-icf-primary-400">Ministério</label>
+                                            <select
+                                                value={item.idExternoMinisterio}
+                                                onChange={(e) => handleUpdateMinisterio(index, "idExternoMinisterio", e.target.value)}
+                                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
+                                            >
+                                                <option value="">Selecione o ministério</option>
+                                                {optionsMinisterios.map((opt) => (
+                                                    <option key={opt.idExterno} value={opt.idExterno}>
+                                                        {opt.nome}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium text-icf-primary-400">Cargo no ministério</label>
+                                            <select
+                                                value={item.cargo}
+                                                onChange={(e) => handleUpdateMinisterio(index, "cargo", e.target.value)}
+                                                className="w-full text-sm text-icf-primary-400 bg-surface-50 border border-icf-primary-100 rounded-lg h-10 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
+                                            >
+                                                <option value="MEMBRO">Membro</option>
+                                            </select>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveMinisterio(index)}
+                                            className="text-danger-500 hover:text-danger-600 font-medium"
+                                        >
+                                            Remover
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <button
+                            type="button"
+                            onClick={handleAddMinisterio}
+                            className="px-4 py-2 rounded-lg bg-icf-primary-100 text-icf-primary-400 hover:bg-icf-primary-200 transition-colors"
+                        >
+                            + Adicionar ministério
+                        </button>
                     </div>
 
                     {/* Separador - Endereço */}
                     <div className="border-t border-icf-primary-50 pt-6">
                         <h3 className="font-semibold text-icf-primary-400 mb-4">Endereço</h3>
                         
-                        {/* CEP, Número, Complemento */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        {/* CEP, Estado */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <InputIcf
                                 label="CEP"
                                 placeholder="00000-000"
                                 value={dadosMembro.cep}
                                 onChange={(e) => handleCepChange(e.target.value)}
                             />
+                            <InputIcf
+                                label="Estado"
+                                placeholder="SP"
+                                value={dadosMembro.estado}
+                                onChange={(e) => handleChange("estado", e.target.value)}
+                            />
+                        </div>
+
+                        {/* Cidade, Bairro */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <InputIcf
+                                label="Cidade"
+                                placeholder=""
+                                value={dadosMembro.cidade}
+                                onChange={(e) => handleChange("cidade", e.target.value)}
+                            />
+                            <InputIcf
+                                label="Bairro"
+                                placeholder=""
+                                value={dadosMembro.bairro}
+                                onChange={(e) => handleChange("bairro", e.target.value)}
+                            />
+                        </div>
+
+                        {/* Logradouro */}
+                        <div className="mb-4">
+                            <InputIcf
+                                label="Logradouro"
+                                placeholder=""
+                                value={dadosMembro.rua}
+                                onChange={(e) => handleChange("rua", e.target.value)}
+                            />
+                        </div>
+
+                        {/* Número, Complemento */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <InputIcf
                                 label="Número"
                                 placeholder=""
@@ -311,35 +505,6 @@ export function FormEditarMembro({ idMembro, fecharFormulario }) {
                                 placeholder=""
                                 value={dadosMembro.complemento}
                                 onChange={(e) => handleChange("complemento", e.target.value)}
-                            />
-                        </div>
-
-                        {/* Logradouro */}
-                        <div className="mb-4">
-                            <InputIcf
-                                label="Logradouro"
-                                placeholder=""
-                                value={dadosMembro.rua}
-                                onChange={(e) => handleChange("rua", e.target.value)}
-                                disabled={!!dadosMembro.rua}
-                            />
-                        </div>
-
-                        {/* Bairro, Cidade */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <InputIcf
-                                label="Bairro"
-                                placeholder=""
-                                value={dadosMembro.bairro}
-                                onChange={(e) => handleChange("bairro", e.target.value)}
-                                disabled={!!dadosMembro.bairro}
-                            />
-                            <InputIcf
-                                label="Cidade"
-                                placeholder=""
-                                value={dadosMembro.cidade}
-                                onChange={(e) => handleChange("cidade", e.target.value)}
-                                disabled={!!dadosMembro.cidade}
                             />
                         </div>
                     </div>

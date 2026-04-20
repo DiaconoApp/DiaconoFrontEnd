@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Users, Mail, Phone } from "lucide-react";
 import { buscarMinisterios } from "../../../services/ministerios";
-import { transformationName, formatarTelefone, safeFormatDate } from "../../../utils/Utils";
+import { transformationName, formatarTelefone } from "../../../utils/Utils";
 import { FormMembro } from "../../molecules/ICF/FormMembro";
 import { FormEditarMembro } from "../../molecules/ICF/FormEditarMembro";
 import { buscarMembros } from "../../../services/membros";
 import { PageHeader } from "../../atoms/ICF/PageHeader";
 import { FilterBar } from "../../atoms/ICF/FilterBar";
-import { StatusBadge, MinisterioBadge } from "../../atoms/ICF/DataTable";
+import { StatusBadge } from "../../atoms/ICF/DataTable";
 
 // Helper para formatar cargo
 const formatarCargo = (cargo) => {
@@ -180,10 +180,16 @@ export function ListaMembros() {
                                         </td>
                                         <td className="px-6 py-4">
                                             {membro.ministerios && membro.ministerios.length > 0 ? (
-                                                <MinisterioBadge 
-                                                    nome={transformationName(membro.ministerios[0]?.nomeMinisterio)}
-                                                    count={membro.ministerios.length - 1}
-                                                />
+                                                <div className="flex flex-wrap gap-2">
+                                                    {membro.ministerios.map((ministerio, index) => (
+                                                        <span
+                                                            key={ministerio.idExterno || ministerio.nomeMinisterio || index}
+                                                            className="inline-flex px-3 py-1 text-xs font-medium rounded-full bg-icf-primary-100 text-icf-primary-400"
+                                                        >
+                                                            {transformationName(ministerio.nomeMinisterio)}
+                                                        </span>
+                                                    ))}
+                                                </div>
                                             ) : (
                                                 <span className="text-sm text-icf-primary-200">-</span>
                                             )}

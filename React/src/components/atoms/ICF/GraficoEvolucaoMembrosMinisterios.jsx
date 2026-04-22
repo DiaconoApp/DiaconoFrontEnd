@@ -23,7 +23,7 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
     { length: anoFim - anoInicio + 1 },
     (_, i) => anoInicio + i
   );
-  const cores = ["#1f2937", "#6b7280", "#9ca3af", "#d1d5db", "#e5e7eb"];
+  const cores = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
   const mesesNome = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
@@ -93,14 +93,14 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
   // const anos = Array.from({ length: anoFim - anoInicio + 1 }, (_, i) => anoInicio + i);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
+    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-xl">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold text-icf-primary-400">Evolução de Membros</h2>
+        <h2 className="font-semibold text-white">Evolução de membros do ministério</h2>
 
         <select
           value={idMinisterioSelecionado || ""}
           onChange={(e) => setIdMinisterioSelecionado(e.target.value)}
-          className="border border-gray-300 rounded-lg text-gray-500 bg-white px-3 py-1.5 text-sm"
+          className="rounded-lg border border-white/10 bg-zinc-950 px-3 py-1.5 text-sm text-white outline-none"
         >
           {ministerios.map((m) => (
             <option key={m.idExterno} value={m.idExterno}>
@@ -112,24 +112,24 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
 
       <ResponsiveContainer width="100%" height={280}>
         <LineChart data={dados}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
+          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} stroke="#27272a" />
           <XAxis 
             dataKey="mes"
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 11, fill: '#6b7280' }}
+            tick={{ fontSize: 11, fill: '#a1a1aa' }}
           />
           <YAxis 
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 11, fill: '#6b7280' }}
+            tick={{ fontSize: 11, fill: '#a1a1aa' }}
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#fff', 
-              border: '1px solid #e5e7eb',
+              backgroundColor: '#09090b', 
+              border: '1px solid #27272a',
               borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              color: '#fff'
             }}
           />
           <Legend />

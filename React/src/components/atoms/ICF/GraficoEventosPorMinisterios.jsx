@@ -33,8 +33,8 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
   }, [anoInicio, anoFim]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-5">
-      <h2 className="font-semibold text-icf-primary-400 mb-4">Eventos por Ministério</h2>
+    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-xl">
+      <h2 className="mb-4 font-semibold text-white">Eventos por ministério</h2>
 
       <ResponsiveContainer width="100%" height={280}>
         <BarChart 
@@ -43,7 +43,7 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
         >
           <XAxis 
             dataKey="nome"
-            tick={{ fontSize: 11, fill: '#6b7280' }}
+            tick={{ fontSize: 11, fill: '#a1a1aa' }}
             interval={0}
             angle={-20}
             textAnchor="end"
@@ -55,20 +55,20 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
             allowDecimals={false} 
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 11, fill: '#6b7280' }}
+            tick={{ fontSize: 11, fill: '#a1a1aa' }}
           />
 
           <Tooltip 
             formatter={(v) => [`${v} eventos`, "Quantidade"]}
             contentStyle={{ 
-              backgroundColor: '#fff', 
-              border: '1px solid #e5e7eb',
+              backgroundColor: '#09090b', 
+              border: '1px solid #27272a',
               borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              color: '#fff'
             }}
           />
 
-          <Bar dataKey="qtd" radius={[4, 4, 0, 0]} fill="#6b7280" />
+          <Bar dataKey="qtd" radius={[4, 4, 0, 0]} fill="#a1a1aa" />
         </BarChart>
       </ResponsiveContainer>
     </div>

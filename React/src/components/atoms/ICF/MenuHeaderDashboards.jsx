@@ -9,21 +9,20 @@ export function MenuHeaderDashboards({ activeTab, onChangeTab }) {
   ];
 
   return (
-    <div className="flex gap-4 mt-2">
+    <div className="flex gap-4 mt-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onChangeTab(tab.id)}
           className={`
-            flex items-center gap-2 
-            // transition-all duration-50
+            flex items-center gap-2 border-b-2 pb-1 transition-colors
             ${activeTab === tab.id 
-              ? "text-icf-primary-300 border-b-2 border-b-icf-primary-300" 
-              : "text-icf-primary-200 hover:text-icf-primary-200"}
+              ? "border-white text-white" 
+              : "border-transparent text-slate-400 hover:text-white"}
           `}
         >
           <span className="text-xl">{tab.icon}</span>
-          <span className="text-base">{tab.label}</span>
+          <span className="text-sm font-medium">{tab.label}</span>
         </button>
       ))}
     </div>

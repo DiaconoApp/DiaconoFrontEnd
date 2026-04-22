@@ -1,4 +1,4 @@
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { useState, useEffect } from "react";
 import { getEvolucaoMembros } from "../../../services/dashboards";
 
@@ -44,31 +44,32 @@ export default function GraficoEvolucaoMembros({ anoInicio, anoFim }) {
   }, [anoInicio, anoFim]);
 
   return (
-    <div className="bg-white shadow-sm p-5 rounded-xl">
-      <h2 className="font-semibold text-icf-primary-400 mb-4">Evolução de Membros</h2>
+    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-xl">
+      <h2 className="mb-4 text-lg font-semibold text-white">Evolução de membros</h2>
 
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={320}>
         <LineChart data={dadosTratados} margin={{ top: 10, right: 20, bottom: 10, left: 0 }}>
-          <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke="#27272a" strokeDasharray="3 3" vertical={false} />
           <XAxis 
             dataKey="mes" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fontSize: 12, fill: '#6b7280' }}
+            tick={{ fontSize: 12, fill: '#a1a1aa' }}
           />
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fontSize: 12, fill: '#6b7280' }}
+            tick={{ fontSize: 12, fill: '#a1a1aa' }}
           />
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#fff', 
-              border: '1px solid #e5e7eb',
+              backgroundColor: '#09090b', 
+              border: '1px solid #27272a',
               borderRadius: '8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              color: '#fff'
             }}
           />
+          <Legend />
           {Array.from({ length: anoFim - anoInicio + 1 }).map((_, i) => {
             const ano = anoInicio + i;
             return (
@@ -77,9 +78,9 @@ export default function GraficoEvolucaoMembros({ anoInicio, anoFim }) {
                 type="monotone"
                 dataKey={ano}
                 strokeWidth={2}
-                stroke="#1f2937"
-                dot={{ r: 4, fill: '#fff', stroke: '#1f2937', strokeWidth: 2 }}
-                activeDot={{ r: 6, fill: '#1f2937' }}
+                stroke="#e5e7eb"
+                dot={{ r: 4, fill: '#09090b', stroke: '#e5e7eb', strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: '#ffffff' }}
                 name={`${ano}`}
               />
             );

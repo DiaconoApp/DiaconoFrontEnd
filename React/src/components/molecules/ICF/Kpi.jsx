@@ -45,7 +45,7 @@ export function Kpi({ icone, titulo, valor, variant = 'default', icon }) {
     const colors = colorVariants[variant] || colorVariants.default;
 
     return (
-        <div className="bg-white p-5 rounded-xl shadow-sm flex gap-4 items-start">
+        <div className="flex items-start gap-4 rounded-xl border border-icf-primary-50 bg-white p-5 shadow-sm">
             {IconComponent ? (
                 <div className={cn('p-2.5 rounded-lg', colors.icon)}>
                     <IconComponent className="h-5 w-5" />
@@ -57,7 +57,7 @@ export function Kpi({ icone, titulo, valor, variant = 'default', icon }) {
             )}
             <div className="flex flex-col">
                 <span className="text-sm text-icf-primary-200 font-medium">{titulo}</span>
-                <span className={cn('font-bold text-xl', colors.value)}>{valor}</span>
+                <span className={cn('text-xl font-bold text-icf-primary-400', colors.value)}>{valor}</span>
             </div>
         </div>
     );

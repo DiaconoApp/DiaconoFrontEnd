@@ -24,6 +24,40 @@ export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", stat
     }
 };
 
+export const buscarTodosMembros = async ({ busca = "", status = "", fkMinisterio = "" } = {}) => {
+    try {
+        const tamanhoPagina = 100;
+        let pagina = 0;
+        let totalPages = 1;
+        let membros = [];
+
+        while (pagina < totalPages) {
+            const res = await buscarMembros({
+                pagina,
+                tamanho: tamanhoPagina,
+                busca,
+                status,
+                fkMinisterio,
+            });
+
+            const conteudo = Array.isArray(res?.content) ? res.content : [];
+            membros = [...membros, ...conteudo]
+            totalPages = res?.totalPages ?? (conteudo.length < tamanhoPagina ? pagina + 1 : pagina + 2);
+
+            if (conteudo.length < tamanhoPagina) {
+                break;
+            }
+
+            pagina += 1;
+        }
+
+        return membros;
+    } catch (err) {
+        console.error("Erro ao buscar todos os membros:", err);
+        return [];
+    }
+};
+
 export const cadastrarMembro = async (dados) => {
     try {
         const ministeriosPayload = (dados.ministerios || [])

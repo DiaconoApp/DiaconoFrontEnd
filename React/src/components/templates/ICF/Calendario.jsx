@@ -59,6 +59,53 @@ export function Calendario() {
     navigate(`/eventos/editar/${idEvento}`);
   };
 
+  const formatarEnderecoEvento = (enderecoEvento) => {
+    if (!enderecoEvento) return "Sem local";
+
+    const normalizarTextoEndereco = (texto) => {
+      const valor = texto?.trim();
+      if (!valor) return "";
+
+      return valor
+        .toLocaleLowerCase("pt-BR")
+        .replace(/(^|[\s(\-])([\p{L}])/gu, (_, separador, letra) => `${separador}${letra.toLocaleUpperCase("pt-BR")}`);
+    };
+
+    const rua = normalizarTextoEndereco(enderecoEvento?.rua);
+    const numero = enderecoEvento?.numero?.trim();
+    const complemento = normalizarTextoEndereco(enderecoEvento?.complemento);
+    const bairro = normalizarTextoEndereco(enderecoEvento?.bairro);
+    const cidade = normalizarTextoEndereco(enderecoEvento?.cidade);
+
+    const partes = [];
+
+    if (rua) {
+      partes.push(rua);
+    }
+
+    if (numero) {
+      partes.push(numero);
+    }
+
+    if (complemento) {
+      partes.push(complemento);
+    }
+
+    if (bairro) {
+      partes.push(bairro);
+    }
+
+    if (cidade) {
+      partes.push(cidade);
+    }
+
+    if (partes.length > 0) {
+      return partes.join(", ");
+    }
+
+    return normalizarTextoEndereco(enderecoEvento?.apelido) || "Sem local";
+  };
+
   // ---------- CONTROLE DE NAVEGAÇÃO NO CALENDÁRIO ----------
   const handleToday = () => {
     calendarRef.current?.getApi()?.today();
@@ -205,7 +252,7 @@ export function Calendario() {
                 dataFim: eventoCompleto.dataHoraFim,
                 horaInicio: new Date(eventoCompleto.dataHoraInicio).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
                 horaFim: new Date(eventoCompleto.dataHoraFim).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }),
-                local: eventoCompleto?.enderecoEvento?.apelido || "Sem local",
+                local: formatarEnderecoEvento(eventoCompleto?.enderecoEvento),
                 ministerios: eventoCompleto?.fkMinisterios || [],
                 custo: eventoCompleto?.custo || 0,
                 organizador: eventoCompleto?.organizador?.nome,

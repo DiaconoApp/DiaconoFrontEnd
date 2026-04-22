@@ -191,16 +191,25 @@ export function Escalas() {
     const formatarEnderecoEvento = (enderecoEvento) => {
         if (!enderecoEvento) return "N/A";
 
-        const rua = enderecoEvento?.rua?.trim();
+        const normalizarTextoEndereco = (texto) => {
+            const valor = texto?.trim();
+            if (!valor) return "";
+
+            return valor
+                .toLocaleLowerCase("pt-BR")
+                .replace(/(^|[\s(\-])([\p{L}])/gu, (_, separador, letra) => `${separador}${letra.toLocaleUpperCase("pt-BR")}`);
+        };
+
+        const rua = normalizarTextoEndereco(enderecoEvento?.rua);
         const numero = enderecoEvento?.numero?.trim();
-        const complemento = enderecoEvento?.complemento?.trim();
-        const bairro = enderecoEvento?.bairro?.trim();
-        const cidade = enderecoEvento?.cidade?.trim();
+        const complemento = normalizarTextoEndereco(enderecoEvento?.complemento);
+        const bairro = normalizarTextoEndereco(enderecoEvento?.bairro);
+        const cidade = normalizarTextoEndereco(enderecoEvento?.cidade);
 
         const partes = [];
 
         if (rua) {
-            partes.push(`Rua ${rua}`);
+            partes.push(rua);
         }
 
         if (numero) {
@@ -223,7 +232,7 @@ export function Escalas() {
             return partes.join(", ");
         }
 
-        return enderecoEvento?.apelido || "N/A";
+        return normalizarTextoEndereco(enderecoEvento?.apelido) || "N/A";
     };
 
     const handleVerDetalhes = async (escala) => {

@@ -2,8 +2,8 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useEffect, useState } from "react";
 import { getFaixaEtariaMembros, getGeneroMembros } from "../../../services/dashboards";
 
-const coresFaixa = ["#3b82f6", "#8b5cf6", "#06b6d4", "#22c55e", "#f59e0b"];
-const coresGenero = ["#f472b6", "#60a5fa"];
+const coresFaixa = ["#0D5E7D", "#1B7F8F", "#2E9EA8", "#4CA77F", "#7BA85A"];
+const coresGenero = ["#0D5E7D", "#4CA77F"];
 
 export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
   const [genero, setGenero] = useState([]);
@@ -38,31 +38,35 @@ export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
   }, [anoInicio, anoFim]);
       
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-xl">
-      <h2 className="mb-4 text-lg font-semibold text-white">Distribuição de membros</h2>
+    <div className="rounded-xl border border-icf-primary-50 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex flex-col gap-1">
+        <h2 className="text-lg font-semibold text-icf-primary-400">Distribuição de membros</h2>
+        <p className="text-sm text-icf-primary-300">Distribuição por faixa etária e gênero</p>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <div>
-          <p className="mb-3 text-sm font-medium text-slate-300">Faixa etária</p>
+          <p className="mb-3 text-sm font-medium text-icf-primary-300">Faixa etária</p>
           <div className="flex items-center gap-4">
-            <ResponsiveContainer width="100%" height={240}>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Tooltip 
                   formatter={(value, name) => [`${value}%`, name]}
                   contentStyle={{ 
-                    backgroundColor: '#09090b', 
-                    border: '1px solid #27272a',
+                    backgroundColor: '#ffffff', 
+                    border: '2px solid #E5E7EB',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#1C1C1C',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                   }}
                 />
                 <Pie
                   data={faixaEtaria}
                   cx="50%"
                   cy="50%"
-                  innerRadius={52}
-                  outerRadius={88}
-                  paddingAngle={2}
+                  innerRadius={55}
+                  outerRadius={95}
+                  paddingAngle={3}
                   dataKey="value"
                 >
                   {faixaEtaria.map((_, i) => (
@@ -72,11 +76,11 @@ export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
               </PieChart>
             </ResponsiveContainer>
 
-            <ul className="hidden flex-col gap-2 text-sm text-slate-300 md:flex">
+            <ul className="hidden flex-col gap-2 text-sm text-icf-primary-300 md:flex">
               {faixaEtaria.map((item, i) => (
                 <li key={item.name} className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-full" style={{ backgroundColor: coresFaixa[i % coresFaixa.length] }} />
-                  {item.name} <span className="text-slate-400">{item.value}%</span>
+                  {item.name} <span className="text-icf-primary-200">{item.value}%</span>
                 </li>
               ))}
             </ul>
@@ -84,26 +88,27 @@ export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
         </div>
 
         <div>
-          <p className="mb-3 text-sm font-medium text-slate-300">Gênero</p>
+          <p className="mb-3 text-sm font-medium text-icf-primary-300">Gênero</p>
           <div className="flex items-center gap-4">
-            <ResponsiveContainer width="100%" height={240}>
+            <ResponsiveContainer width="100%" height={260}>
               <PieChart>
                 <Tooltip 
                   formatter={(value, name) => [`${value}%`, name]}
                   contentStyle={{ 
-                    backgroundColor: '#09090b', 
-                    border: '1px solid #27272a',
+                    backgroundColor: '#ffffff', 
+                    border: '2px solid #E5E7EB',
                     borderRadius: '8px',
-                    color: '#fff'
+                    color: '#1C1C1C',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                   }}
                 />
                 <Pie
                   data={genero}
                   cx="50%"
                   cy="50%"
-                  innerRadius={52}
-                  outerRadius={88}
-                  paddingAngle={2}
+                  innerRadius={55}
+                  outerRadius={95}
+                  paddingAngle={3}
                   dataKey="value"
                 >
                   {genero.map((_, i) => (
@@ -113,11 +118,11 @@ export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
               </PieChart>
             </ResponsiveContainer>
 
-            <ul className="hidden flex-col gap-2 text-sm text-slate-300 md:flex">
+            <ul className="hidden flex-col gap-2 text-sm text-icf-primary-300 md:flex">
               {genero.map((item, i) => (
                 <li key={item.name} className="flex items-center gap-2">
                   <span className="h-3 w-3 rounded-full" style={{ backgroundColor: coresGenero[i % coresGenero.length] }} />
-                  {item.name} <span className="text-slate-400">{Math.round(item.value)}%</span>
+                  {item.name} <span className="text-icf-primary-200">{Math.round(item.value)}%</span>
                 </li>
               ))}
             </ul>

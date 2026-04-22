@@ -1,6 +1,7 @@
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
@@ -11,6 +12,13 @@ import { getQtdEventosMinisterios } from "../../../services/dashboards";
 
 export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
   const [dados, setDados] = useState([]);
+  const cores = ["#0D5E7D", "#0F7A99", "#1B7F8F", "#2E9EA8", "#3FB5A0", "#4CA77F", "#7BA85A", "#6FA391"];
+
+  const corPorNome = (nome) => {
+    const texto = String(nome ?? "");
+    const hash = texto.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return cores[hash % cores.length];
+  };
 
   useEffect(() => {
     async function carregar() {
@@ -33,8 +41,11 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
   }, [anoInicio, anoFim]);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-5 shadow-xl">
-      <h2 className="mb-4 font-semibold text-white">Eventos por ministério</h2>
+    <div className="rounded-xl border border-icf-primary-50 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex flex-col gap-1">
+        <h2 className="font-semibold text-icf-primary-400">Eventos por ministério</h2>
+        <p className="text-sm text-icf-primary-300">Volume de eventos por ministério no período selecionado</p>
+      </div>
 
       <ResponsiveContainer width="100%" height={280}>
         <BarChart 
@@ -43,7 +54,7 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
         >
           <XAxis 
             dataKey="nome"
-            tick={{ fontSize: 11, fill: '#a1a1aa' }}
+            tick={{ fontSize: 11, fill: '#595959' }}
             interval={0}
             angle={-20}
             textAnchor="end"
@@ -55,20 +66,24 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
             allowDecimals={false} 
             axisLine={false}
             tickLine={false}
-            tick={{ fontSize: 11, fill: '#a1a1aa' }}
+            tick={{ fontSize: 11, fill: '#595959' }}
           />
 
           <Tooltip 
             formatter={(v) => [`${v} eventos`, "Quantidade"]}
             contentStyle={{ 
-              backgroundColor: '#09090b', 
-              border: '1px solid #27272a',
+              backgroundColor: '#ffffff', 
+              border: '1px solid #E5E7EB',
               borderRadius: '8px',
-              color: '#fff'
+              color: '#1C1C1C'
             }}
           />
 
-          <Bar dataKey="qtd" radius={[4, 4, 0, 0]} fill="#a1a1aa" />
+          <Bar dataKey="qtd" radius={[4, 4, 0, 0]}>
+            {dados.map((entry, index) => (
+              <Cell key={`cell-${entry.nome}-${index}`} fill={corPorNome(entry.nome)} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf";
+import { BaseModal } from "../../atoms/ICF/BaseModal";
+import { Button } from "@/components/ui/button";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
 import { InputSenhaIcf } from "../../atoms/ICF/InputSenhaIcf";
-import { TituloModal } from "../../atoms/ICF/TituloModal";
 import { EtapasCadastro } from "../Global/EtapasCadastro";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone, validaEmail } from "../../../utils/Utils";
@@ -99,10 +99,20 @@ export function ModalCadastrar1({ onClose, onNext }) {
     };
 
     return (
-        <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-            <div className="w-[90%] flex flex-col gap-4">
-                <TituloModal titulo={"Cadastrar Novo Membro"} onClick={onClose} />
-                <div className="border border-icf-primary-50"></div>
+        <BaseModal
+            title="Cadastrar Novo Membro"
+            onClose={onClose}
+            size="lg"
+            footer={
+                <Button
+                    onClick={handleAvancar}
+                    className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white px-8"
+                >
+                    Próximo
+                </Button>
+            }
+        >
+            <div className="space-y-4">
                 <EtapasCadastro
                     corLinha="border-[#D9D9D9]"
                     corTexto="text-icf-primary-400"
@@ -115,8 +125,8 @@ export function ModalCadastrar1({ onClose, onNext }) {
                     onChange={(e) => handleChange("nome", e.target.value)}
                     onBlur={() => handleBlur("nome")}
                 />
-                <div className="flex gap-14">
-                    <div className="w-full">
+                <div className="flex gap-4">
+                    <div className="flex-1">
                         <InputIcf
                             label="CPF"
                             value={formatarCpf(dadosCadastro.cpf) || dadosCadastro.cpf}
@@ -125,7 +135,7 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         />
                         {erros.cpf && <div className="text-red-500 text-sm mt-1">{erros.cpf}</div>}
                     </div>
-                    <div className="w-full">
+                    <div className="flex-1">
                         <InputIcf
                             label="Data de Nascimento"
                             type="date"
@@ -134,8 +144,8 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         />
                     </div>
                 </div>
-                <div className="flex gap-14">
-                    <div className="w-full">
+                <div className="flex gap-4">
+                    <div className="flex-1">
                         <InputIcf
                             label="Email"
                             value={dadosCadastro.email}
@@ -144,7 +154,7 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         />
                         {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
                     </div>
-                    <div className="w-full">
+                    <div className="flex-1">
                         <InputIcf
                             label="Celular"
                             value={formatarTelefone(dadosCadastro.celular) || dadosCadastro.celular}
@@ -154,8 +164,8 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         {erros.celular && <div className="text-red-500 text-sm mt-1">{erros.celular}</div>}
                     </div>
                 </div>
-                <div className="flex gap-14">
-                    <div className="w-full">
+                <div className="flex gap-4">
+                    <div className="flex-1">
                         <InputSenhaIcf
                             texto="Senha"
                             value={dadosCadastro.senha}
@@ -164,7 +174,7 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         />
                         {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
                     </div>
-                    <div className="w-full">
+                    <div className="flex-1">
                         <InputSenhaIcf
                             texto="Confirmar Senha"
                             value={dadosCadastro.confirmarSenha}
@@ -174,14 +184,7 @@ export function ModalCadastrar1({ onClose, onNext }) {
                         {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
                     </div>
                 </div>
-                <div className="w-full flex justify-center gap-25">
-                    <div className="w-[30%]">
-                        <BotaoIcf className="bg-icf-primary-400 flex items-center justify-center gap-2" onClick={handleAvancar}>
-                            Próximo
-                        </BotaoIcf>
-                    </div>
-                </div>
             </div>
-        </div>
+        </BaseModal>
     );
 }

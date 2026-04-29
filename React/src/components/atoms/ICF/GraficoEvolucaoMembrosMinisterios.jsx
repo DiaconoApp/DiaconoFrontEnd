@@ -23,7 +23,7 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
     { length: anoFim - anoInicio + 1 },
     (_, i) => anoInicio + i
   );
-  const cores = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"];
+  const cores = ["#0D5E7D", "#1B7F8F", "#2E9EA8", "#4CA77F", "#7BA85A", "#BAA045"];
 
   const mesesNome = [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
@@ -93,14 +93,17 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
   // const anos = Array.from({ length: anoFim - anoInicio + 1 }, (_, i) => anoInicio + i);
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 w-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Evolução de Membros do Ministério</h2>
+    <div className="rounded-xl border border-icf-primary-50 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="font-semibold text-icf-primary-400">Evolução de membros do ministério</h2>
+          <p className="text-sm text-icf-primary-300">Comparativo mensal por ministério selecionado</p>
+        </div>
 
         <select
           value={idMinisterioSelecionado || ""}
           onChange={(e) => setIdMinisterioSelecionado(e.target.value)}
-          className="border border-[#AEAEB2] rounded-lg text-[#AEAEB2] bg-white px-3 py-2"
+          className="min-w-40 rounded-lg border border-icf-primary-100 bg-white px-3 py-2 text-sm font-medium text-icf-primary-400 outline-none transition-colors focus:border-icf-primary-200"
         >
           {ministerios.map((m) => (
             <option key={m.idExterno} value={m.idExterno}>
@@ -110,13 +113,36 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
         </select>
       </div>
 
-      <ResponsiveContainer width="100%" height={280}>
+      <ResponsiveContainer width="100%" height={380}>
         <LineChart data={dados}>
-          <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.4} />
-          <XAxis dataKey="mes" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
+          <CartesianGrid strokeDasharray="4 4" vertical={false} opacity={0.7} stroke="#E5E7EB" />
+          <XAxis 
+            dataKey="mes"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 13, fill: '#595959', fontWeight: 500 }}
+          />
+          <YAxis 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 13, fill: '#595959', fontWeight: 500 }}
+          />
+          <Tooltip 
+            cursor={{ stroke: '#0D2750', strokeWidth: 2, opacity: 0.3 }}
+            labelStyle={{ color: '#1C1C1C', fontWeight: 700 }}
+            contentStyle={{ 
+              backgroundColor: '#ffffff', 
+              border: '2px solid #0D2750',
+              borderRadius: '8px',
+              color: '#1C1C1C',
+              boxShadow: '0 4px 12px rgba(13, 39, 80, 0.15)'
+            }}
+          />
+          <Legend
+            verticalAlign="top"
+            align="right"
+            wrapperStyle={{ fontSize: 13, color: '#1C1C1C', fontWeight: 600, paddingBottom: 16 }}
+          />
 
           {anos.map((ano, index) => (
             <Line
@@ -124,8 +150,10 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
               type="monotone"
               dataKey={ano}
               stroke={cores[index % cores.length]}
-              strokeWidth={2}
-              dot={{ r: 4 }}
+              strokeWidth={3}
+              dot={false}
+              isAnimationActive={true}
+              activeDot={{ r: 6, fill: cores[index % cores.length], stroke: '#ffffff', strokeWidth: 3 }}
               name={`${ano}`}
             />
           ))}

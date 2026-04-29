@@ -52,7 +52,7 @@ const Audience = () => {
     <section id="publico" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-white" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
-        className="hidden md:block absolute w-[800px] h-[800px] bg-primary/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"
+        className="hidden md:block absolute w-[800px] h-[800px] bg-diacono-blue-400/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"
         style={{
           left: `${mousePosition.x - 400}px`,
           top: `${mousePosition.y - 400}px`,
@@ -61,10 +61,10 @@ const Audience = () => {
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className={`max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-12 sm:mb-16 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-primary font-bold">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-diacono-blue-400 font-bold">
             Para quem é o Diácono?
           </h2>
-          <p className="text-base md:text-lg text-gray-600 leading-relaxed">
+          <p className="text-base md:text-lg text-diacono-blue-300/70 leading-relaxed">
             Uma solução completa para todos os envolvidos na gestão da igreja
           </p>
         </div>
@@ -73,17 +73,17 @@ const Audience = () => {
           {profiles.map((profile, index) => (
             <Card
               key={index}
-              className={`p-6 sm:p-8 bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all duration-700 hover:-translate-y-1 rounded-2xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
+              className={`p-6 sm:p-8 bg-white border border-diacono-blue-100 shadow-sm hover:shadow-md transition-all duration-700 hover:-translate-y-1 rounded-2xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
               style={{ transitionDelay: `${index * 130}ms` }}
             >
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className="p-4 bg-primary/5 rounded-xl">
-                  <profile.icon className="w-8 h-8 text-primary" strokeWidth={2} />
+                <div className="p-4 bg-diacono-blue-400/5 rounded-xl">
+                  <profile.icon className="w-8 h-8 text-diacono-blue-400" strokeWidth={2} />
                 </div>
-                <h3 className="text-lg font-semibold text-primary">
+                <h3 className="text-lg font-semibold text-diacono-blue-400">
                   {profile.title}
                 </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-diacono-blue-300/70 leading-relaxed">
                   {profile.description}
                 </p>
               </div>

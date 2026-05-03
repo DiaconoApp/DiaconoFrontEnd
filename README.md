@@ -23,4 +23,30 @@ Dependências principais:
 - Componentes de interface reutilizáveis (`BlocoTexto.jsx`, `Config.jsx`).
 - Suporte a desenvolvimento com backend mock via `json_server_db.json`.
 
+## CI/CD Pipeline
+
+### Continuous Integration (CI)
+- **Trigger**: Pull Requests e Push para `main`
+- **O que executa**: Lint e Build
+- **Arquivo**: `.github/workflows/ci.yml`
+
+### Continuous Deployment (CD)
+- **Trigger**: Criação de tags (`v*`)
+- **O que executa**: Build Docker e Push para GHCR
+- **Arquivo**: `.github/workflows/cd.yml`
+
+### Tags e Deploy Docker
+
+#### Como criar uma tag:
+```bash
+git tag v1.0.0  # Criar tag localmente
+git push origin v1.0.0  # Push da tag para disparar CD
+```
+
+#### Testar localmente:
+```bash
+docker build -t diacono-frontend:latest .
+docker run -p 80:80 diacono-frontend:latest
+```
+
 ## Como executar (em desenvolvimento...):

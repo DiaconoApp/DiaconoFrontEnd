@@ -32,7 +32,15 @@ export const buscarMinisterios = async (params = {}) => {
 };
 
 export const buscarMembrosMinisterios = async (params = {}) => {
-  const { pagina = 0, tamanho = 10, busca = "", status = "", idMinisterio } = params;
+  const {
+    pagina = 0,
+    tamanho = 10,
+    busca = "",
+    status = "",
+    idMinisterio,
+    sort = [],
+    buscaGeral = "",
+  } = params;
   try {
     let url = `/api/v1/ministerios/lider-ministerio/${idMinisterio}?page=${pagina}&size=${tamanho}`;
 
@@ -42,6 +50,14 @@ export const buscarMembrosMinisterios = async (params = {}) => {
 
     if (status.trim().toLowerCase() !== "todos") {
       url += `&status=${status.trim().toUpperCase()}`;
+    }
+
+    if (Array.isArray(sort) && sort.length > 0) {
+      url += `&sort=${encodeURIComponent(JSON.stringify(sort))}`;
+    }
+
+    if (buscaGeral.trim()) {
+      url += `&buscaGeral=${encodeURIComponent(buscaGeral.trim())}`;
     }
 
     const res = await api.get(url);
@@ -58,6 +74,16 @@ export const buscarMinisteriosQueLidero = async () => {
     return res.data;
   } catch (err) {
     console.error("Erro ao buscar ministérios:", err);
+  }
+};
+
+export const buscarMinisteriosMembro = async () => {
+  try {
+    const res = await api.get("/api/v1/ministerios/membro");
+    return res.data;
+  } catch (err) {
+    console.error("Erro ao buscar ministérios do membro:", err);
+    return [];
   }
 };
 

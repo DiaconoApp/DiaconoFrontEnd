@@ -54,7 +54,7 @@ const Features = () => {
   ];
 
   return (
-    <section id="funcionalidades" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
+    <section id="funcionalidades" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-diacono-blue-400" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
         className="hidden md:block absolute w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none transition-all duration-500 ease-out opacity-20 mix-blend-screen"
@@ -84,13 +84,13 @@ const Features = () => {
             >
               {feature.comingSoon && (
                 <div className="absolute top-3 right-3">
-                  <div className="bg-gradient-to-br from-soft-blue to-primary text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
+                  <div className="bg-gradient-to-br from-diacono-blue-200 to-diacono-blue-400 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
                     Em breve
                   </div>
                 </div>
               )}
               <div className="flex flex-col items-center text-center space-y-4">
-                <div className="p-4 bg-primary/5 rounded-xl">
+                <div className="p-4 bg-diacono-blue-400/5 rounded-xl">
                   <img 
                     src={`/${feature.icon}.svg`} 
                     alt={feature.title} 
@@ -98,10 +98,10 @@ const Features = () => {
                     style={{ filter: 'brightness(0) saturate(100%) invert(11%) sepia(45%) saturate(3258%) hue-rotate(200deg) brightness(94%) contrast(95%)' }}
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-primary">
+                <h3 className="text-lg font-semibold text-diacono-blue-400">
                   {feature.title}
                 </h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="text-sm text-diacono-blue-300/70 leading-relaxed">
                   {feature.description}
                 </p>
               </div>

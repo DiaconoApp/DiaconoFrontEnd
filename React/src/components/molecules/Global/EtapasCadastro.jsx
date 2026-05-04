@@ -8,11 +8,11 @@ export function EtapasCadastro({ corLinha = "", corTexto = "", className1 = "", 
       </div>
       <div className="flex flex-col items-center justify-center w-1/2 gap-2 z-10">
         <div className={`w-8 h-8 rounded-full flex justify-center items-center ${className2}`}>2</div>
-        <span className={`text-sm ${corTexto} font-medium`}>Conta</span>
+        <span className={`text-sm ${corTexto} font-medium`}>Endereço</span>
       </div>
       <div className="flex flex-col items-center justify-center w-1/2 gap-2 z-10">
         <div className={`w-8 h-8 rounded-full flex justify-center items-center ${className3}`}>3</div>
-        <span className={`text-sm ${corTexto} font-medium`}>Endereço</span>
+        <span className={`text-sm ${corTexto} font-medium`}>Conta</span>
       </div>
     </div>
   );

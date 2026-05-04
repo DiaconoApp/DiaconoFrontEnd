@@ -1,12 +1,17 @@
 @import "tailwindcss";
 
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
 @theme {
-    /* CORES ORIGINAIS DO PROJETO */
-    --color-icf-primary-50: #F5F5F5;
-    --color-icf-primary-100: #D9D9D9;
-    --color-icf-primary-200: #A6A6A6;
-    --color-icf-primary-300: #595959;
-    --color-icf-primary-400: #222;
+    /* ========================================
+
+    /* Legacy aliases (para compatibilidade) */
+    --color-icf-primary-50: #F5F5F5;   /* icf-white */
+    --color-icf-primary-100: #D9D9D9;  /* icf-light-gray */
+    --color-icf-primary-200: #A6A6A6;  /* icf-mid-gray */
+    --color-icf-primary-300: #595959;  /* icf-dark-gray */
+    --color-icf-primary-400: #1C1C1C;  /* icf-black */
 
     --color-diacono-blue-50: #E6EAF2;
     --color-diacono-blue-100: #BFCDE0;
@@ -14,21 +19,107 @@
     --color-diacono-blue-300: #103366;
     --color-diacono-blue-400: #0D2750;
 
-    --color-secondary-200: #1C6FE3;
+    /* ========================================
+       Semantic Tokens
+    ======================================== */
+    --color-background: #F5F5F5;
+    --color-foreground: #1C1C1C;
 
+    --color-card: #FFFFFF;
+    --color-card-foreground: #1C1C1C;
+
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #1C1C1C;
+
+    --color-primary: #1C1C1C;
+    --color-primary-foreground: #F5F5F5;
+
+    --color-secondary: #595959;
+    --color-secondary-foreground: #F5F5F5;
+    --color-secondary-200: #595959;
+
+    --color-muted: #D9D9D9;
+    --color-muted-foreground: #595959;
+
+    --color-accent: #A6A6A6;
+    --color-accent-foreground: #1C1C1C;
+
+    --color-destructive: #EF4444;
+    --color-destructive-foreground: #FAFAFA;
+
+    --color-border: #D9D9D9;
+    --color-input: #D9D9D9;
+    --color-ring: #595959;
+
+    /* ========================================
+       Sidebar Tokens
+    ======================================== */
+    --color-sidebar-background: #1C1C1C;
+    --color-sidebar-foreground: #A6A6A6;
+    --color-sidebar-primary: #F5F5F5;
+    --color-sidebar-primary-foreground: #1C1C1C;
+    --color-sidebar-accent: #595959;
+    --color-sidebar-accent-foreground: #F5F5F5;
+    --color-sidebar-border: #595959;
+    --color-sidebar-ring: #A6A6A6;
+
+    /* ========================================
+       Financial Semantic Colors
+    ======================================== */
+    --color-income: #22C55E;           /* Verde para receita - 142 72% 42% */
+    --color-expense: #EF4444;          /* Vermelho para despesas - 0 72% 51% */
+    
     --color-surface-50: #FCFCFC;
     --color-warning-200: #F2AB53;
 
-    /* CORES LANDING PAGE */
-    --color-primary: #0D2750;
-    --color-soft-blue: #BFCDE0;
-    --color-ice-white: #F5F5F5;
+    /* COR DE AÇÃO - VERDE */
+    --color-success-500: #4CAF50;
+    --color-success-600: #43A047;
+    --color-success-700: #388E3C;
+
+    /* ========================================
+       Design System Tokens
+    ======================================== */
+    --radius: 1rem;
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
 
     /* EFEITO SOMBRAS */
     --shadow-menu-shadow: 0px 16px 44px 0px rgba(0,0,0,0.07);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 
+    /* Tipografia */
+    --tracking-tight: -0.03em;
+    --tracking-normal: -0.02em;
     --tracking-default: -0.6px;
+    
+    --font-family-sans: 'Montserrat', sans-serif;
+
+    /* CORES LANDING PAGE */
+    --color-soft-blue: #D9D9D9;
+    --color-ice-white: #F5F5F5;
 }
+
+/* Base styles */
+body {
+  font-family: 'Montserrat', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility classes for financial colors */
+.text-income { color: var(--color-income); }
+.text-expense { color: var(--color-expense); }
+.bg-income { background-color: var(--color-income); }
+.bg-expense { background-color: var(--color-expense); }
+
+/* Typography utilities */
+h1, .h1 { letter-spacing: -0.03em; }
+h2, h3, .h2, .h3 { letter-spacing: -0.02em; }
 
 /* Animações da Landing Page */
 @keyframes float {

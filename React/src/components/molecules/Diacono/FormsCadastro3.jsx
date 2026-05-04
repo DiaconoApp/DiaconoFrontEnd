@@ -1,19 +1,24 @@
 import { InputDiacono } from "../../atoms/Diacono/InputDiacono";
 import { InputSenhaDiacono } from "../../atoms/Diacono/InputSenhaDiacono";
-import { EtapasCadastro } from "../Global/EtapasCadastro";
-import { BotaoDiacono } from "../../atoms/Diacono/BotaoDiacono";
-import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { LinkAcesso } from "../../atoms/Global/LinkAcesso";
+import { ValidacaoSenha } from "../../atoms/Diacono/ValidacaoSenha";
+import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
+import api from "../../../provider/api";
 import { validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
+import { AlertModal } from "../../ui/AlertModal";
+import { GoogleLogin } from "@react-oauth/google";
+import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
+import { loginWithGoogle } from "../../../services/login";
+import { useAuth } from "../../../routes/AuthContext.jsx";
 
 export function FormsCadastro3() {
     const navigate = useNavigate();
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const [erros, setErros] = useState({});
+    const [modal, setModal] = useState(null);
 
     const handleChange = (campo, valor) => {
         let novoValor = valor;
@@ -33,22 +38,6 @@ export function FormsCadastro3() {
                 }));
                 break;
 
-            case "senha":
-                const senhaValida = valor?.length >= 8;
-                setErros((prev) => ({
-                    ...prev,
-                    senha: senhaValida ? undefined : "Senha muito curta",
-                }));
-                const confirmarSenha = dadosCadastro.confirmarSenha;
-                if (confirmarSenha) {
-                    const senhasConferem = valor === confirmarSenha;
-                    setErros((prev) => ({
-                        ...prev,
-                        confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
-                    }));
-                }
-                break;
-
             case "confirmarSenha":
                 const senhasConferem = valor === dadosCadastro.senha;
                 setErros((prev) => ({
@@ -62,65 +51,139 @@ export function FormsCadastro3() {
         }
     };
 
+    const validarSenhaForte = (senha) => {
+        return senha.length >= 8 &&
+            /\d/.test(senha) &&
+            /[a-z]/.test(senha) &&
+            /[A-Z]/.test(senha) &&
+            /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~;']/.test(senha);
+    };
+
+    const { setUser } = useAuth();
+
     const handleAvancar = () => {
         const camposObrigatorios = ["email", "senha", "confirmarSenha"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
 
         if (camposVazios.length > 0 || Object.values(erros).some(e => e)) {
-            alert("Preencha todos os campos corretamente para continuar.");
+            setModal({
+                type: "warning",
+                title: "Campos obrigatórios",
+                message: "Preencha todos os campos corretamente para continuar."
+            });
             return;
         }
 
-        navigate("/cadastro/etapa4");
+        api.post("/register", dadosCadastro)
+            .then(() => {
+                setModal({
+                    type: "success",
+                    title: "Sucesso!",
+                    message: "Cadastro concluído com sucesso!",
+                    autoClose: 2000
+                });
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            })
+            .catch(() => {
+                setModal({
+                    type: "error",
+                    title: "Erro",
+                    message: "Erro ao finalizar cadastro."
+                });
+            });
     };
 
-    return (
+    const handleGoogleSuccess = async (credentialResponse) => {
+        const idToken = credentialResponse?.credential;
+        if (!idToken) {
+            console.error('Google response sem credential', credentialResponse);
+            setModal({
+                type: 'error',
+                title: 'Erro no Google',
+                message: 'Não foi possível obter a credencial do Google.'
+            });
+            return;
+        }
 
-        <div className="w-[55%] flex flex-col gap-5">
-            <span className="font-bold text-[28px] text-diacono-blue-400">Criar uma conta</span>
-            <EtapasCadastro corLinha="border-diacono-blue-100" corTexto="text-diacono-blue-200" className1="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" className2="bg-diacono-blue-400 text-white" className3="bg-diacono-blue-50 border border-diacono-blue-100 text-diacono-blue-200" />
-            <div className="flex flex-col gap-5">
+        try {
+            const { user } = await loginWithGoogle(idToken);
+            setUser(user);
+            navigate("/cadastro/etapa4");
+        } catch (e) {
+            console.error("erro google cadastro3", e);
+            setModal({
+                type: 'error',
+                title: 'Erro no Google',
+                message: e.message || 'Erro ao fazer login com Google'
+            });
+        }
+    };
+
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const googleComponent = googleClientId ? (
+        <div className="relative w-full">
+            <BotaoGoogle>Entrar com o Google</BotaoGoogle>
+            <div className="absolute inset-0 opacity-0">
+                <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={(err) => {
+                        console.error('Google login falhou', err);
+                        setModal({
+                            type: 'error',
+                            title: 'Erro no Google',
+                            message: 'Erro ao fazer login com Google'
+                        });
+                    }}
+                    width="100%"
+                />
+            </div>
+        </div>
+    ) : null;
+
+    return (
+        <CadastroLayout
+            etapaAtual={3}
+            onVoltar={() => navigate('/cadastro/etapa3')}
+            onProximo={handleAvancar}
+            textoBotaoProximo="Finalizar cadastro"
+            googleComponent={googleComponent}
+        >
+            <div>
+                <InputDiacono
+                    label="Email *"
+                    placeholder="Digite seu email"
+                    value={dadosCadastro.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    onBlur={() => handleBlur("email")}
+                />
+                {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
+            </div>
+            <div className="grid grid-cols-2 gap-6">
                 <div>
-                    <InputDiacono
-                        label="Email *"
-                        placeholder="Digite seu email"
-                        value={dadosCadastro.email}
-                        onChange={(e) => handleChange("email", e.target.value)}
-                        onBlur={() => handleBlur("email")}
+                    <InputSenhaDiacono
+                        texto="Senha *"
+                        placeholder="Digite sua senha"
+                        value={dadosCadastro.senha}
+                        onChange={(e) => handleChange("senha", e.target.value)}
                     />
-                    {erros.email && <div className="text-red-500 text-sm mt-1">{erros.email}</div>}
                 </div>
-                <div className="flex justify-between">
-                    <div>
-                        <InputSenhaDiacono
-                            texto="Senha *"
-                            placeholder="Digite sua senha"
-                            value={dadosCadastro.senha}
-                            onChange={(e) => handleChange("senha", e.target.value)}
-                            onBlur={() => handleBlur("senha")}
-                        />
-                        {erros.senha && <div className="text-red-500 text-sm mt-1">{erros.senha}</div>}
-                    </div>
-                    <div>
-                        <InputSenhaDiacono
-                            texto="Confirmar Senha *"
-                            placeholder="Confirme a senha"
-                            value={dadosCadastro.confirmarSenha}
-                            onChange={(e) => handleChange("confirmarSenha", e.target.value)}
-                            onBlur={() => handleBlur("confirmarSenha")}
-                        />
-                        {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
-                    </div>
-                </div>
-                <div className='flex flex-col gap-3 items-end'>
-                    <div className="w-full flex gap-40">
-                        <BotaoDiacono onClick={() => navigate('/cadastro/etapa2')}>Voltar</BotaoDiacono>
-                        <BotaoDiacono onClick={handleAvancar}>Próximo</BotaoDiacono>
-                    </div>
-                    <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-                    <LinkAcesso onClick={() => navigate('/login')} label={"Já tem uma conta?"} link={"Acessar"} />
+                <div>
+                    <InputSenhaDiacono
+                        texto="Confirmar Senha *"
+                        placeholder="Confirme a senha"
+                        value={dadosCadastro.confirmarSenha}
+                        onChange={(e) => handleChange("confirmarSenha", e.target.value)}
+                        onBlur={() => handleBlur("confirmarSenha")}
+                    />
+                    {erros.confirmarSenha && <div className="text-red-500 text-sm mt-1">{erros.confirmarSenha}</div>}
                 </div>
             </div>
-        </div >
+            
+            {/* Validação visual da senha */}
+            <ValidacaoSenha senha={dadosCadastro.senha} />
+            {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
+        </CadastroLayout>
     );
 }

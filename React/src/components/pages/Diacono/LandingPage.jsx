@@ -11,7 +11,7 @@ import Footer from "../../landing/Footer";
 
 export const LandingPage = () => {
   return (
-    <div className="min-h-screen font-['Montserrat']">
+    <div className="min-h-screen overflow-x-hidden font-['Montserrat']">
       <Navigation />
       <Hero />
       <About />

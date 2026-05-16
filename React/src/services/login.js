@@ -42,7 +42,8 @@ export const login = async (email, senha) => {
 
 export const logout = () => {
   localStorage.clear();
-  window.location.reload();
+  // Redirect to landing page after logout (avoid staying on protected routes)
+  window.location.href = '/home';
 };
 
 export const loginWithGoogle = async (idTokenOrResponse) => {

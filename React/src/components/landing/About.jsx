@@ -37,7 +37,7 @@ const About = () => {
   const benefits = aboutContent;
 
   return (
-    <section id="sobre" className="pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28 relative bg-ice-white border-none" ref={ref}>
+    <section id="sobre" className="pt-16 sm:pt-20 md:pt-28 pb-16 sm:pb-20 md:pb-28 relative overflow-hidden bg-ice-white border-none" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
         className="hidden md:block absolute w-[800px] h-[800px] bg-diacono-blue-400/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"

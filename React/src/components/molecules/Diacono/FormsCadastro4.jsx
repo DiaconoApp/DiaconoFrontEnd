@@ -5,11 +5,8 @@ import { useCadastro } from "../../../context/CadastroContext";
 import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { AlertModal } from "../../ui/AlertModal";
 import { useState } from "react";
-import api from "../../../provider/api";
-import { GoogleLogin } from "@react-oauth/google";
 import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { loginWithGoogle } from "../../../services/login";
-import { useAuth } from "../../../routes/AuthContext.jsx";
+import { startGoogleAuthorization } from "../../../services/googleAuth";
 
 export function FormsCadastro4() {
     const navigate = useNavigate();
@@ -34,8 +31,6 @@ export function FormsCadastro4() {
         }
     };
 
-    const { setUser } = useAuth();
-
      const handleSubmit = () => {
         const camposObrigatorios = ["cep", "rua", "bairro", "cidade", "numero"];
         const camposVazios = camposObrigatorios.filter(campo => !dadosCadastro[campo]);
@@ -52,22 +47,12 @@ export function FormsCadastro4() {
         navigate("/cadastro/etapa4");
     };
 
-    const handleGoogleSuccess = async (credentialResponse) => {
-        const idToken = credentialResponse?.credential;
-        if (!idToken) {
-            console.error('Google response sem credential', credentialResponse);
-            setModal({
-                type: 'error',
-                title: 'Erro no Google',
-                message: 'Não foi possível obter a credencial do Google.'
-            });
-            return;
-        }
-
+    const handleGoogleLogin = async () => {
         try {
-            const { user } = await loginWithGoogle(idToken);
-            setUser(user);
-            navigate("/login");
+            await startGoogleAuthorization({
+                successPath: "/login",
+                errorPath: "/cadastro/etapa3",
+            });
         } catch (e) {
             console.error("erro google cadastro4", e);
             setModal({
@@ -80,23 +65,7 @@ export function FormsCadastro4() {
 
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const googleComponent = googleClientId ? (
-        <div className="relative w-full">
-            <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-            <div className="absolute inset-0 opacity-0">
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={(err) => {
-                        console.error('Google login falhou', err);
-                        setModal({
-                            type: 'error',
-                            title: 'Erro no Google',
-                            message: 'Erro ao fazer login com Google'
-                        });
-                    }}
-                    width="100%"
-                />
-            </div>
-        </div>
+        <BotaoGoogle onClick={handleGoogleLogin}>Entrar com o Google</BotaoGoogle>
     ) : null;
 
     return (

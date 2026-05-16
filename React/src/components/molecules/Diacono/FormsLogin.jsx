@@ -6,9 +6,9 @@ import { LinkAcesso } from '../../atoms/Global/LinkAcesso';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSpinner } from "react-icons/fa";
-import { login, loginWithGoogle } from '../../../services/login';
+import { login } from '../../../services/login';
+import { startGoogleAuthorization } from '../../../services/googleAuth';
 import { useAuth } from '../../../routes/AuthContext.jsx';
-import { GoogleLogin } from '@react-oauth/google';
 
 export function FormsLogin() {
     const [email, setEmail] = useState("");
@@ -34,24 +34,18 @@ export function FormsLogin() {
         }
     };
 
-    const handleGoogleSuccess = async (credentialResponse) => {
-        const idToken = credentialResponse?.credential;
-        if (!idToken) {
-            console.error('Google response sem credential', credentialResponse);
-            setErro('Erro ao fazer login com Google');
-            return;
-        }
-
+    const handleGoogleLogin = async () => {
         setLoading(true);
         setErro("");
+
         try {
-            const { user } = await loginWithGoogle(idToken);
-            setUser(user);
-            navigate("/eventos");
+            await startGoogleAuthorization({
+                successPath: "/eventos",
+                errorPath: "/login",
+            });
         } catch (err) {
             console.error("erro google login", err);
             setErro(err.message || "Erro ao fazer login com Google");
-        } finally {
             setLoading(false);
         }
     };
@@ -81,21 +75,9 @@ export function FormsLogin() {
                     {loading ? <FaSpinner className='animate-spin h-5 w-5 text-white' /> : "Entrar"}
                 </BotaoDiacono>
                 {googleClientId && (
-                    <div className='relative w-full'>
-                        <BotaoGoogle disabled={loading}>Entrar com Google</BotaoGoogle>
-                        <div className={`absolute inset-0 ${loading ? 'pointer-events-none' : ''} opacity-0`}>
-                            <GoogleLogin
-                                onSuccess={handleGoogleSuccess}
-                                onError={(err) => {
-                                    console.error('Google login falhou', err);
-                                    setErro('Erro ao fazer login com Google');
-                                }}
-                                width="100%"
-                                className="w-full h-full"
-                                style={{ width: '100%', height: '100%' }}
-                            />
-                        </div>
-                    </div>
+                    <BotaoGoogle disabled={loading} onClick={handleGoogleLogin}>
+                        Entrar com Google
+                    </BotaoGoogle>
                 )}
                 <LinkAcesso
                     onClick={() => navigate('/cadastro/etapa1')}
@@ -106,4 +88,3 @@ export function FormsLogin() {
         </form>
     );
 }
-

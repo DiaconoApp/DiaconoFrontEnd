@@ -32,11 +32,6 @@ const Audience = () => {
       description: "Organize equipes, eventos e atividades do seu ministério",
     },
     {
-      icon: Wallet,
-      title: "Tesouraria",
-      description: "Controle financeiro completo com relatórios detalhados",
-    },
-    {
       icon: Settings,
       title: "Equipe Administrativa",
       description: "Processos otimizados para o dia a dia da secretaria",
@@ -49,7 +44,7 @@ const Audience = () => {
   ];
 
   return (
-    <section id="publico" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-white" ref={ref}>
+    <section id="publico" className="py-12 sm:py-16 md:py-24 relative overflow-hidden bg-white" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
         className="hidden md:block absolute w-[800px] h-[800px] bg-diacono-blue-400/10 rounded-full blur-[200px] pointer-events-none transition-all duration-300 ease-out z-20"
@@ -69,11 +64,11 @@ const Audience = () => {
           </p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:flex lg:flex-wrap lg:justify-center gap-6 sm:gap-8 max-w-5xl mx-auto">
           {profiles.map((profile, index) => (
             <Card
               key={index}
-              className={`p-6 sm:p-8 bg-white border border-diacono-blue-100 shadow-sm hover:shadow-md transition-all duration-700 hover:-translate-y-1 rounded-2xl group ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
+              className={`p-6 sm:p-8 bg-white border border-diacono-blue-100 shadow-sm hover:shadow-md transition-all duration-700 hover:-translate-y-1 rounded-2xl group w-full lg:w-80 ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
               style={{ transitionDelay: `${index * 130}ms` }}
             >
               <div className="flex flex-col items-center text-center space-y-4">

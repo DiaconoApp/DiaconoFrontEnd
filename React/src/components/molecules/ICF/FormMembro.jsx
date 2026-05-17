@@ -484,7 +484,6 @@ export function FormMembro({ fecharFormulario }) {
                     </div>
                 </form>
             </div>
-            <div className="bg-white border-l rounded-r-lg py-4 px-9 border-icf-primary-100"></div>
             {modal && <AlertModal {...modal} onClose={() => setModalAviso(null)} />}
         </div>
     );

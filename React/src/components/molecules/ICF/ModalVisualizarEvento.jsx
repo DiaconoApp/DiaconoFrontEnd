@@ -1,11 +1,17 @@
-import { X, User } from "lucide-react";
+import { User, Calendar, MapPin, Ticket, FileText, Users, Tag, Clock } from "lucide-react";
+import { BaseModal } from "../../atoms/ICF/BaseModal";
 import { Button } from "@/components/ui/button";
 
-function InfoLabel({ label, children }) {
+function InfoRow({ icon: Icon, label, children }) {
     return (
-        <div className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-icf-primary-300 uppercase tracking-wide">{label}</span>
-            <span className="text-icf-primary-400 text-sm">{children}</span>
+        <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-icf-primary-50 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Icon className="w-4 h-4 text-icf-primary-400" />
+            </div>
+            <div className="flex flex-col gap-0.5 min-w-0">
+                <span className="text-[10px] font-semibold text-icf-primary-200 uppercase tracking-widest">{label}</span>
+                <span className="text-sm font-medium text-icf-primary-400">{children}</span>
+            </div>
         </div>
     );
 }
@@ -25,6 +31,16 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
         ? dataInicioObj.toDateString() === dataFimObj.toDateString()
         : true;
 
+    const formatarData = (data) => {
+        if (!data || isNaN(data)) return "Não informado";
+        return data.toLocaleDateString("pt-BR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        });
+    };
+
     const formatarDataHora = (data) => {
         if (!data || isNaN(data)) return "Não informado";
         return data.toLocaleString("pt-BR", {
@@ -32,88 +48,102 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
             month: "2-digit",
             year: "numeric",
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
         });
     };
 
+    const gratuito = evento.custo === 0 || !evento.custo;
+
     return (
-        <div className="bg-white rounded-xl shadow-xl w-[480px] max-w-[95vw] max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-icf-primary-50">
-                <h2 className="font-bold text-xl text-icf-primary-400">{evento.titulo}</h2>
-                <button 
-                    onClick={onClose} 
-                    className="p-1 hover:bg-icf-primary-50 rounded-lg transition-colors"
-                >
-                    <X className="w-5 h-5 text-icf-primary-300" />
-                </button>
-            </div>
-
-            {/* Content */}
-            <div className="p-6 space-y-5">
-                {/* Organizador */}
-                <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-icf-primary-300 uppercase tracking-wide">Organizador</span>
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-icf-primary-50 flex items-center justify-center">
-                            <User className="w-4 h-4 text-icf-primary-300" />
-                        </div>
-                        <span className="text-icf-primary-400 text-sm">{evento.organizador || "Não informado"}</span>
-                    </div>
-                </div>
-
-                <InfoLabel label="Nome do Evento">{evento.titulo}</InfoLabel>
-                <InfoLabel label="Público-Alvo">{evento.publicoAlvo || "Geral"}</InfoLabel>
-                
-                {evento.ministerios && evento.ministerios.length > 0 && (
-                    <InfoLabel label="Escala">
-                        {evento.ministerios.map(m => m.nome || m).join(", ")}
-                    </InfoLabel>
-                )}
-
-                {/* Data e Horários */}
-                {ehMesmoDia ? (
-                    <div className="grid grid-cols-3 gap-4">
-                        <InfoLabel label="Data">
-                            {dataInicioValida ? dataInicioObj.toLocaleDateString("pt-BR") : "Não informado"}
-                        </InfoLabel>
-                        <InfoLabel label="Início">{evento.horaInicio || "00:00"}</InfoLabel>
-                        <InfoLabel label="Fim">{evento.horaFim || "00:00"}</InfoLabel>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 gap-4">
-                        <InfoLabel label="Data início">{formatarDataHora(dataInicioObj)}</InfoLabel>
-                        <InfoLabel label="Data fim">{formatarDataHora(dataFimObj)}</InfoLabel>
-                    </div>
-                )}
-
-                {/* Recorrência - comentado por enquanto */}
-                {/* <p className="text-icf-primary-200 text-sm italic">Ocorre a cada Sábado até o dia de XX/XXXX</p> */}
-
-                {/* Valor e Local */}
-                <div className="grid grid-cols-2 gap-4">
-                    <InfoLabel label="Valor do Ingresso">
-                        {evento.custo === 0 || !evento.custo ? "Gratuito" : `R$ ${evento.custo}`}
-                    </InfoLabel>
-                    <InfoLabel label="Endereço">{evento.local || "Não informado"}</InfoLabel>
-                </div>
-
-                <InfoLabel label="Descrição">
-                    {evento.descricao || "Sem descrição"}
-                </InfoLabel>
-            </div>
-
-            {/* Footer */}
-            {podeEditar && (
-                <div className="p-6 pt-0 flex justify-end">
-                    <Button
-                        onClick={onEdit}
-                        className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
-                    >
+        <BaseModal
+            title={evento.titulo}
+            onClose={onClose}
+            size="md"
+            footer={
+                podeEditar && (
+                    <Button onClick={onEdit} className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white">
                         Editar
                     </Button>
+                )
+            }
+        >
+            <div className="space-y-4">
+
+                {/* Organizador */}
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full bg-icf-primary-50 flex items-center justify-center flex-shrink-0">
+                        <User className="w-4 h-4 text-icf-primary-400" />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-semibold text-icf-primary-200 uppercase tracking-widest">Organizador</p>
+                        <p className="text-sm font-medium text-icf-primary-400">{evento.organizador || "Não informado"}</p>
+                    </div>
                 </div>
-            )}
-        </div>
+
+                <div className="border-t border-icf-primary-50" />
+
+                {/* Badges */}
+                {(evento.publicoAlvo || evento.ministerios?.length > 0) && (
+                    <>
+                        <div className="flex flex-wrap gap-2">
+                            {evento.publicoAlvo && (
+                                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-icf-primary-400 bg-icf-primary-50 px-3 py-1.5 rounded-full">
+                                    <Users className="w-3 h-3" />
+                                    {evento.publicoAlvo}
+                                </span>
+                            )}
+                            {evento.ministerios?.map((m, i) => (
+                                <span key={i} className="inline-flex items-center gap-1.5 text-xs font-semibold text-icf-primary-400 bg-icf-primary-50 px-3 py-1.5 rounded-full">
+                                    <Tag className="w-3 h-3" />
+                                    {m.nome || m}
+                                </span>
+                            ))}
+                        </div>
+                        <div className="border-t border-icf-primary-50" />
+                    </>
+                )}
+
+                {/* Data e Horário — agrupados */}
+                {ehMesmoDia ? (
+                    <div className="bg-icf-primary-50 rounded-xl p-4 space-y-3">
+                        <InfoRow icon={Calendar} label="Data">
+                            <span className="capitalize">{dataInicioValida ? formatarData(dataInicioObj) : "Não informado"}</span>
+                        </InfoRow>
+                        <InfoRow icon={Clock} label="Horário">
+                            {evento.horaInicio || "00:00"} até {evento.horaFim || "00:00"}
+                        </InfoRow>
+                    </div>
+                ) : (
+                    <div className="bg-icf-primary-50 rounded-xl p-4 space-y-3">
+                        <InfoRow icon={Calendar} label="Início">{formatarDataHora(dataInicioObj)}</InfoRow>
+                        <InfoRow icon={Calendar} label="Fim">{formatarDataHora(dataFimObj)}</InfoRow>
+                    </div>
+                )}
+
+                <div className="border-t border-icf-primary-50" />
+
+                {/* Ingresso e Local */}
+                <InfoRow icon={Ticket} label="Ingresso">
+                    <span className={gratuito ? "text-green-600" : ""}>
+                        {gratuito ? "Gratuito" : `R$ ${evento.custo}`}
+                    </span>
+                </InfoRow>
+
+                <InfoRow icon={MapPin} label="Local">
+                    {evento.local || "Não informado"}
+                </InfoRow>
+
+                {/* Descrição */}
+                {evento.descricao && (
+                    <>
+                        <div className="border-t border-icf-primary-50" />
+                        <InfoRow icon={FileText} label="Descrição">
+                            <span className="font-normal leading-relaxed">{evento.descricao}</span>
+                        </InfoRow>
+                    </>
+                )}
+
+            </div>
+        </BaseModal>
     );
 }

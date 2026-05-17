@@ -9,9 +9,7 @@ import { BotaoGoogle } from "../../../atoms/Global/BotaoGoogle";
 import { LinkAcesso } from "../../../atoms/Global/LinkAcesso";
 import { AlertModal } from "../../../ui/AlertModal";
 import Select from "react-select";
-import { GoogleLogin } from "@react-oauth/google";
-import { loginWithGoogle } from "../../../../services/login";
-import { useAuth } from "../../../../routes/AuthContext.jsx";
+import { startGoogleAuthorization } from "../../../../services/googleAuth";
 
 export function Cadastro1() {
     const [listaIgrejas, setListaIgrejas] = useState([]);
@@ -19,8 +17,6 @@ export function Cadastro1() {
     const [modal, setModal] = useState(null);
     const { dadosCadastro, setDadosCadastro } = useCadastro();
     const navigate = useNavigate();
-    const { setUser } = useAuth();
-
     const opcoesIgrejas = listaIgrejas.map((igreja) => ({
         value: igreja.idExterno,
         label: igreja.nome,
@@ -58,29 +54,18 @@ export function Cadastro1() {
         api.get('/register')
             .then(response => setListaIgrejas(response.data))
             .catch(() => console.log('Erro ao listar igrejas'))
-        console.log("Igrejas carregadas:", listaIgrejas);
     }, [])
 
     const handleChange = (e) => {
         setDadosCadastro({ ...dadosCadastro, fkIgreja: e.target.value });
     };
 
-    const handleGoogleSuccess = async (credentialResponse) => {
-        const idToken = credentialResponse?.credential;
-        if (!idToken) {
-            console.error('Google response sem credential', credentialResponse);
-            setModal({
-                type: 'error',
-                title: 'Erro no Google',
-                message: 'Não foi possível obter a credencial do Google.'
-            });
-            return;
-        }
-
+    const handleGoogleLogin = async () => {
         try {
-            const { user } = await loginWithGoogle(idToken);
-            setUser(user);
-            navigate("/cadastro/etapa2");
+            await startGoogleAuthorization({
+                successPath: "/cadastro/etapa2",
+                errorPath: "/cadastro/etapa1",
+            });
         } catch (e) {
             console.error("erro no login Google", e);
             setModal({
@@ -93,23 +78,7 @@ export function Cadastro1() {
 
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const googleComponent = googleClientId ? (
-        <div className="relative w-full">
-            <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-            <div className="absolute inset-0 opacity-0">
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={(err) => {
-                        console.error('Google login falhou', err);
-                        setModal({
-                            type: 'error',
-                            title: 'Erro no Google',
-                            message: 'Erro ao fazer login com Google'
-                        });
-                    }}
-                    width="100%"
-                />
-            </div>
-        </div>
+        <BotaoGoogle onClick={handleGoogleLogin}>Entrar com o Google</BotaoGoogle>
     ) : null;
 
     return (

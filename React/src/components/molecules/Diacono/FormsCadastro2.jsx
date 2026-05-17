@@ -6,10 +6,8 @@ import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import { formatarCpf, formatarTelefone, isTelefone } from "../../../utils/Utils";
 import { useState } from "react";
 import { AlertModal } from "../../ui/AlertModal";
-import { GoogleLogin } from "@react-oauth/google";
 import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { loginWithGoogle } from "../../../services/login";
-import { useAuth } from "../../../routes/AuthContext.jsx";
+import { startGoogleAuthorization } from "../../../services/googleAuth";
 
 export function FormsCadastro2() {
   const navigate = useNavigate();
@@ -17,8 +15,6 @@ export function FormsCadastro2() {
   const [erros, setErros] = useState({});
   const [modal, setModal] = useState(null);
   const { validarNome, validarCpf } = useValidacaoCadastro();
-  const { setUser } = useAuth();
-
   const handleChange = (campo, valor) => {
     let novoValor = valor;
 
@@ -42,34 +38,38 @@ export function FormsCadastro2() {
     const valor = dadosCadastro[campo];
 
     switch (campo) {
-      case "nome":
+      case "nome": {
         const nomeCorrigido = validarNome(valor);
         setDadosCadastro((prev) => ({ ...prev, nome: nomeCorrigido }));
         break;
+      }
 
-      case "cpf":
+      case "cpf": {
         const cpfValido = validarCpf(valor);
         setErros((prev) => ({
           ...prev,
           cpf: cpfValido ? undefined : "CPF inválido",
         }));
         break;
+      }
 
-      case "celular":
+      case "celular": {
         const celularValido = isTelefone(valor);
         setErros((prev) => ({
           ...prev,
           celular: celularValido ? undefined : "Celular inválido",
         }));
         break;
+      }
 
-      case "generoMembro":
+      case "generoMembro": {
         const generoValido = valor === "MASCULINO" || valor === "FEMININO";
         setErros((prev) => ({
           ...prev,
           generoMembro: generoValido ? undefined : "Gênero inválido",
         }));
         break;
+      }
 
       default:
         break;
@@ -92,22 +92,12 @@ export function FormsCadastro2() {
     navigate("/cadastro/etapa3");
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const idToken = credentialResponse?.credential;
-    if (!idToken) {
-      console.error('Google response sem credential', credentialResponse);
-      setModal({
-        type: 'error',
-        title: 'Erro no Google',
-        message: 'Não foi possível obter a credencial do Google.'
-      });
-      return;
-    }
-
+  const handleGoogleLogin = async () => {
     try {
-      const { user } = await loginWithGoogle(idToken);
-      setUser(user);
-      navigate("/cadastro/etapa3");
+      await startGoogleAuthorization({
+        successPath: "/cadastro/etapa3",
+        errorPath: "/cadastro/etapa2",
+      });
     } catch (e) {
       console.error("erro no login Google", e);
       setModal({
@@ -120,23 +110,7 @@ export function FormsCadastro2() {
 
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const googleComponent = googleClientId ? (
-    <div className="relative w-full">
-      <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-      <div className="absolute inset-0 opacity-0">
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={(err) => {
-            console.error('Google login falhou', err);
-            setModal({
-              type: 'error',
-              title: 'Erro no Google',
-              message: 'Erro ao fazer login com Google'
-            });
-          }}
-          width="100%"
-        />
-      </div>
-    </div>
+    <BotaoGoogle onClick={handleGoogleLogin}>Entrar com o Google</BotaoGoogle>
   ) : null;
 
   return (

@@ -4,15 +4,12 @@ import { ValidacaoSenha } from "../../atoms/Diacono/ValidacaoSenha";
 import { CadastroLayout } from "../../templates/Diacono/CadastroLayout";
 import { useNavigate } from "react-router-dom";
 import { useCadastro } from "../../../context/CadastroContext";
-import { useValidacaoCadastro } from "../../../hooks/useValidacaoCadastro";
 import api from "../../../provider/api";
 import { validaEmail } from "../../../utils/Utils";
 import { useState } from "react";
 import { AlertModal } from "../../ui/AlertModal";
-import { GoogleLogin } from "@react-oauth/google";
 import { BotaoGoogle } from "../../atoms/Global/BotaoGoogle";
-import { loginWithGoogle } from "../../../services/login";
-import { useAuth } from "../../../routes/AuthContext.jsx";
+import { startGoogleAuthorization } from "../../../services/googleAuth";
 
 export function FormsCadastro3() {
     const navigate = useNavigate();
@@ -30,36 +27,28 @@ export function FormsCadastro3() {
         const valor = dadosCadastro[campo];
 
         switch (campo) {
-            case "email":
+            case "email": {
                 const emailValido = validaEmail(valor);
                 setErros((prev) => ({
                     ...prev,
                     email: emailValido ? undefined : "Email inválido",
                 }));
                 break;
+            }
 
-            case "confirmarSenha":
+            case "confirmarSenha": {
                 const senhasConferem = valor === dadosCadastro.senha;
                 setErros((prev) => ({
                     ...prev,
                     confirmarSenha: senhasConferem ? undefined : "Senhas não coincidem",
                 }));
                 break;
+            }
 
             default:
                 break;
         }
     };
-
-    const validarSenhaForte = (senha) => {
-        return senha.length >= 8 &&
-            /\d/.test(senha) &&
-            /[a-z]/.test(senha) &&
-            /[A-Z]/.test(senha) &&
-            /[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/`~;']/.test(senha);
-    };
-
-    const { setUser } = useAuth();
 
     const handleAvancar = () => {
         const camposObrigatorios = ["email", "senha", "confirmarSenha"];
@@ -95,22 +84,12 @@ export function FormsCadastro3() {
             });
     };
 
-    const handleGoogleSuccess = async (credentialResponse) => {
-        const idToken = credentialResponse?.credential;
-        if (!idToken) {
-            console.error('Google response sem credential', credentialResponse);
-            setModal({
-                type: 'error',
-                title: 'Erro no Google',
-                message: 'Não foi possível obter a credencial do Google.'
-            });
-            return;
-        }
-
+    const handleGoogleLogin = async () => {
         try {
-            const { user } = await loginWithGoogle(idToken);
-            setUser(user);
-            navigate("/cadastro/etapa4");
+            await startGoogleAuthorization({
+                successPath: "/cadastro/etapa4",
+                errorPath: "/cadastro/etapa4",
+            });
         } catch (e) {
             console.error("erro google cadastro3", e);
             setModal({
@@ -123,23 +102,7 @@ export function FormsCadastro3() {
 
     const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     const googleComponent = googleClientId ? (
-        <div className="relative w-full">
-            <BotaoGoogle>Entrar com o Google</BotaoGoogle>
-            <div className="absolute inset-0 opacity-0">
-                <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={(err) => {
-                        console.error('Google login falhou', err);
-                        setModal({
-                            type: 'error',
-                            title: 'Erro no Google',
-                            message: 'Erro ao fazer login com Google'
-                        });
-                    }}
-                    width="100%"
-                />
-            </div>
-        </div>
+        <BotaoGoogle onClick={handleGoogleLogin}>Entrar com o Google</BotaoGoogle>
     ) : null;
 
     return (

@@ -1,5 +1,6 @@
 import { BaseModal } from "../../atoms/ICF/BaseModal";
 import { InputIcf } from "../../atoms/ICF/InputIcf";
+import { SelectIcf } from "../../atoms/ICF/SelectIcf";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cadastrarMinisterio, atualizarMinisterio } from "../../../services/ministerios";
@@ -144,17 +145,54 @@ export function ModalMinisterio({
                     onChange={(e) => setNome(e.target.value)}
                 />
 
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1.5 w-full">
                     <label className="text-sm font-medium text-icf-primary-400">Líder do Ministério</label>
-                    <Select 
-                        className="text-sm" 
+                    <Select
                         styles={{
-                            control: (base) => ({
+                            control: (base, state) => ({
                                 ...base,
-                                padding: "4px",
-                                borderColor: "#c9c9c9",
+                                height: "40px",
+                                minHeight: "40px",
+                                backgroundColor: "#FCFCFC",
+                                borderColor: state.isFocused ? "#595959" : "#D9D9D9",
                                 borderRadius: "8px",
-                            })
+                                boxShadow: "none",
+                                "&:hover": { borderColor: "#D9D9D9" },
+                            }),
+                            valueContainer: (base) => ({
+                                ...base,
+                                height: "40px",
+                                padding: "0 16px",
+                            }),
+                            input: (base) => ({
+                                ...base,
+                                margin: 0,
+                                padding: 0,
+                                color: "#1C1C1C",
+                                fontSize: "14px",
+                            }),
+                            placeholder: (base) => ({
+                                ...base,
+                                color: "#A6A6A6",
+                                fontSize: "14px",
+                                margin: 0,
+                            }),
+                            singleValue: (base) => ({
+                                ...base,
+                                color: "#1C1C1C",
+                                fontSize: "14px",
+                                margin: 0,
+                            }),
+                            indicatorsContainer: (base) => ({
+                                ...base,
+                                height: "40px",
+                            }),
+                            indicatorSeparator: () => ({ display: "none" }),
+                            dropdownIndicator: (base) => ({
+                                ...base,
+                                color: "#A6A6A6",
+                                padding: "0 8px",
+                            }),
                         }}
                         options={options}
                         value={options.find((opt) => opt.value === idLider)}
@@ -165,17 +203,15 @@ export function ModalMinisterio({
                 </div>
 
                 {tipo === "editar" && (
-                    <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium text-icf-primary-400">Status</label>
-                        <select
-                            className="w-full border border-icf-primary-200 rounded-lg p-1 outline-none focus:ring-1 focus:ring-icf-primary-200 text-xs"
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                        >
-                            <option value="ATIVO">Ativo</option>
-                            <option value="INATIVO">Inativo</option>
-                        </select>
-                    </div>
+                    <SelectIcf
+                        label="Status"
+                        options={[
+                            { idExterno: "ATIVO", nome: "Ativo" },
+                            { idExterno: "INATIVO", nome: "Inativo" },
+                        ]}
+                        value={status}
+                        onChange={(valor) => setStatus(valor)}
+                    />
                 )}
             </div>
             {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}

@@ -17,6 +17,7 @@ import { Calendario } from "../components/templates/ICF/Calendario";
 import { Dashboard } from "../components/pages/ICF/Dashboard";
 import { Perfil } from "../components/pages/ICF/Perfil";
 import { LandingPage } from "../components/pages/Diacono/LandingPage";
+import { GoogleCallback } from "../components/pages/Auth/GoogleCallback";
 
 // Wrapper para rotas que compartilham o CadastroProvider
 function CadastroWrapper() {
@@ -33,6 +34,7 @@ export function AppRoutes() {
         { path: "/home", element: <LandingPage />, errorElement: <div>Error</div> },
         { path: "/", element: <Navigate to="/home" />, errorElement: <div>Error</div> },
         { path: "/login", element: <Login />, errorElement: <div>Error</div> },
+        { path: "/auth/google/callback", element: <GoogleCallback />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
         {

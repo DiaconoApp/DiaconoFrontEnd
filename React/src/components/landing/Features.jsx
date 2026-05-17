@@ -46,9 +46,9 @@ const Features = () => {
       comingSoon: true,
     },
     {
-      icon: "iconeFinanceiro",
-      title: "Financeiro",
-      description: "Controle de dízimos, ofertas e despesas",
+      icon: "iconePerfil",
+      title: "Perfil",
+      description: "Gerencialmento de perfil do usuário",
       comingSoon: true,
     },
   ];
@@ -82,13 +82,6 @@ const Features = () => {
               className={`p-6 sm:p-8 bg-white/95 backdrop-blur border-none shadow-sm hover:shadow-lg transition-all duration-700 hover:-translate-y-1 rounded-xl group relative overflow-hidden ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}
               style={{ transitionDelay: `${index * 120}ms` }}
             >
-              {feature.comingSoon && (
-                <div className="absolute top-3 right-3">
-                  <div className="bg-gradient-to-br from-diacono-blue-200 to-diacono-blue-400 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
-                    Em breve
-                  </div>
-                </div>
-              )}
               <div className="flex flex-col items-center text-center space-y-4">
                 <div className="p-4 bg-diacono-blue-400/5 rounded-xl">
                   <img 

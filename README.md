@@ -53,52 +53,44 @@ Frontend web para autenticação, cadastro inicial e gestão operacional de uma 
 - A busca por CEP completa endereço automaticamente quando o CEP tem 8 dígitos válidos.
 - O cadastro bloqueia avanço se houver campos obrigatórios vazios, senha inválida ou confirmação divergente.
 
-## 🌐 Integração com Backend
-- Autenticação:
-	- `POST /api/v1/auth/login`
-	- `POST /api/v1/auth/google`
-- Cadastro e perfil:
-	- `POST /register`
-	- `GET /perfil`
-	- `GET /perfil/{idUsuario}`
-	- `PATCH /perfil`
-- Eventos:
-	- `GET /api/v1/eventos`
-	- `GET /api/v1/eventos/{id}`
-	- `POST /api/v1/eventos`
-	- `PATCH /api/v1/eventos/{id}`
-	- `DELETE /api/v1/eventos/unico/{id}`
-	- `DELETE /api/v1/eventos/multiplos/{id}`
-- Escalas:
-	- `GET /api/v1/escalas-evento/governo`
-	- `GET /api/v1/escalas-evento/governo/{eventoId}`
-	- `PATCH /api/v1/escalas-evento/governo/{eventoId}`
-	- `GET /api/v1/escalas-ministerio/lider-ministerio`
-	- `GET /api/v1/escalas-ministerio/lider-ministerio/{idExternoEscalaEvento}`
-	- `PATCH /api/v1/escalas-ministerio/lider-ministerio/{idExternoEscalaEvento}`
-	- `GET /api/v1/escalas-ministerio/lider-ministerio/{idExternoEscalaEvento}/{tamanhoEquipe}`
-	- `POST /api/v1/escalas-ministerio/lider-ministerio/{idExternoEscalaEvento}/revisar-randomizacao/{idExternoMembroMinisterio}`
-	- `GET /api/v1/escalas-ministerio/membro`
-- Membros e ministérios:
-	- `GET /api/v1/membros`
-	- `GET /api/v1/membros/{idExterno}`
-	- `POST /api/v1/membros`
-	- `PATCH /api/v1/membros/{idExterno}`
-	- `GET /api/v1/ministerios`
-	- `GET /api/v1/ministerios/governo`
-	- `GET /api/v1/ministerios/lider-ministerio`
-	- `GET /api/v1/ministerios/lider-ministerio/{idMinisterio}`
-	- `GET /api/v1/ministerios/membro`
-	- `POST /api/v1/ministerios/governo`
-	- `PATCH /api/v1/ministerios/governo/{idMinisterio}`
-	- `PATCH /api/v1/ministerios/lider-ministerio/{idMinisterio}`
-	- `DELETE /api/v1/ministerios/lider-ministerio/{idMinisterio}/{idMembro}`
-- Dashboards:
-	- `GET /api/v1/dashboards/membros/kpis`
-	- `GET /api/v1/dashboards/membros/genero`
-	- `GET /api/v1/dashboards/membros/faixa-etaria`
-	- `GET /api/v1/dashboards/membros/evolucao`
-	- `GET /api/v1/dashboards/ministerios/kpis`
-	- `GET /api/v1/dashboards/ministerios/quantidade-membros`
-	- `GET /api/v1/dashboards/ministerios/quantidade-eventos`
-	- `GET /api/v1/dashboards/ministerios/evolucao/{idMinisterio}`
+## Funcionalidades
+
+- Tela de login (componentes `Login.jsx` e `BlocoLogin.jsx`).
+- Componentes de interface reutilizáveis (`BlocoTexto.jsx`, `Config.jsx`).
+- Suporte a desenvolvimento com backend mock via `json_server_db.json`.
+
+## CI/CD Pipeline
+
+### Continuous Integration (CI)
+- **Trigger**: Pull Requests e Push para `main`
+- **O que executa**: Lint e Build
+- **Arquivo**: `.github/workflows/ci.yml`
+
+### Continuous Deployment (CD)
+- **Trigger**: Criação de tags (`v*`) ou execução manual
+- **O que executa**: Build do frontend, empacotamento em imagem Docker e push para GHCR
+- **Arquivo**: `.github/workflows/cd.yml`
+
+### Como o CD funciona
+- O workflow usa o `Dockerfile` na raiz do repositório.
+- A imagem final serve a aplicação Vite via `nginx` usando o `nginx.conf` do projeto.
+- O repositório envia a imagem para `ghcr.io/<owner>/diacono-frontend`.
+
+### Tags e Deploy Docker
+
+#### Como criar uma tag:
+```bash
+git tag v1.0.0  # Criar tag localmente
+git push origin v1.0.0  # Push da tag para disparar CD
+```
+
+#### Testar localmente:
+```bash
+docker build -t diacono-frontend:latest .
+docker run -p 80:80 diacono-frontend:latest
+```
+
+#### Observação sobre Docker Hub
+Se a meta for publicar no Docker Hub em vez de GHCR, o workflow precisa trocar o registry e usar secrets do Docker Hub (`DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN`).
+
+## Como executar (em desenvolvimento...):

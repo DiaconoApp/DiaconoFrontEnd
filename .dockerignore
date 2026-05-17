@@ -1,0 +1,9 @@
+.git
+.github
+.vscode
+node_modules
+React/node_modules
+React/dist
+React/.vite
+*.log
+README.md

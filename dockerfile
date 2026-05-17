@@ -7,8 +7,10 @@ FROM node:${NODE_VERSION}-alpine AS builder
 
 # --- Adicione aqui as variáveis que seu React precisa ---
 ARG VITE_API_URL
+ARG VITE_GOOGLE_CLIENT_ID
 # Opcional: Define ela como variável de ambiente para o processo de build
 ENV VITE_API_URL=$VITE_API_URL 
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
 
 WORKDIR /app
 

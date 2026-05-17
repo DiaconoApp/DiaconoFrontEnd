@@ -40,6 +40,8 @@ jobs:
         run: npm run lint
 
       - name: Build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
         run: npm run build
 
       - name: Upload frontend artifact
@@ -60,4 +62,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -f dockerfile -t diacono-frontend:ci .
+        run: docker build --build-arg VITE_GOOGLE_CLIENT_ID="${{ secrets.VITE_GOOGLE_CLIENT_ID }}" -f dockerfile -t diacono-frontend:ci .

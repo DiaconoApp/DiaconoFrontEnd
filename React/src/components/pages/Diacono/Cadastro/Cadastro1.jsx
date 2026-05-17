@@ -51,7 +51,7 @@ export function Cadastro1() {
     };
 
     useEffect(() => {
-        api.get('/register')
+        api.get('/api/v1/register')
             .then(response => setListaIgrejas(response.data))
             .catch(() => console.log('Erro ao listar igrejas'))
     }, [])

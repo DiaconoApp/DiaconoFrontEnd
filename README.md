@@ -15,7 +15,7 @@ Frontend web para autenticação, cadastro inicial e gestão operacional de uma 
 
 ## 🛠️ Tecnologias
 - React 19
-- Vite
+- Vite 
 - React Router DOM
 - Axios
 - JWT Decode

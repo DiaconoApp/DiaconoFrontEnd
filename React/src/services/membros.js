@@ -2,7 +2,7 @@ import api from "../provider/api";
 
 export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", status = "", fkMinisterio = "" }) => {
     try {
-        let url = `/membros?page=${pagina}&size=${tamanho}&sort=nome,asc`;
+        let url = `/api/v1/membros?page=${pagina}&size=${tamanho}&sort=nome,asc`;
 
         if (busca.trim()) {
             url += `&buscaGeral=${encodeURIComponent(busca.trim())}`;
@@ -24,8 +24,48 @@ export const buscarMembros = async ({ pagina = 0, tamanho = 10, busca = "", stat
     }
 };
 
+export const buscarTodosMembros = async ({ busca = "", status = "", fkMinisterio = "" } = {}) => {
+    try {
+        const tamanhoPagina = 100;
+        let pagina = 0;
+        let totalPages = 1;
+        let membros = [];
+
+        while (pagina < totalPages) {
+            const res = await buscarMembros({
+                pagina,
+                tamanho: tamanhoPagina,
+                busca,
+                status,
+                fkMinisterio,
+            });
+
+            const conteudo = Array.isArray(res?.content) ? res.content : [];
+            membros = [...membros, ...conteudo]
+            totalPages = res?.totalPages ?? (conteudo.length < tamanhoPagina ? pagina + 1 : pagina + 2);
+
+            if (conteudo.length < tamanhoPagina) {
+                break;
+            }
+
+            pagina += 1;
+        }
+
+        return membros;
+    } catch (err) {
+        console.error("Erro ao buscar todos os membros:", err);
+        return [];
+    }
+};
+
 export const cadastrarMembro = async (dados) => {
     try {
+        const ministeriosPayload = (dados.ministerios || [])
+            .filter((m) => m.idExternoMinisterio)
+            .map((m) => (
+                m.idExternoMinisterio
+            ));
+
         const payload = {
             fkIgreja: dados.fkIgreja,
             nome: dados.nome,
@@ -36,10 +76,10 @@ export const cadastrarMembro = async (dados) => {
             email: dados.email.trim(),
             celular: dados.celular,
             senha: dados.senha,
-            idExternoMinisterios: dados.idExternoMinisterios,
-            cargo: dados.cargo,
+            cargo: dados.cargo || ministeriosPayload[0]?.cargo || "MEMBRO",
             generoMembro: dados.generoMembro,
-            membroEnderecoDTO: {
+            idExternoMinisterios: ministeriosPayload,
+            enderecoMembroDTO: {
                 cep: dados.cep,
                 bairro: dados.bairro,
                 cidade: dados.cidade,
@@ -50,10 +90,33 @@ export const cadastrarMembro = async (dados) => {
             },
         };
 
-        const res = await api.post("/membros", payload);
-        return res.data;
+        // Primeiro, cadastrar o membro
+        const res = await api.post("/api/v1/membros", payload);
+        const membroCadastrado = res.data;
+
+        return membroCadastrado;
     } catch (err) {
         console.error("Erro ao cadastrar membro:", err);
+        throw err;
+    }
+};
+
+export const buscarMembroPorId = async (idExterno) => {
+    try {
+        const res = await api.get(`/api/v1/membros/${idExterno}`);
+        return res.data;
+    } catch (err) {
+        console.error("Erro ao buscar membro:", err);
+        throw err;
+    }
+};
+
+export const atualizarMembro = async (idExterno, dadosAlterados) => {
+    try {
+        const res = await api.patch(`/api/v1/membros/${idExterno}`, dadosAlterados);
+        return res.data;
+    } catch (err) {
+        console.error("Erro ao atualizar membro:", err);
         throw err;
     }
 };

@@ -24,7 +24,7 @@ const Benefits = () => {
   ];
 
   return (
-    <section id="beneficios" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-[#1e3a5f]" ref={ref}>
+    <section id="beneficios" className="py-16 sm:py-20 md:py-28 relative overflow-hidden bg-diacono-blue-400" ref={ref}>
       {/* Mouse-following light effect */}
       <div 
         className="hidden md:block absolute w-[600px] h-[600px] rounded-full blur-[100px] pointer-events-none transition-all duration-500 ease-out opacity-20 mix-blend-screen"

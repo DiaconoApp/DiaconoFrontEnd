@@ -1,151 +1,133 @@
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { getFaixaEtariaMembros, getGeneroMembros } from "../../../services/dashboards";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { useEffect, useState } from "react";
+import { getFaixaEtariaMembros, getGeneroMembros } from "../../../services/dashboards";
 
-const faixaEtaria = [
-  { name: "0–17 anos", value: 45 },
-  { name: "18–35 anos", value: 30 },
-  { name: "36–55 anos", value: 25 },
-];
-
-
-const coresFaixa = ["#B3DDB3", "#8BCF8B", "#5CAA5C", "#329932", "#007700"];
-const coresGenero = ["#B3DDB3", "#5CAA5C"];
+const coresFaixa = ["#0D5E7D", "#1B7F8F", "#2E9EA8", "#4CA77F", "#7BA85A"];
+const coresGenero = ["#0D5E7D", "#4CA77F"];
 
 export default function GraficoDistribuicaoMembros({ anoInicio, anoFim }) {
+  const [genero, setGenero] = useState([]);
+  const [faixaEtaria, setFaixaEtaria] = useState([]);
 
-      const [genero, setGenero] = useState([]);
-      const [faixaEtaria, setFaixaEtaria] = useState([]);
-
-      useEffect(() => {
-    async function carregarGenero() {
+  useEffect(() => {
+    async function carregar() {
       try {
-        const dados = await getGeneroMembros( anoInicio, anoFim );
+        const [dadosGenero, dadosFaixa] = await Promise.all([
+          getGeneroMembros(anoInicio, anoFim),
+          getFaixaEtariaMembros(anoInicio, anoFim),
+        ]);
 
-        // supondo que a API retorna assim:
-        // { feminino: 45, masculino: 55 }
-        const formatado = [
-          { name: "Feminino", value: dados.feminino },
-          { name: "Masculino", value: dados.masculino },
-        ];
+        setGenero([
+          { name: "Feminino", value: dadosGenero.feminino || 0 },
+          { name: "Masculino", value: dadosGenero.masculino || 0 },
+        ]);
 
-        setGenero(formatado);
+        setFaixaEtaria([
+          { name: "Crianças", value: dadosFaixa.criancas || 0 },
+          { name: "Adolescentes", value: dadosFaixa.adolescentes || 0 },
+          { name: "Jovens", value: dadosFaixa.jovens || 0 },
+          { name: "Adultos", value: dadosFaixa.adultos || 0 },
+          { name: "Idosos", value: dadosFaixa.idosos || 0 },
+        ]);
       } catch (e) {
-        console.error("Erro ao carregar gênero:", e);
+        console.error("Erro ao carregar distribuição:", e);
       }
     }
 
-    carregarGenero();
+    carregar();
   }, [anoInicio, anoFim]);
-
-   async function carregarFaixaEtaria() {
-    try {
-      const dados = await getFaixaEtariaMembros(anoInicio, anoFim);
-
-      // backend retorna:
-      // { criancas: 5, adolescentes: 0, jovens: 30, adultos: 65, idosos: 0 }
-
-      const formatado = [
-        { name: "Crianças", value: dados.criancas },
-        { name: "Adolescentes", value: dados.adolescentes },
-        { name: "Jovens", value: dados.jovens },
-        { name: "Adultos", value: dados.adultos },
-        { name: "Idosos", value: dados.idosos },
-      ];
-
-      setFaixaEtaria(formatado);
-    } catch (e) {
-      console.error("Erro ao carregar faixa etária:", e);
-    }
-  }
-
-   useEffect(() => {
-    carregarFaixaEtaria();
-  }, [anoInicio, anoFim]);
-
       
   return (
-    <div className="bg-white shadow p-6 rounded-xl w-full">
-      <h2 className="text-2xl font-bold mb-4">Distribuição dos Membros</h2>
+    <div className="rounded-xl border border-icf-primary-50 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex flex-col gap-1">
+        <h2 className="text-lg font-semibold text-icf-primary-400">Distribuição de membros</h2>
+        <p className="text-sm text-icf-primary-300">Distribuição por faixa etária e gênero</p>
+      </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        
-        {/* --- Faixa Etária --- */}
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col items-center">
-            <span className="font-medium ml-2.5 text-icf-primary-300">Faixa Etária</span>
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <div>
+          <p className="mb-3 text-sm font-medium text-icf-primary-300">Faixa etária</p>
+          <div className="flex items-center gap-4">
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Tooltip 
+                  formatter={(value, name) => [`${value}%`, name]}
+                  contentStyle={{ 
+                    backgroundColor: '#ffffff', 
+                    border: '2px solid #E5E7EB',
+                    borderRadius: '8px',
+                    color: '#1C1C1C',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}
+                />
+                <Pie
+                  data={faixaEtaria}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={95}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  {faixaEtaria.map((_, i) => (
+                    <Cell key={i} fill={coresFaixa[i % coresFaixa.length]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
 
-            <PieChart width={180} height={180}>
-              <Tooltip 
-                formatter={(value, name) => [`${value}%`, name]}
-              />
-              <Pie
-                data={faixaEtaria}
-                cx={90}
-                cy={90}
-                innerRadius={45}
-                outerRadius={75}
-                paddingAngle={2}
-                dataKey="value"
-              >
-                {coresFaixa.map((cor, i) => (
-                  <Cell key={i} fill={cor} />
-                ))}
-              </Pie>
-            </PieChart>
+            <ul className="hidden flex-col gap-2 text-sm text-icf-primary-300 md:flex">
+              {faixaEtaria.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: coresFaixa[i % coresFaixa.length] }} />
+                  {item.name} <span className="text-icf-primary-200">{item.value}%</span>
+                </li>
+              ))}
+            </ul>
           </div>
-
-          <ul className="flex flex-col justify-around gap-2 text-sm">
-            {faixaEtaria.map((item, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: coresFaixa[i] }}
-                ></span>
-                {item.name} <span className="ml-1 text-gray-500">{item.value}%</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        {/* --- Gênero --- */}
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col items-center">
-            <span className="font-medium ml-2.5 text-icf-primary-300">Gênero</span>
+        <div>
+          <p className="mb-3 text-sm font-medium text-icf-primary-300">Gênero</p>
+          <div className="flex items-center gap-4">
+            <ResponsiveContainer width="100%" height={260}>
+              <PieChart>
+                <Tooltip 
+                  formatter={(value, name) => [`${value}%`, name]}
+                  contentStyle={{ 
+                    backgroundColor: '#ffffff', 
+                    border: '2px solid #E5E7EB',
+                    borderRadius: '8px',
+                    color: '#1C1C1C',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}
+                />
+                <Pie
+                  data={genero}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={95}
+                  paddingAngle={3}
+                  dataKey="value"
+                >
+                  {genero.map((_, i) => (
+                    <Cell key={i} fill={coresGenero[i % coresGenero.length]} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
 
-            <PieChart width={180} height={180}>
-              <Tooltip 
-                formatter={(value, name) => [`${value}%`, name]}
-              />
-              <Pie
-                data={genero}
-                cx={90}
-                cy={90}
-                innerRadius={45}
-                outerRadius={75}
-                paddingAngle={2}
-                dataKey="value"
-              >
-                {coresGenero.map((cor, i) => (
-                  <Cell key={i} fill={cor} />
-                ))}
-              </Pie>
-            </PieChart>
+            <ul className="hidden flex-col gap-2 text-sm text-icf-primary-300 md:flex">
+              {genero.map((item, i) => (
+                <li key={item.name} className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: coresGenero[i % coresGenero.length] }} />
+                  {item.name} <span className="text-icf-primary-200">{Math.round(item.value)}%</span>
+                </li>
+              ))}
+            </ul>
           </div>
-
-          <ul className="flex flex-col gap-2 text-sm">
-            {genero.map((item, i) => (
-              <li key={i} className="flex items-center gap-2">
-                <span
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: coresGenero[i] }}
-                ></span>
-                {item.name} <span className="ml-1 text-gray-500">{Math.round(item.value)}%</span>
-              </li>
-            ))}
-          </ul>
         </div>
-
       </div>
     </div>
   );

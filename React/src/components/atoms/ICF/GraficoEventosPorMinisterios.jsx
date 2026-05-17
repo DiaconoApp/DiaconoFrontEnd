@@ -1,28 +1,24 @@
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  Cell
 } from "recharts";
-
-// const dados = [
-//   { nome: "Recepção", qtd: 30 },
-//   { nome: "Crianças", qtd: 45 },
-//   { nome: "Mídia", qtd: 70 },
-//   { nome: "Jovens", qtd: 120 },
-//   { nome: "Louvor", qtd: 110 },
-// ];
-
 import { useState, useEffect } from "react";
 import { getQtdEventosMinisterios } from "../../../services/dashboards";
 
-const cores = ["#C8F1C8", "#A4E3A6", "#7ED786", "#53C260", "#2E9E35"];
-
 export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
   const [dados, setDados] = useState([]);
+  const cores = ["#0D5E7D", "#0F7A99", "#1B7F8F", "#2E9EA8", "#3FB5A0", "#4CA77F", "#7BA85A", "#6FA391"];
+
+  const corPorNome = (nome) => {
+    const texto = String(nome ?? "");
+    const hash = texto.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return cores[hash % cores.length];
+  };
 
   useEffect(() => {
     async function carregar() {
@@ -45,18 +41,47 @@ export function GraficoEventosPorMinisterio({ anoInicio, anoFim }) {
   }, [anoInicio, anoFim]);
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 w-full">
-      <h2 className="text-xl font-semibold mb-4">Eventos por Ministério</h2>
+    <div className="rounded-xl border border-icf-primary-50 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex flex-col gap-1">
+        <h2 className="font-semibold text-icf-primary-400">Eventos por ministério</h2>
+        <p className="text-sm text-icf-primary-300">Volume de eventos por ministério no período selecionado</p>
+      </div>
 
-      <ResponsiveContainer width="100%" height="90%">
-        <BarChart data={dados} layout="vertical">
-          <XAxis type="number" />
-          <YAxis dataKey="nome" type="category" width={100} />
-          <Tooltip formatter={(v) => [`${v} eventos`, "Quantidade"]} />
+      <ResponsiveContainer width="100%" height={280}>
+        <BarChart 
+          data={dados} 
+          margin={{ top: 10, right: 10, bottom: 40, left: 0 }}
+        >
+          <XAxis 
+            dataKey="nome"
+            tick={{ fontSize: 11, fill: '#595959' }}
+            interval={0}
+            angle={-20}
+            textAnchor="end"
+            axisLine={false}
+            tickLine={false}
+          />
 
-          <Bar dataKey="qtd">
-            {dados.map((_, i) => (
-              <Cell key={i} fill={cores[i  % cores.length]} />
+          <YAxis 
+            allowDecimals={false} 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 11, fill: '#595959' }}
+          />
+
+          <Tooltip 
+            formatter={(v) => [`${v} eventos`, "Quantidade"]}
+            contentStyle={{ 
+              backgroundColor: '#ffffff', 
+              border: '1px solid #E5E7EB',
+              borderRadius: '8px',
+              color: '#1C1C1C'
+            }}
+          />
+
+          <Bar dataKey="qtd" radius={[4, 4, 0, 0]}>
+            {dados.map((entry, index) => (
+              <Cell key={`cell-${entry.nome}-${index}`} fill={corPorNome(entry.nome)} />
             ))}
           </Bar>
         </BarChart>

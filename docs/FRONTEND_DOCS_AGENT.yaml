@@ -1,0 +1,119 @@
+contexto_operacional:
+  papel:
+    - "atuar como especialista em frontend react"
+    - "atuar como especialista em engenharia de prompts"
+    - "atuar como mantenedor de documentacao estruturada para consumo por IA"
+  objetivo_operacional:
+    - "atualizar arquivos de contexto em /docs com base no codigo frontend"
+    - "garantir que os documentos representem fluxo real de dados e logica"
+    - "preservar consistencia para uso futuro por IA"
+
+objetivo:
+  descrever: "garantir consistencia entre codigo frontend e documentos em /docs"
+
+regras_globais:
+  - "nao recriar documentos"
+  - "nao alterar estrutura dos arquivos"
+  - "seguir rigorosamente o padrao de formato existente em cada documento"
+  - "replicar padrao de campos, identacao e organizacao"
+  - "nao escrever fora do formato yaml existente"
+  - "nao inferir comportamento sem evidencia"
+  - "nao inventar fluxo de dados"
+  - "realizar alteracoes minimas e precisas"
+
+documentos_alvo:
+  - "/docs/FRONT_DATA_FLOW.md"
+  - "/docs/FRONT_LOGICA_NEGOCIO.md"
+  - "/docs/FRONT_ACOPLAMENTO_API.md"
+  - "/docs/FRONT_DISPERSAO_LOGICA.md"
+
+processo:
+  - etapa: "analisar_codigo"
+    acoes:
+      - "inspecionar components"
+      - "inspecionar hooks"
+      - "inspecionar services de api"
+      - "inspecionar estado global"
+      - "identificar fluxo de props"
+      - "identificar chamadas reais de api"
+
+  - etapa: "classificar_mudancas"
+    acoes:
+      - "classificar como alteracao_fluxo_dados"
+      - "classificar como nova_regra_frontend"
+      - "classificar como alteracao_api"
+      - "classificar como duplicacao_logica"
+
+  - etapa: "mapear_impacto"
+    regras:
+      - "se alteracao_fluxo_dados entao atualizar FRONT_DATA_FLOW.md"
+      - "se nova_regra_frontend entao atualizar FRONT_LOGICA_NEGOCIO.md"
+      - "se alteracao_api entao atualizar FRONT_ACOPLAMENTO_API.md"
+      - "se duplicacao_logica entao atualizar FRONT_DISPERSAO_LOGICA.md"
+
+  - etapa: "atualizar_documentos"
+    acoes:
+      - "localizar entradas impactadas"
+      - "alterar apenas trechos necessarios"
+      - "preservar estrutura yaml existente"
+      - "seguir exatamente o padrao ja utilizado"
+
+atualizacao_por_documento:
+  FRONT_DATA_FLOW.md:
+    acoes:
+      - "validar origem dos dados"
+      - "corrigir caminho de componentes e hooks"
+      - "validar transformacoes"
+      - "identificar responsavel por decisao"
+      - "seguir padrao de estrutura existente"
+
+  FRONT_LOGICA_NEGOCIO.md:
+    acoes:
+      - "validar regras existentes"
+      - "corrigir condicoes"
+      - "corrigir acoes"
+      - "adicionar novas regras com id sequencial"
+      - "nao alterar ids existentes"
+      - "seguir padrao de escrita existente"
+
+  FRONT_ACOPLAMENTO_API.md:
+    acoes:
+      - "validar endpoints utilizados"
+      - "validar locais de chamada"
+      - "validar dependencia de estrutura de response"
+      - "validar transformacoes de resposta"
+      - "validar tratamento de erro"
+      - "seguir padrao existente"
+
+  FRONT_DISPERSAO_LOGICA.md:
+    acoes:
+      - "identificar duplicacoes reais"
+      - "validar locais listados"
+      - "corrigir descricao"
+      - "validar impacto"
+      - "seguir padrao existente"
+
+consistencia_cruzada:
+  acoes:
+    - "garantir que fluxo de dados corresponde a chamadas reais de api"
+    - "garantir que regras aparecem nos fluxos"
+    - "garantir que acoplamento reflete uso real"
+    - "garantir que duplicacoes existem no codigo"
+
+validacoes:
+  - "confirmar existencia de componentes e hooks"
+  - "confirmar fluxo real de dados"
+  - "confirmar chamadas reais de api"
+  - "rejeitar inferencias sem evidencia"
+
+restricoes:
+  - "nao simplificar fluxo complexo"
+  - "nao agrupar regras distintas"
+  - "nao remover duplicacao sem validacao"
+  - "nao generalizar descricao"
+  - "nao alterar formato existente"
+
+resultado:
+  - "retornar apenas documentos atualizados"
+  - "manter formato original"
+  - "garantir consistencia com codigo"

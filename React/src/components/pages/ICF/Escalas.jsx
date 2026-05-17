@@ -1,49 +1,108 @@
-import { Menu } from "../../templates/ICF/Menu";
-import { useState, useEffect } from "react";
-import { TituloPagina } from "../../atoms/ICF/TituloPagina";
-import { InputBuscar } from "../../atoms/ICF/InputBuscar";
-import { SelectIcf } from "../../atoms/ICF/SelectIcf";
-import { buscarMinisterios } from "../../../services/ministerios";
-import { buscarEscalas } from "../../../services/escalas";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { buscarEscalas, buscarEscalasGoverno, buscarEscalasLider, buscarEscalasMembro } from "../../../services/escalas";
+import { buscarTodosMinisterios, buscarMinisteriosQueLidero, buscarMinisteriosMembro } from "../../../services/ministerios";
 import { CardEscala } from "../../molecules/ICF/CardEscala";
+import { ModalEscalarMinisterios } from "../../molecules/ICF/ModalEscalarMinisterios";
+import { ModalGerenciarEscala } from "../../molecules/ICF/ModalGerenciarEscala";
 import { formatarDataHora } from "../../../utils/Utils";
 import { ModalVisualizarEvento } from "../../molecules/ICF/ModalVisualizarEvento";
-import api from "../../../provider/api";
+import { ChevronLeft, ChevronRight, Users } from "lucide-react";
+import { PageHeader } from "../../atoms/ICF/PageHeader";
+import { FilterBar } from "../../atoms/ICF/FilterBar";
+import { StatusToggle } from "../../atoms/ICF/StatusToggle";
+import { useNavigate } from "react-router-dom";
+import { buscarEventoPorId } from "../../../services/eventos";
 
 export function Escalas() {
-    const [menuAberto, setMenuAberto] = useState(true);
-    var espacamento = menuAberto ? "ml-70" : "ml-24.5";
+    const navigate = useNavigate();
+    const cargo = localStorage.getItem("cargo");
+    console.log("Cargo do usuário:", cargo);
+    const isGoverno = cargo === "GOVERNO";
+    console.log("isGoverno:", isGoverno);
+    const isLider = cargo === "LIDER_MINISTERIO";
+    const isMembro = !isGoverno && !isLider;
+
     const [fkMinisterio, setFkMinisterio] = useState("");
+    const [buscaTexto, setBuscaTexto] = useState("");
+    const [statusFiltro, setStatusFiltro] = useState("todos");
 
     const [escalas, setEscalas] = useState([]);
+
+    const usaNovoFormatoEscalas = isGoverno || isLider;
 
     const [currentDate, setCurrentDate] = useState(new Date());
     const renderTitle = (date) =>
         date.toLocaleString("pt-BR", { month: "long", year: "numeric" });
     const [currentTitle, setCurrentTitle] = useState(renderTitle(currentDate));
 
-    const carregarEscalas = async (mes, ano) => {
-        const res = await buscarEscalas({ mes, ano, idMinisterio: fkMinisterio });
-        setEscalas(res?.content || []);
-    };
+    const carregarEscalas = useCallback(async (mes, ano) => {
+        try {
+            let escalasData = [];
 
+            if (isGoverno) {
+                // Visão Governo: usar novo endpoint
+                escalasData = await buscarEscalasGoverno({
+                    mes,
+                    ano,
+                    status: statusFiltro === "todos" ? "" : statusFiltro.toUpperCase(),
+                    ministerioId: fkMinisterio,
+                    nomeEvento: buscaTexto
+                });
+                // API retorna array diretamente
+                setEscalas(Array.isArray(escalasData) ? escalasData : []);
+            } else if (isLider) {
+                // Visão Líder: usar endpoint de líder seguindo estrutura da visão governo
+                escalasData = await buscarEscalasLider({
+                    mes,
+                    ano,
+                    status: statusFiltro === "todos" ? "" : statusFiltro.toUpperCase(),
+                    ministerioId: fkMinisterio,
+                    nomeEvento: buscaTexto
+                });
+                setEscalas(Array.isArray(escalasData) ? escalasData : []);
+            } else {
+                // Visão Membro: usar endpoint dedicado
+                escalasData = await buscarEscalasMembro({
+                    mes,
+                    ano,
+                    status: statusFiltro === "todos" ? "" : statusFiltro.toUpperCase(),
+                    ministerioId: fkMinisterio,
+                    nomeEvento: buscaTexto
+                });
+                setEscalas(Array.isArray(escalasData) ? escalasData : []);
+            }
+        } catch (err) {
+            console.error("Erro ao carregar escalas:", err);
+            setEscalas([]);
+        }
+    }, [isGoverno, isLider, statusFiltro, fkMinisterio, buscaTexto]);
+
+    const timeoutRef = useRef(null);
+
+    // Carrega escalas com debounce para evitar múltiplas requisições
     useEffect(() => {
-        carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
-    }, []);
+        // Cancelar requisição anterior se existir
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
 
-    const handleToday = () => {
-        const hoje = new Date();
-        setCurrentDate(hoje);
-        setCurrentTitle(renderTitle(hoje));
-        carregarEscalas(hoje.getMonth() + 1, hoje.getFullYear());
-    };
+        // Aguardar um pouco para evitar múltiplas requisições em rápida sucessão
+        timeoutRef.current = setTimeout(() => {
+            carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
+        }, 300);
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [currentDate, fkMinisterio, statusFiltro, buscaTexto, cargo, carregarEscalas]);
 
     const handlePrev = () => {
         const prev = new Date(currentDate);
         prev.setMonth(prev.getMonth() - 1);
         setCurrentDate(prev);
         setCurrentTitle(renderTitle(prev));
-        carregarEscalas(prev.getMonth() + 1, prev.getFullYear());
     };
 
     const handleNext = () => {
@@ -51,121 +110,330 @@ export function Escalas() {
         next.setMonth(next.getMonth() + 1);
         setCurrentDate(next);
         setCurrentTitle(renderTitle(next));
-        carregarEscalas(next.getMonth() + 1, next.getFullYear());
     };
 
-    // Listar os ministérios no select
+    // Carrega os ministérios de acordo com o cargo
     const [options, setOptions] = useState([]);
     useEffect(() => {
-        api.get('/api/v1/ministerios/lider-ministerio')
-            .then((res) => setOptions(res.content || []));
-    }, []);
+        const carregarMinisterios = async () => {
+            try {
+                if (isGoverno) {
+                    // Visão Governo: todos os ministérios
+                    const data = await buscarTodosMinisterios();
+                    setOptions(Array.isArray(data) ? data : data?.content || []);
+                } else if (isLider) {
+                    // Visão Lider: ministérios que ele lidera
+                    const data = await buscarMinisteriosQueLidero();
+                    setOptions(Array.isArray(data) ? data : data?.content || []);
+                } else {
+                    // Visão Membro: ministérios que o membro pertence
+                    const data = await buscarMinisteriosMembro();
+                    setOptions(Array.isArray(data) ? data : []);
+                }
+            } catch (err) {
+                console.error("Erro ao buscar ministérios para filtro:", err);
+                setOptions([]);
+            }
+        };
+
+        carregarMinisterios();
+    }, [cargo]);
 
     const [eventoSelecionado, setEventoSelecionado] = useState(null);
-    const handleVerDetalhes = (escala) => {
-        setEventoSelecionado({
-            titulo: escala.nome,
-            organizador: escala.organizador,
-            publicoAlvo: escala.publicoAlvo,
-            dataInicio: escala.dataHoraInicio,
-            horaInicio: escala.horaInicio,
-            horaFim: escala.horaFim,
-            custo: escala.custo,
-            local: escala.local,
-            descricao: escala.descricao,
-        }); 
+    const [eventoGerenciando, setEventoGerenciando] = useState(null);
+    const [escalaGerenciando, setEscalaGerenciando] = useState(null);
+
+    // Função para mapear dados do novo formato (visão governo)
+    const mapearEscalaGoverno = (escala) => {
+        // O payload do novo endpoint é diferente, então precisamos mapear corretamente
+        return {
+            idExterno: escala.idExternoEvento,
+            nome: escala.nomeReuniao,
+            dataHoraInicio: escala.dataHoraInicio,
+            dataHoraFim: escala.dataHoraFim,
+            totalEventoMinisterios: escala.ministeriosEscalados || 0,
+            totalEventosMinisterioConfirmados: escala.ministeriosEscaladosConfirmados || 0,
+            status: escala.status
+        };
     };
+
+    const mapearEscalaLider = (escala) => {
+        return {
+            idExterno: escala.idEvento,
+            idExternoEscalaEvento: escala.idExternoEscalaEvento,
+            nome: escala.nomeReuniao,
+            nomeMinisterio: escala.nomeMinisterio,
+            dataHoraInicio: escala.dataHoraInicio,
+            dataHoraFim: escala.dataHoraFim,
+            totalEventoMinisterios: escala.membrosEscalados || 0,
+            totalEventosMinisterioConfirmados: escala.membrosEscaladosConfirmados || 0,
+            status: escala.status,
+        };
+    };
+
+    const mapearEscalaMembro = (escala) => {
+        const status = escala.status || "PENDENTE";
+        const confirmado = String(status).toUpperCase() === "CONFIRMADO" ? 1 : 0;
+
+        return {
+            idExterno: escala.idEvento || escala.idExternoEvento || "",
+            idExternoEscalaEvento: escala.idExternoEscalaMinisterio,
+            nome: escala.nomeReuniao,
+            nomeMinisterio: escala.nomeMinisterio,
+            dataHoraInicio: escala.dataHoraInicio,
+            dataHoraFim: escala.dataHoraFim,
+            totalEventoMinisterios: 1,
+            totalEventosMinisterioConfirmados: confirmado,
+            status,
+        };
+    };
+
+    const formatarEnderecoEvento = (enderecoEvento) => {
+        if (!enderecoEvento) return "N/A";
+
+        const normalizarTextoEndereco = (texto) => {
+            const valor = texto?.trim();
+            if (!valor) return "";
+
+            return valor
+                .toLocaleLowerCase("pt-BR")
+                .replace(/(^|[\s(\-])([\p{L}])/gu, (_, separador, letra) => `${separador}${letra.toLocaleUpperCase("pt-BR")}`);
+        };
+
+        const rua = normalizarTextoEndereco(enderecoEvento?.rua);
+        const numero = enderecoEvento?.numero?.trim();
+        const complemento = normalizarTextoEndereco(enderecoEvento?.complemento);
+        const bairro = normalizarTextoEndereco(enderecoEvento?.bairro);
+        const cidade = normalizarTextoEndereco(enderecoEvento?.cidade);
+
+        const partes = [];
+
+        if (rua) {
+            partes.push(rua);
+        }
+
+        if (numero) {
+            partes.push(`${numero}`);
+        }
+
+        if (complemento) {
+            partes.push(complemento);
+        }
+
+        if (bairro) {
+            partes.push(bairro);
+        }
+
+        if (cidade) {
+            partes.push(cidade);
+        }
+
+        if (partes.length > 0) {
+            return partes.join(", ");
+        }
+
+        return normalizarTextoEndereco(enderecoEvento?.apelido) || "N/A";
+    };
+
+    const handleVerDetalhes = async (escala) => {
+        const idEvento = escala.idExterno || escala.idExternoEvento || escala.idEvento;
+        if (!idEvento) return;
+
+        try {
+            const eventoCompleto = await buscarEventoPorId(idEvento);
+            if (!eventoCompleto) return;
+
+            const dataInicio = eventoCompleto.dataHoraInicio;
+            const dataFim = eventoCompleto.dataHoraFim;
+
+            setEventoSelecionado({
+                id: idEvento,
+                titulo: eventoCompleto.nome || escala.nome || escala.nomeReuniao,
+                organizador: eventoCompleto?.organizador?.nome || "N/A",
+                publicoAlvo: eventoCompleto.publicoAlvo || "N/A",
+                dataInicio,
+                dataFim,
+                horaInicio: dataInicio
+                    ? new Date(dataInicio).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+                    : "00:00",
+                horaFim: dataFim
+                    ? new Date(dataFim).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+                    : "00:00",
+                custo: eventoCompleto?.custo ?? 0,
+                local: formatarEnderecoEvento(eventoCompleto?.enderecoEvento),
+                descricao: eventoCompleto.descricao || "N/A",
+                ministerios: eventoCompleto?.ministerios || [],
+            });
+        } catch (err) {
+            console.error("Erro ao carregar detalhes do evento:", err);
+        }
+    };
+
+    const handleEditarEvento = (idEvento) => {
+        if (!idEvento) return;
+        setEventoSelecionado(null);
+        navigate(`/eventos/editar/${idEvento}`);
+    };
+
+    const handleGerenciarMinisterios = (escala) => {
+        console.log("handleGerenciarMinisterios chamado com escala:", escala);
+        console.log("idExterno:", escala.idExterno);
+        setEventoGerenciando({
+            idExterno: escala.idExterno,
+            nome: escala.nome || escala.nomeReuniao,
+        });
+        console.log("eventoGerenciando setado:", { idExterno: escala.idExterno, nome: escala.nome || escala.nomeReuniao });
+    };
+
+    const handleGerenciarEscala = (escala) => {
+        setEscalaGerenciando({
+            idExterno: escala.idExterno,
+            idExternoEscalaEvento: escala.idExternoEscalaEvento,
+            nome: escala.nome || escala.nomeReuniao,
+            fkMinisterio: fkMinisterio,
+        });
+    };
+    
     const handleCloseModal = () => setEventoSelecionado(null);
-    const handleEditEvento = () => {
-        console.log("Editar evento:", eventoSelecionado);
-    };
+    const handleCloseGerenciarMinisterios = () => setEventoGerenciando(null);
+
+    // Mapeia escalas para o formato esperado
+    const escalasMapeadas = escalas.map((escala) => {
+        if (isGoverno) return mapearEscalaGoverno(escala);
+        if (isLider) return mapearEscalaLider(escala);
+        return mapearEscalaMembro(escala);
+    });
 
     return (
-        <div className='bg-[#F6F7F9] flex flex-col h-screen w-full pb-6'>
-            <Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />
-            <div className={`grid grid-cols-3 gap-5  mt-15 p-6 transition-all duration-300
-            ${espacamento}`}>
-                <TituloPagina titulo="Escalas" descricao="Gerencie todas as escalas dos ministérios" />
-            </div>
-            <div className={`${espacamento} px-6`}>
-                <div className="bg-white p-4 flex flex-col gap-5">
+        <div className="flex flex-col gap-6">
+            {/* Header */}
+            <PageHeader
+                titulo="Escalas"
+                descricao="Gerencie todas as escalas dos ministérios"
+            />
 
-                    {/* ---------- BARRA SUPERIOR ---------- */}
-                    <div className="flex items-center justify-between mb-2.5">
-                        {/* Navegação e título */}
-                        <div className="flex items-center gap-5 ml-2">
-                            <button
-                                onClick={handleToday}
-                                className="px-3 py-1 rounded text-sm text-icf-primary-300 hover:bg-icf-primary-100"
-                            >
-                                Hoje
-                            </button>
-
-                            <button onClick={handlePrev} className="px-2 py-1 rounded w-6 h-6">
-                                <img src="/seta.png" alt="Anterior" />
-                            </button>
-
-                            <button
-                                onClick={handleNext}
-                                className="px-2 py-1 rounded rotate-180 w-6 h-6"
-                            >
-                                <img src="/seta.png" alt="Próximo" />
-                            </button>
-
-                            <div className="ml-5 font-bold text-2xl text-icf-primary-300 capitalize">
-                                {currentTitle}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-5">
-                        <div className="w-[33%]">
-                            <InputBuscar placeholder="Buscar por nome do evento" />
-                        </div>
-                        <div className="w-[33%]">
-                            <select className="text-icf-primary-400 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 p-4 focus:border-icf-primary-200 focus:border-3 w-full text-[14px]">
-                                <option value="">Todos os status</option>
-                                <option value="concluidas">Concluídas</option>
-                                <option value="pendentes">Pendentes</option>
-                            </select>
-                        </div>
-                        <div className="w-[33%]">
-                            <SelectIcf
-                                opt1={<option value="">Todos os ministérios</option>}
-                                options={options}
-                                value={fkMinisterio}
-                                onChange={(val) => setFkMinisterio(val)}
+            {/* Content Card */}
+            <div className="bg-white rounded-xl shadow-sm">
+                {/* Filters */}
+                <div className="p-6 border-b border-icf-primary-50">
+                    <FilterBar
+                        searchPlaceholder="Buscar por nome do evento..."
+                        searchValue={buscaTexto}
+                        onSearchChange={setBuscaTexto}
+                        showStatus={false}
+                        selectOptions={!isMembro ? options : options}
+                        selectValue={fkMinisterio}
+                        onSelectChange={setFkMinisterio}
+                        selectPlaceholder={"Todos os ministérios"}
+                    >
+                        {/* Status Toggle Buttons - apenas para visão Governo e Líder */}
+                        {usaNovoFormatoEscalas && (
+                            <StatusToggle
+                                value={statusFiltro}
+                                onChange={setStatusFiltro}
+                                options={[
+                                    { value: "todos", label: "Todos" },
+                                    { value: "pendente", label: "Pendentes" },
+                                    { value: "confirmado", label: "Confirmados" },
+                                    { value: "concluido", label: "Concluídos" },
+                                ]}
                             />
-                        </div>
-                    </div>
-                    <div className="flex justify-between flex-wrap gap-5">
-                        {escalas.map((escala) => (
-                            <CardEscala
-                                key={escala.idExterno}
-                                nomeEvento={escala.nome}
-                                status={"Pendente"}
-                                dataHoraInicio={formatarDataHora(escala.dataHoraInicio)}
-                                dataHoraFim={formatarDataHora(escala.dataHoraFim)}
-                                ministeriosConfirmados={escala.totalEventosMinisterioConfirmados}
-                                ministeriosEscalados={escala.totalEventoMinisterios}
-                                className={`${escala.status === "Pendente"
-                                    ? "bg-[#F2AB53]"
-                                    : escala.status === "Concluída"
-                                        ? "bg-[#1ABD8C]"
-                                        : "bg-gray-300"
-                                    } text-icf-primary-50 p-1 rounded-2xl text-sm`}
-                                onVerDetalhes={() => handleVerDetalhes(escala)}
+                        )}
+                    </FilterBar>
+                </div>
 
-                            />
-                        ))}
-                    </div>
+                {/* Navigation */}
+                <div className="px-6 py-4 border-b border-icf-primary-50 flex items-center gap-4">
+                    <button
+                        onClick={handlePrev}
+                        className="p-2 rounded-lg border border-icf-primary-100 hover:bg-icf-primary-50 transition-colors"
+                    >
+                        <ChevronLeft className="w-4 h-4 text-icf-primary-300" />
+                    </button>
+                    <button
+                        onClick={handleNext}
+                        className="p-2 rounded-lg border border-icf-primary-100 hover:bg-icf-primary-50 transition-colors"
+                    >
+                        <ChevronRight className="w-4 h-4 text-icf-primary-300" />
+                    </button>
+                    <span className="font-semibold text-lg text-icf-primary-400 capitalize">
+                        {currentTitle}
+                    </span>
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                    {escalasMapeadas.length === 0 ? (
+                        <div className="py-12 flex flex-col items-center justify-center text-icf-primary-200">
+                            <Users className="w-12 h-12 mb-4" />
+                            <p className="text-sm">Nenhuma escala encontrada para este mês</p>
+                        </div>
+                    ) : (
+                        <div className="grid w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-fr">
+                            {escalasMapeadas.map((escala) => (
+                                <CardEscala
+                                    key={`${escala.idExternoEscalaEvento || escala.idExterno}-${escala.nome || escala.dataHoraInicio}`}
+                                    className="w-full min-w-0"
+                                    nomeEvento={escala.nome || escala.nomeReuniao}
+                                    nomeMinisterio={(isLider || !isGoverno) ? escala.nomeMinisterio : undefined}
+                                    isGoverno={isGoverno}
+                                    exibirResumoConfirmacao={!isMembro}
+                                    exibirBotaoGerenciar={!isMembro}
+                                    status={escala.status || "PENDENTE"}
+                                    dataHoraInicio={formatarDataHora(escala.dataHoraInicio)}
+                                    dataHoraFim={formatarDataHora(escala.dataHoraFim)}
+                                    ministeriosConfirmados={escala.totalEventosMinisterioConfirmados}
+                                    ministeriosEscalados={escala.totalEventoMinisterios}
+                                    onVerDetalhes={() => handleVerDetalhes(escala)}
+                                    onGerenciarMinisterios={
+                                        isGoverno
+                                            ? () => handleGerenciarMinisterios(escala)
+                                            : isLider
+                                                ? () => handleGerenciarEscala(escala)
+                                                : undefined
+                                    }
+                                    eventoId={escala.idExterno}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
+            
+            {/* Modal */}
             {eventoSelecionado && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black/40 bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
                     <ModalVisualizarEvento
                         evento={eventoSelecionado}
                         onClose={handleCloseModal}
-                        onEdit={handleEditEvento}
+                        onEdit={() => handleEditarEvento(eventoSelecionado.id)}
+                    />
+                </div>
+            )}
+
+            {/* Modal Escalar Ministérios */}
+            {eventoGerenciando && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+                    <ModalEscalarMinisterios
+                        eventoId={eventoGerenciando.idExterno}
+                        onClose={handleCloseGerenciarMinisterios}
+                        onConfirm={() => {
+                            // Recarregar escalas após confirmar
+                            carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
+                        }}
+                    />
+                </div>
+            )}
+
+            {escalaGerenciando && isLider && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
+                    <ModalGerenciarEscala
+                        idExternoEscalaEvento={escalaGerenciando.idExternoEscalaEvento}
+                        onClose={() => setEscalaGerenciando(null)}
+                        onConfirm={() => {
+                            setEscalaGerenciando(null);
+                            carregarEscalas(currentDate.getMonth() + 1, currentDate.getFullYear());
+                        }}
                     />
                 </div>
             )}

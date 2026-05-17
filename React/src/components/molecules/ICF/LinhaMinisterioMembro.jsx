@@ -1,18 +1,34 @@
+import { useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { removerMembroMinisterio } from "../../../services/ministerios";
+import { AlertModal } from "../../ui/AlertModal";
 
 export function LinhaMinisterioMembro({ idMembro, idMinisterio, nome, email, celular, dtNascimento, cargo, onRemovido }) {
+    const [modal, setModal] = useState(null);
+    
     const handleDelete = async () => {
         try {
             await removerMembroMinisterio({ idMembro, idMinisterio });
-            alert(`Membro ${nome} removido com sucesso!`);
-            if (onRemovido) onRemovido(); // avisa o pai para recarregar
+            setModal({
+                type: "success",
+                title: "Sucesso",
+                message: `Membro ${nome} removido com sucesso!`,
+                autoClose: 2000
+            });
+            setTimeout(() => {
+                if (onRemovido) onRemovido();
+            }, 2000);
         } catch (err) {
-            alert("Erro ao remover membro");
+            setModal({
+                type: "error",
+                title: "Erro",
+                message: "Erro ao remover membro"
+            });
         }
     };
 
     return (
+        <>
         <li className="grid grid-cols-5 bg-icf-primary-50 text-sm text-icf-primary-400 p-4 items-center">
             <span className="flex flex-wrap">{nome}</span>
             <span className="flex flex-wrap">{email}</span>
@@ -27,5 +43,7 @@ export function LinhaMinisterioMembro({ idMembro, idMinisterio, nome, email, cel
                 />
             </div>
         </li>
+        {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
+        </>
     );
 }

@@ -1,11 +1,11 @@
 import axios from "axios";
 
-let baseURL;
-if (import.meta.env.VITE_API_IP === undefined || import.meta.env.VITE_API_PORT === undefined) {
-  baseURL = "/api";
-} else {
-  baseURL = `http://${import.meta.env.VITE_API_IP}:${import.meta.env.VITE_API_PORT}`;
-}
+let baseURL = "";
+// if (import.meta.env.VITE_API_IP === undefined || import.meta.env.VITE_API_PORT === undefined) {
+//   baseURL = "/api";
+// } else {
+//   baseURL = `http://${import.meta.env.VITE_API_IP}:${import.meta.env.VITE_API_PORT}`;
+// }
 
 const api = axios.create({ baseURL });
 

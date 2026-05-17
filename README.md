@@ -31,9 +31,14 @@ Dependências principais:
 - **Arquivo**: `.github/workflows/ci.yml`
 
 ### Continuous Deployment (CD)
-- **Trigger**: Criação de tags (`v*`)
-- **O que executa**: Build Docker e Push para GHCR
+- **Trigger**: Criação de tags (`v*`) ou execução manual
+- **O que executa**: Build do frontend, empacotamento em imagem Docker e push para GHCR
 - **Arquivo**: `.github/workflows/cd.yml`
+
+### Como o CD funciona
+- O workflow usa o `Dockerfile` na raiz do repositório.
+- A imagem final serve a aplicação Vite via `nginx` usando o `nginx.conf` do projeto.
+- O repositório envia a imagem para `ghcr.io/<owner>/diacono-frontend`.
 
 ### Tags e Deploy Docker
 
@@ -48,5 +53,8 @@ git push origin v1.0.0  # Push da tag para disparar CD
 docker build -t diacono-frontend:latest .
 docker run -p 80:80 diacono-frontend:latest
 ```
+
+#### Observação sobre Docker Hub
+Se a meta for publicar no Docker Hub em vez de GHCR, o workflow precisa trocar o registry e usar secrets do Docker Hub (`DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN`).
 
 ## Como executar (em desenvolvimento...):

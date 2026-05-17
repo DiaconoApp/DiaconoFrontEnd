@@ -63,7 +63,7 @@ export function FormsCadastro3() {
             return;
         }
 
-        api.post("/register", dadosCadastro)
+        api.post("/api/v1/register", dadosCadastro)
             .then(() => {
                 setModal({
                     type: "success",

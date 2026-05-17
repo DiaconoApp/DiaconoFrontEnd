@@ -40,6 +40,8 @@ jobs:
         # run: npm run lint
 
       - name: Build
+        env:
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
         run: npm run build
 
       - name: Upload build artifact
@@ -67,6 +69,8 @@ jobs:
           context: .
           file: Dockerfile
           push: true
+          build-args: |
+            VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPOSITORY }}:${{ steps.vars.outputs.sha_short }}

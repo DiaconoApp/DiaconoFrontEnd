@@ -2,7 +2,7 @@ import api from "../provider/api";
 
 export async function buscarEventos(mes, ano) {
   try {
-    const res = await api.get('api/v1/eventos', {
+    const res = await api.get('/api/v1/eventos', {
       params: { mes, ano }
     });
     console.log(res.data);

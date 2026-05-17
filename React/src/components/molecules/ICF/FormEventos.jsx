@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { X, Save, Trash2 } from "lucide-react";
 
 import { ModalExclusao } from "./ModalExclusao";
 import { ModalExclusaoRecorrencia } from "./ModalExclusaoRecorrencia";
 import { ModalLocal1 } from "./ModalLocal1";
 import { ModalRecorrente } from "./ModalRecorrente";
+import { AlertModal } from "../../ui/AlertModal";
 
+import { PageHeader } from "../../atoms/ICF/PageHeader";
+import { Button } from "@/components/ui/button";
 import { transformationName } from "../../../utils/Utils";
 import {
   buscarEventoPorId,
@@ -40,6 +44,7 @@ export function FormEventos() {
   const [isModalRecorrencia, setShowRecorrente] = useState(false);
   const [modalLocalAberto, setModalLocalAberto] = useState(false);
   const [dropdownAberto, setDropdownAberto] = useState(false);
+  const [modal, setModal] = useState(null);
 
   // Form / dados
   const [formData, setFormData] = useState({
@@ -108,6 +113,9 @@ export function FormEventos() {
 
     buscarEventoPorId(idEvento).then(evento => {
       if (!evento) return;
+
+      // Em edição, usar o nome do organizador retornado pelo endpoint do evento
+      setNome(evento?.organizador?.nome || localStorage.getItem("nome") || "");
 
       setFormData({
         titulo: evento.nome,
@@ -180,15 +188,26 @@ export function FormEventos() {
     try {
       await deletarEventoUnico(idEvento);
     } catch (error) {
-      alert("Erro ao excluir evento CAIU AQUI");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao excluir evento CAIU AQUI"
+      });
       return;
     }
 
-    alert("Evento excluído com sucesso!");
+    setModal({
+      type: "success",
+      title: "Sucesso!",
+      message: "Evento excluído com sucesso!",
+      autoClose: 2000
+    });
     setIsModalExcluirOpen(false);
-    navigate("/eventos");
-    // atualizarCalendario() -> função externa usada em outras partes da app
-    if (typeof atualizarCalendario === "function") atualizarCalendario();
+    setTimeout(() => {
+      navigate("/eventos");
+      // atualizarCalendario() -> função externa usada em outras partes da app
+      if (typeof atualizarCalendario === "function") atualizarCalendario();
+    }, 2000);
   }
 
   // Confirmação de exclusão quando há recorrência (unico | multiplos)
@@ -200,14 +219,25 @@ export function FormEventos() {
         await deletarEventoMultiplos(idEvento);
       }
     } catch (error) {
-      alert("Erro ao excluir evento");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao excluir evento"
+      });
       return;
     }
 
-    alert("Evento excluído!");
+    setModal({
+      type: "success",
+      title: "Sucesso!",
+      message: "Evento excluído!",
+      autoClose: 2000
+    });
     setIsModalExcluirRecorrenciaOpen(false);
-    navigate("/eventos");
-    if (typeof atualizarCalendario === "function") atualizarCalendario();
+    setTimeout(() => {
+      navigate("/eventos");
+      if (typeof atualizarCalendario === "function") atualizarCalendario();
+    }, 2000);
   }
 
   // Validação simples antes de salvar
@@ -222,7 +252,14 @@ export function FormEventos() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const erro = validarFormulario();
-    if (erro) return alert(erro);
+    if (erro) {
+      setModal({
+        type: "warning",
+        title: "Campos obrigatórios",
+        message: erro
+      });
+      return;
+    }
 
     const eventoPayload = {
       nome: formData.titulo,
@@ -253,15 +290,31 @@ export function FormEventos() {
     try {
       if (modoEdicao) {
         await editarEvento(idEvento, eventoPayload);
-        alert("Evento atualizado com sucesso!");
+        setModal({
+          type: "success",
+          title: "Sucesso!",
+          message: "Evento atualizado com sucesso!",
+          autoClose: 2000
+        });
       } else {
         await criarEvento(eventoPayload);
-        alert("Evento criado com sucesso!");
+        setModal({
+          type: "success",
+          title: "Sucesso!",
+          message: "Evento criado com sucesso!",
+          autoClose: 2000
+        });
       }
-      navigate("/eventos");
+      setTimeout(() => {
+        navigate("/eventos");
+      }, 2000);
     } catch (error) {
       console.error("Erro ao salvar evento:", error);
-      alert("Erro ao salvar evento. Tente novamente.");
+      setModal({
+        type: "error",
+        title: "Erro",
+        message: "Erro ao salvar evento. Tente novamente."
+      });
     }
   };
 
@@ -269,49 +322,82 @@ export function FormEventos() {
   // JSX (formulário dividido em blocos, preservei classes/tailwind)
   // -----------------------
   return (
-    <div className="flex w-full">
-      <div className="bg-[#F6F7F9] flex w-full h-full p-2 transition-all duration-300">
-        <div className="bg-white rounded-l-lg p-6 col-span-3 w-full">
-          <h2 className="text-2xl font-bold tracking-default mb-4">
-            {modoEdicao ? "Editar Evento" : "Adicionar Evento"}
-          </h2>
+    <div className="flex flex-col gap-6">
+      {/* Header */}
+      <PageHeader
+        titulo={modoEdicao ? "Editar Evento" : "Novo Evento"}
+        descricao="Preencha os dados do evento"
+      >
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => navigate('/eventos')}
+          className="border-icf-primary-200 text-icf-primary-400 hover:bg-icf-primary-50 gap-2"
+        >
+          <X className="w-4 h-4" />
+          Cancelar
+        </Button>
+        <Button
+          form="form-evento"
+          type="submit"
+          className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white gap-2"
+        >
+          <Save className="w-4 h-4" />
+          Salvar
+        </Button>
+      </PageHeader>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-            {/* Nome */}
-            <div>
-              <label className="text-base text-icf-primary-400">Nome do evento</label>
-              <input
-                type="text"
-                name="titulo"
-                value={formData.titulo}
-                onChange={handleChange}
-                placeholder="Título"
-                className="mt-1 w-full text-base placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4"
-              />
+      {/* Content Card */}
+      <div className="bg-white rounded-xl shadow-sm p-8">
+
+          <form id="form-evento" onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Nome e Organizador */}
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="text-sm font-medium text-icf-primary-400">Nome do evento</label>
+                <input
+                  type="text"
+                  name="titulo"
+                  value={formData.titulo}
+                  onChange={handleChange}
+                  placeholder="Ex: Culto de Domingo"
+                  className="mt-1.5 w-full text-sm placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-icf-primary-400">Organizador</label>
+                <input
+                  type="text"
+                  value={transformationName(nome)}
+                  disabled
+                  className="mt-1.5 w-full text-sm bg-icf-primary-50 text-icf-primary-300 border border-icf-primary-100 rounded-lg py-3 px-4 cursor-not-allowed"
+                />
+              </div>
             </div>
 
             {/* Público-alvo e Ministérios */}
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="text-base text-icf-primary-400">Público-alvo</label>
+                <label className="text-sm font-medium text-icf-primary-400">Público-alvo</label>
                 <select
                   name="publicoAlvo"
                   value={formData.publicoAlvo}
                   onChange={handleChange}
-                  className="mt-1 w-full text-base disabled:text-icf-primary-200 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4"
+                  className="mt-1.5 w-full text-sm disabled:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
                 >
                   <option value="" disabled>Selecione...</option>
+                  <option value="Todos">Todos</option>
                   <option value="Geral">Membros e visitantes</option>
                   <option value="Membros">Membros</option>
                   <option value="Lideranças">Líderes e Pastores</option>
                 </select>
               </div>
 
-              <div className="dropdown-ministerios">
-                <label className="text-base text-icf-primary-400">Ministerios obrigatórios</label>
+              <div className="dropdown-ministerios relative">
+                <label className="text-sm font-medium text-icf-primary-400">Ministérios</label>
                 <button
                   type="button"
-                  className="w-full bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4 text-left"
+                  className="mt-1.5 w-full bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 text-left text-sm focus:outline-none focus:border-icf-primary-300 transition-colors"
                   onClick={() => setDropdownAberto(!dropdownAberto)}
                 >
                   {formData.ministeriosSelecionados.length > 0
@@ -319,7 +405,7 @@ export function FormEventos() {
                       .map(id => ministerios.find(m => m.idExterno === id)?.nome)
                       .filter(Boolean)
                       .join(", ")
-                    : "Selecione os ministérios"}
+                    : "Selecione..."}
                 </button>
 
                 {dropdownAberto && (
@@ -351,12 +437,12 @@ export function FormEventos() {
             </div>
 
             {/* Data/hora inicio e fim + botão recorrência */}
-            <div className="flex items-end gap-3 w-full">
-              <div className="w-[35%]">
-                <label className="text-base text-icf-primary-400">Data e hora início</label>
+            <div className="grid grid-cols-3 gap-6 items-end">
+              <div>
+                <label className="text-sm font-medium text-icf-primary-400">Data</label>
                 <input
                   type="datetime-local"
-                  className="mt-1 w-full text-base placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4"
+                  className="mt-1.5 w-full text-sm placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
                   name="dataHoraInicio"
                   value={formData.dataHoraInicio}
                   onChange={(e) => {
@@ -374,11 +460,11 @@ export function FormEventos() {
                 />
               </div>
 
-              <div className="w-[35%]">
-                <label className="text-base text-icf-primary-400">Data e hora término</label>
+              <div>
+                <label className="text-sm font-medium text-icf-primary-400">Fim</label>
                 <input
                   type="datetime-local"
-                  className="mt-1 w-full text-base placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4"
+                  className="mt-1.5 w-full text-sm placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
                   name="dataHoraFim"
                   value={formData.dataHoraFim}
                   onChange={(e) => {
@@ -388,93 +474,74 @@ export function FormEventos() {
                 />
               </div>
 
-              <button
-                type="button"
-                className="w-[25%] px-4 py-2.5 rounded-md bg-icf-primary-50 flex justify-center items-center gap-2 text-icf-primary-300 text-base cursor-pointer"
-                onClick={() => setShowRecorrente(true)}
-              >
-                <img src="/iconeRecorrencia.svg" alt="" className="w-4 h-4" />
-                {formData.recorrencia.tipoRecorrencia === "NAO_REPETE" ? "Tornar recorrente" : "Ajustar recorrência"}
-              </button>
+              <div className="flex items-center gap-3 pb-3">
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-icf-primary-300">
+                  <input
+                    type="checkbox"
+                    checked={formData.recorrencia.tipoRecorrencia !== "NAO_REPETE"}
+                    onChange={() => setShowRecorrente(true)}
+                    className="w-4 h-4 accent-success-500 cursor-pointer"
+                  />
+                  Tornar Recorrente
+                </label>
+              </div>
             </div>
 
             {/* Custo / Local */}
-            <div className="grid grid-cols-2 gap-4 w-[100%]">
+            <div className="grid grid-cols-2 gap-6">
               <div>
-                <label className="text-base text-icf-primary-400">Custo</label>
+                <label className="text-sm font-medium text-icf-primary-400">Valor do ingresso</label>
                 <input
                   type="number"
                   name="valor"
                   value={formData.valor}
                   onChange={handleChange}
                   placeholder="R$ 0,00"
-                  className="mt-1 w-full text-base placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4"
+                  className="mt-1.5 w-full text-sm placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="text-base text-icf-primary-400">Local</label>
+                <label className="text-sm font-medium text-icf-primary-400">Local</label>
                 <button
                   type="button"
                   onClick={() => setModalLocalAberto(true)}
-                  className="mt-1 w-full text-left text-base placeholder:text-icf-primary-200 text-icf-primary-300 bg-icf-primary-50 rounded-lg py-3 px-4"
+                  className="mt-1.5 w-full text-left text-sm text-icf-primary-300 bg-surface-50 border border-icf-primary-100 hover:border-icf-primary-200 rounded-lg py-3 px-4 flex items-center gap-2 transition-colors"
                 >
-                  {endereco ? "Alterar local" : "Cadastrar local"}
+                  <span className="text-icf-primary-200">📍</span>
+                  {endereco?.apelido || "Adicionar local"}
                 </button>
               </div>
             </div>
 
             {/* Descrição */}
             <div>
-              <label className="text-base text-icf-primary-400">Descrição</label>
+              <label className="text-sm font-medium text-icf-primary-400">Descrição</label>
               <textarea
                 name="descricao"
                 value={formData.descricao}
                 onChange={handleChange}
-                rows={5}
-                className="mt-1 h-22 w-full text-base placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-200 rounded-lg py-3 px-4"
+                rows={4}
+                placeholder="Descreva o evento..."
+                className="mt-1.5 w-full text-sm placeholder:text-icf-primary-200 bg-surface-50 border border-icf-primary-100 rounded-lg py-3 px-4 focus:outline-none focus:border-icf-primary-300 transition-colors resize-none"
               />
             </div>
 
-            {/* Ações */}
-            <div className="flex gap-3 justify-end mt-4">
-              <button type="button" onClick={() => navigate('/eventos')} className="px-8 py-3 rounded-lg bg-icf-primary-200 text-surface-50 text-base font-normal cursor-pointer hover:opacity-90">
-                Cancelar
-              </button>
-
-              {modoEdicao && (
-                <button
+            {/* Ação de exclusão (apenas em modo edição) */}
+            {modoEdicao && (
+              <div className="flex justify-end mt-4 pt-4 border-t border-icf-primary-100">
+                <Button
                   type="button"
+                  variant="destructive"
                   onClick={abrirModalExclusao}
-                  className="px-8 py-3 rounded-lg bg-[#D32F2F] text-surface-50 text-base font-normal cursor-pointer hover:opacity-90"
+                  className="gap-2"
                 >
-                  Excluir
-                </button>
-              )}
-
-              <button type="submit" className="py-3 px-8 rounded-lg bg-icf-primary-400 text-surface-50 text-base font-normal cursor-pointer hover:opacity-90">
-                {modoEdicao ? "Salvar Alterações" : "Salvar"}
-              </button>
-            </div>
+                  <Trash2 className="w-4 h-4" />
+                  Excluir Evento
+                </Button>
+              </div>
+            )}
           </form>
-        </div>
-
-        {/* Painel do organizador */}
-        <aside className="w-[20%] bg-white border-l rounded-r-lg py-4 px-9 border-icf-primary-100 col-span-1">
-          <h3 className="pt-8 text-base font-bold text-icf-primary-400">Organizador</h3>
-
-          <div className="flex items-center gap-1 mt-3">
-            <img
-              src="/iconePerfil.svg"
-              alt="Avatar organizador"
-              className="w-7 h-7 p-1 border border-icf-primary-300 rounded-full object-cover"
-            />
-            <div>
-              <div className="text-xs font-semibold text-icf-primary-400">{transformationName(nome)}</div>
-              <div className="text-[10px] tracking-[0.5px] font-light text-icf-primary-300">Organizador</div>
-            </div>
-          </div>
-        </aside>
       </div>
 
       {/* Modais */}
@@ -519,6 +586,7 @@ export function FormEventos() {
           />
         </div>
       )}
+      {modal && <AlertModal {...modal} onClose={() => setModal(null)} />}
     </div>
   );
 }

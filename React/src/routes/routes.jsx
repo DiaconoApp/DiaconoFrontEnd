@@ -1,5 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useState } from "react";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { CadastroProvider } from "../context/CadastroContext";
 import { Login } from "../components/pages/Diacono/Login";
 import { Cadastro1 } from "../components/pages/Diacono/Cadastro/Cadastro1";
@@ -16,6 +15,7 @@ import { Ministerios } from "../components/pages/ICF/Ministerios";
 import { FormEventos } from "../components/molecules/ICF/FormEventos";
 import { Calendario } from "../components/templates/ICF/Calendario";
 import { Dashboard } from "../components/pages/ICF/Dashboard";
+import { Perfil } from "../components/pages/ICF/Perfil";
 import { LandingPage } from "../components/pages/Diacono/LandingPage";
 
 // Wrapper para rotas que compartilham o CadastroProvider
@@ -29,12 +29,10 @@ function CadastroWrapper() {
 
 
 export function AppRoutes() {
-    const [menuAberto, setMenuAberto] = useState(true);
-
     const routes = createBrowserRouter([
-        // { path: "/dev", element: <Dashboard />, errorElement: <div>Error</div> },
-        { path: "/login", element: <Login />, errorElement: <div>Error</div> },
         { path: "/home", element: <LandingPage />, errorElement: <div>Error</div> },
+        { path: "/", element: <Navigate to="/home" />, errorElement: <div>Error</div> },
+        { path: "/login", element: <Login />, errorElement: <div>Error</div> },
 
         // Agrupa rotas que usam CadastroProvider
         {
@@ -45,87 +43,89 @@ export function AppRoutes() {
                 { path: "cadastro/etapa2", element: <Cadastro2 /> },
                 { path: "cadastro/etapa3", element: <Cadastro3 /> },
                 { path: "cadastro/etapa4", element: <Cadastro4 /> },
-
             ],
             errorElement: <div>Error</div>,
         },
 
+        // Layout principal com Menu
         {
-            path: "/menu",
-            element: <Menu menuAberto={menuAberto} setMenuAberto={setMenuAberto} />,
+            path: "/",
+            element: <Menu />,
             errorElement: <div>Error</div>,
-        },
-        {
-            path: "/eventos",
-            element: (
-                <ProtectedRoute required={"eventos"}>
-                    <Eventos />
-                </ProtectedRoute>
-            ),
             children: [
                 {
-                    index: true,
+                    path: "eventos",
                     element: (
-                        <ProtectedRoute required={"calendario"}>
-                            <Calendario />
+                        <ProtectedRoute required={"eventos"}>
+                            <Eventos />
                         </ProtectedRoute>
-                    )
+                    ),
+                    children: [
+                        {
+                            index: true,
+                            element: (
+                                <ProtectedRoute required={"calendario"}>
+                                    <Calendario />
+                                </ProtectedRoute>
+                            )
+                        },
+                        {
+                            path: "novo",
+                            element: (
+                                <ProtectedRoute required={"criar_evento"}>
+                                    <FormEventos />
+                                </ProtectedRoute>
+                            )
+                        },
+                        {
+                            path: "editar/:idEvento",
+                            element: (
+                                <ProtectedRoute required={"editar_evento"}>
+                                    <FormEventos />
+                                </ProtectedRoute>
+                            )
+                        }
+                    ],
                 },
                 {
-                    path: "novo",
+                    path: "escalas",
                     element: (
-                        <ProtectedRoute required={"criar_evento"}>
-                            <FormEventos />
+                        <ProtectedRoute required={"escalas"}>
+                            <Escalas />
                         </ProtectedRoute>
-                    )
+                    ),
                 },
                 {
-                    path: "editar/:idEvento",
+                    path: "ministerios",
                     element: (
-                        <ProtectedRoute required={"editar_evento"}>
-                            <FormEventos />
+                        <ProtectedRoute required={"ministerios"}>
+                            <Ministerios />
                         </ProtectedRoute>
-                    )
-                }
+                    ),
+                },
+                {
+                    path: "membros",
+                    element: (
+                        <ProtectedRoute required={"membros"}>
+                            <Membros />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: "dashboard",
+                    element: (
+                        <ProtectedRoute required={"dashboards"}>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    ),
+                },
+                {
+                    path: "perfil",
+                    element: <Perfil />,
+                },
             ],
-            errorElement: <div>Error</div>,
         },
-        {
-            path: "/escalas",
-            element: (
-                <ProtectedRoute required={"escalas"}>
-                    <Escalas />
-                </ProtectedRoute>
-            ),
-            errorElement: <div>Error</div>,
-        },
-        {
-            path: "/ministerios",
-            element: (
-                <ProtectedRoute required={"ministerios"}>
-                    <Ministerios />
-                </ProtectedRoute>
-            ),
-            errorElement: <div>Error</div>,
-        },
-        {
-            path: "/membros",
-            element: (
-                <ProtectedRoute required={"membros"}>
-                    <Membros />
-                </ProtectedRoute>
-            ),
-            errorElement: <div>Error</div>,
-        },
-        {
-            path: "/dashboard",
-            element: (
-                <ProtectedRoute required={"dashboards"}>
-                    <Dashboard />
-                </ProtectedRoute>
-            ),
-            errorElement: <div>Error</div>,
-        },
+
         {
             path: "/unauthorized",
             element: (

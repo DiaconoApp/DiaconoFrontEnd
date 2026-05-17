@@ -1,6 +1,14 @@
-import { BotaoIcf } from "../../atoms/ICF/BotaoIcf"
-import { TituloModal } from "../../atoms/ICF/TituloModal";
-import { InfoEvento } from "../../atoms/ICF/InfoEvento";
+import { X, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+function InfoLabel({ label, children }) {
+    return (
+        <div className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-icf-primary-300 uppercase tracking-wide">{label}</span>
+            <span className="text-icf-primary-400 text-sm">{children}</span>
+        </div>
+    );
+}
 
 export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
     if (!evento) return null;
@@ -8,40 +16,104 @@ export function ModalVisualizarEvento({ evento, onClose, onEdit }) {
     const cargo = localStorage.getItem("cargo");
     const podeEditar = cargo === "LIDER_MINISTERIO" || cargo === "GOVERNO";
 
+    const dataInicioObj = evento?.dataInicio ? new Date(evento.dataInicio) : null;
+    const dataFimObj = evento?.dataFim ? new Date(evento.dataFim) : null;
+    const dataInicioValida = dataInicioObj && !isNaN(dataInicioObj);
+    const dataFimValida = dataFimObj && !isNaN(dataFimObj);
+
+    const ehMesmoDia = dataInicioValida && dataFimValida
+        ? dataInicioObj.toDateString() === dataFimObj.toDateString()
+        : true;
+
+    const formatarDataHora = (data) => {
+        if (!data || isNaN(data)) return "Não informado";
+        return data.toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+
     return (
-        <div className="bg-white shadow-menu-shadow flex flex-col justify-start items-center rounded w-130 p-5">
-            <div className="w-[90%] flex flex-col gap-4">
-                <TituloModal titulo={evento.titulo} onClose={onClose} />
-                <div className="border border-icf-primary-50"></div>
-                <InfoEvento label={"Organizador"} info={evento.organizador} />
-                <InfoEvento label={"Nome do evento"} info={evento.titulo} />
-                <InfoEvento label={"Público-alvo"} info={evento.publicoAlvo} />
-                {/* <InfoEvento label={"Escala"} info={"Louvor, Mídia, Dança"} /> */}
-                <div className="flex justify-between">
-                    <InfoEvento label={"Data"} info={new Date(evento.dataInicio).toLocaleDateString('pt-BR')} />
-                    <InfoEvento label={"Início"} info={evento.horaInicio || "00:00"} />
-                    <InfoEvento label={"Fim"} info={evento.horaFim || "00:00"} />
-                </div>
-                {/* <span className="text-icf-primary-200">Ocorre a cada Sábado até 04 de Abril de 2026</span> */}
-                <div className="flex justify-between">
-                    <InfoEvento label={"Valor do ingresso"} info={evento.custo == 0 ? "Gratuito" : "R$ " + evento.custo} />
-                    <InfoEvento label={"Local"} info={evento.local || "-"} />
-                </div>
-                <InfoEvento label={"Descrição"} info={evento.descricao || "Sem descrição"}
-                />
-                {podeEditar && (
-                    <div className="flex justify-end">
-                        <div className="w-[30%]">
-                            <BotaoIcf
-                                onClick={onEdit}
-                                className="bg-icf-primary-400 flex items-center justify-center gap-2">
-                                Editar
-                            </BotaoIcf>
+        <div className="bg-white rounded-xl shadow-xl w-[480px] max-w-[95vw] max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-icf-primary-50">
+                <h2 className="font-bold text-xl text-icf-primary-400">{evento.titulo}</h2>
+                <button 
+                    onClick={onClose} 
+                    className="p-1 hover:bg-icf-primary-50 rounded-lg transition-colors"
+                >
+                    <X className="w-5 h-5 text-icf-primary-300" />
+                </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 space-y-5">
+                {/* Organizador */}
+                <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-icf-primary-300 uppercase tracking-wide">Organizador</span>
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-icf-primary-50 flex items-center justify-center">
+                            <User className="w-4 h-4 text-icf-primary-300" />
                         </div>
+                        <span className="text-icf-primary-400 text-sm">{evento.organizador || "Não informado"}</span>
+                    </div>
+                </div>
+
+                <InfoLabel label="Nome do Evento">{evento.titulo}</InfoLabel>
+                <InfoLabel label="Público-Alvo">{evento.publicoAlvo || "Geral"}</InfoLabel>
+                
+                {evento.ministerios && evento.ministerios.length > 0 && (
+                    <InfoLabel label="Escala">
+                        {evento.ministerios.map(m => m.nome || m).join(", ")}
+                    </InfoLabel>
+                )}
+
+                {/* Data e Horários */}
+                {ehMesmoDia ? (
+                    <div className="grid grid-cols-3 gap-4">
+                        <InfoLabel label="Data">
+                            {dataInicioValida ? dataInicioObj.toLocaleDateString("pt-BR") : "Não informado"}
+                        </InfoLabel>
+                        <InfoLabel label="Início">{evento.horaInicio || "00:00"}</InfoLabel>
+                        <InfoLabel label="Fim">{evento.horaFim || "00:00"}</InfoLabel>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-4">
+                        <InfoLabel label="Data início">{formatarDataHora(dataInicioObj)}</InfoLabel>
+                        <InfoLabel label="Data fim">{formatarDataHora(dataFimObj)}</InfoLabel>
                     </div>
                 )}
 
+                {/* Recorrência - comentado por enquanto */}
+                {/* <p className="text-icf-primary-200 text-sm italic">Ocorre a cada Sábado até o dia de XX/XXXX</p> */}
+
+                {/* Valor e Local */}
+                <div className="grid grid-cols-2 gap-4">
+                    <InfoLabel label="Valor do Ingresso">
+                        {evento.custo === 0 || !evento.custo ? "Gratuito" : `R$ ${evento.custo}`}
+                    </InfoLabel>
+                    <InfoLabel label="Endereço">{evento.local || "Não informado"}</InfoLabel>
+                </div>
+
+                <InfoLabel label="Descrição">
+                    {evento.descricao || "Sem descrição"}
+                </InfoLabel>
             </div>
+
+            {/* Footer */}
+            {podeEditar && (
+                <div className="p-6 pt-0 flex justify-end">
+                    <Button
+                        onClick={onEdit}
+                        className="bg-icf-primary-400 hover:bg-icf-primary-500 text-white"
+                    >
+                        Editar
+                    </Button>
+                </div>
+            )}
         </div>
-    )
+    );
 }

@@ -8,10 +8,11 @@ export function PageHeader({
   textoBotao,
   icone: Icone = Plus,
   disabled = false,
-  children
+  children,
+  centerContent
 }) {
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl shadow-sm p-6">
+    <div className="grid grid-cols-3 items-center bg-white rounded-xl shadow-sm p-6">
       <div className="flex flex-col gap-1">
         <h1 className="font-bold text-xl text-icf-primary-400 uppercase tracking-tight">
           {titulo}
@@ -23,7 +24,11 @@ export function PageHeader({
         )}
       </div>
       
-      <div className="flex items-center gap-3">
+      <div className="flex justify-center">
+        {centerContent}
+      </div>
+      
+      <div className="flex items-center gap-3 justify-end">
         {children}
         {acaoPrimaria && textoBotao && (
           <Button

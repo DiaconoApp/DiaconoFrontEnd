@@ -56,7 +56,7 @@ export default function GraficoEvolucaoMembros({ anoInicio, anoFim }) {
         </span>
       </div>
 
-      <ResponsiveContainer width="100%" height={380}>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart data={dadosTratados} margin={{ top: 5, right: 20, bottom: 10, left: 0 }}>
           <CartesianGrid stroke="#E5E7EB" strokeDasharray="4 4" vertical={false} opacity={0.7} />
           <XAxis 

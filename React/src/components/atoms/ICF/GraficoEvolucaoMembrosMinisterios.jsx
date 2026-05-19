@@ -113,7 +113,7 @@ export function GraficoEvolucaoMembrosMinisterio({ anoInicio, anoFim }) {
         </select>
       </div>
 
-      <ResponsiveContainer width="100%" height={380}>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart data={dados}>
           <CartesianGrid strokeDasharray="4 4" vertical={false} opacity={0.7} stroke="#E5E7EB" />
           <XAxis 

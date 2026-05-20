@@ -1,0 +1,33 @@
+name: Deploy EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy na EC2
+        uses: appleboy/ssh-action@v1.0.3
+
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            docker pull chavess/front-diacono:latest
+
+            docker stop front || true
+            docker rm front || true
+
+            docker run -d \
+              -p 8080:80 \
+              -p 443:443 \
+              -v /etc/letsencrypt:/etc/letsencrypt \
+              --name front \
+              --restart always \
+              chavess/front-diacono:latest

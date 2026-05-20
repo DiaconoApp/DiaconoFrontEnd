@@ -2,13 +2,13 @@ import api from "../provider/api";
 
 export const buscarPerfilLogado = async () => {
     try {
-        const res = await api.get("/perfil");
+        const res = await api.get("/api/v1/perfil");
         return res.data;
     } catch (err) {
         const idUsuario = localStorage.getItem("idUsuario");
         if (idUsuario) {
             try {
-                const res = await api.get(`/perfil/${idUsuario}`);
+                const res = await api.get(`/api/v1/perfil/${idUsuario}`);
                 return res.data;
             } catch (fallbackErr) {
                 console.error("Erro ao buscar perfil (fallback):", fallbackErr);
@@ -22,7 +22,7 @@ export const buscarPerfilLogado = async () => {
 
 export const atualizarPerfilLogado = async (dadosAlterados) => {
     try {
-        const res = await api.patch("/perfil", dadosAlterados);
+        const res = await api.patch("/api/v1/perfil", dadosAlterados);
         return res.data;
     } catch (err) {
         console.error("Erro ao atualizar perfil:", err);

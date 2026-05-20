@@ -31,7 +31,7 @@ export function ModalMinisterio({
 
             try {
                 while (page < totalPages) {
-                    const res = await api.get(`/membros?page=${page}&size=50&sort=nome`);
+                    const res = await api.get(`/api/v1/membros?page=${page}&size=50&sort=nome`);
                     const { content, totalPages: tp } = res.data;
                     allMembros = [...allMembros, ...content];
                     totalPages = tp;

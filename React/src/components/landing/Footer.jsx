@@ -31,16 +31,6 @@ const Footer = () => {
                     Funcionalidades
                   </a>
                 </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-white transition-colors text-sm">
-                    Preços
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-white transition-colors text-sm">
-                    Blog
-                  </a>
-                </li>
               </ul>
             </div>
 
@@ -49,23 +39,8 @@ const Footer = () => {
               <h3 className="text-base font-semibold text-white mb-4">Contato</h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-white/70 hover:text-white transition-colors text-sm">
-                    Suporte
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-white transition-colors text-sm">
-                    Documentação
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-white transition-colors text-sm">
-                    Privacidade
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-white transition-colors text-sm">
-                    Termos de Uso
+                  <a href="mailto:diaconoapp@gmail.com" className="text-white/70 hover:text-white transition-colors text-sm">
+                    diaconoapp@gmail.com
                   </a>
                 </li>
               </ul>

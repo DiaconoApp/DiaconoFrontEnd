@@ -1,4 +1,6 @@
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="relative overflow-hidden bg-diacono-blue-400 py-12 sm:py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -73,7 +75,7 @@ const Footer = () => {
           {/* Copyright */}
           <div className="border-t border-white/10 pt-6">
             <p className="text-white/60 text-center text-xs">
-              © 2025 Diácono. Todos os direitos reservados.
+              © {currentYear} Diácono. Todos os direitos reservados.
             </p>
           </div>
         </div>

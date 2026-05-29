@@ -30,7 +30,6 @@ documentos_alvo:
   - "/docs/FRONT_DATA_FLOW.md"
   - "/docs/FRONT_LOGICA_NEGOCIO.md"
   - "/docs/FRONT_ACOPLAMENTO_API.md"
-  - "/docs/FRONT_DISPERSAO_LOGICA.md"
 
 documento_em_foco:
   regra:
@@ -63,7 +62,7 @@ processo:
       - "se alteracao_fluxo_dados entao atualizar FRONT_DATA_FLOW.md"
       - "se nova_regra_frontend entao atualizar FRONT_LOGICA_NEGOCIO.md"
       - "se alteracao_api entao atualizar FRONT_ACOPLAMENTO_API.md"
-      - "se duplicacao_logica entao atualizar FRONT_DISPERSAO_LOGICA.md"
+      - "se duplicacao_logica entao registrar pendencia em adhoc para avaliar criacao futura de documento especifico"
       - "se uma alteracao afetar documentos adicionais alem do documento_em_foco, registrar pendencia em adhoc para ciclos seguintes"
 
   - etapa: "atualizar_documentos"
@@ -98,14 +97,6 @@ atualizacao_por_documento:
       - "validar dependencia de estrutura de response"
       - "validar transformacoes de resposta"
       - "validar tratamento de erro"
-      - "seguir padrao existente"
-
-  FRONT_DISPERSAO_LOGICA.md:
-    acoes:
-      - "identificar duplicacoes reais"
-      - "validar locais listados"
-      - "corrigir descricao"
-      - "validar impacto"
       - "seguir padrao existente"
 
 consistencia_cruzada:

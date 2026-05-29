@@ -293,8 +293,8 @@
 - id: FRONT_RULE_028
   local:
     tipo: "component"
-    nome: "src/components/molecules/Diacono/FormsCadastro4.jsx, src/components/molecules/ICF/FormMembro.jsx e src/components/molecules/ICF/FormEditarMembro.jsx"
-  condicao: "repetição da regra de busca automática por CEP com tamanho 8"
+    nome: "src/components/molecules/Diacono/FormsCadastro4.jsx, src/components/molecules/ICF/FormMembro.jsx, src/components/molecules/ICF/FormEditarMembro.jsx, src/components/pages/ICF/Perfil.jsx e src/components/molecules/ICF/ModalLocal1.jsx"
+  condicao: "repetição da regra de busca automática por CEP com tamanho 8 ou CEP limpo com 8 dígitos"
   acao: "duplica regra de decisão e preenchimento de endereço em múltiplos componentes"
   deveria_estar_no_backend: false
   impacto:
@@ -339,6 +339,247 @@
     nome: "src/components/molecules/Diacono/FormsCadastro4.jsx"
   condicao: "if (camposVazios.length > 0)"
   acao: "bloqueia avanço da etapa de endereço quando campos obrigatórios não estão preenchidos"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_033
+  local:
+    tipo: "component"
+    nome: "src/components/pages/Diacono/Cadastro/Cadastro1.jsx"
+  condicao: "if (camposVazios.length > 0)"
+  acao: "bloqueia avanço para /cadastro/etapa2 quando fkIgreja não foi selecionada"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_034
+  local:
+    tipo: "service"
+    nome: "src/services/login.js"
+  condicao: "if (!token) throw new Error('Token não retornado pelo servidor') e jwtDecode(token)"
+  acao: "impede login sem token válido, extrai cargo do JWT e grava nome/cargo/fk_igreja/idUsuario/token no localStorage"
+  deveria_estar_no_backend: false
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_035
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/Diacono/FormsLogin.jsx, src/components/pages/Diacono/Cadastro/Cadastro1.jsx, src/components/molecules/Diacono/FormsCadastro2.jsx, src/components/molecules/Diacono/FormsCadastro3.jsx e src/components/molecules/Diacono/FormsCadastro4.jsx"
+  condicao: "googleClientId ? <BotaoGoogle ...> : null"
+  acao: "exibe opção de login Google somente quando VITE_GOOGLE_CLIENT_ID está configurado"
+  deveria_estar_no_backend: false
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_036
+  local:
+    tipo: "service"
+    nome: "src/services/googleAuth.js:startGoogleAuthorization"
+  condicao: "if (!clientId)"
+  acao: "interrompe início da autenticação Google e retorna erro para errorPath quando o Client ID não está configurado"
+  deveria_estar_no_backend: false
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_037
+  local:
+    tipo: "service"
+    nome: "src/services/googleAuth.js:completeGoogleAuthorization"
+  condicao: "if (!storedRequest) ... if (googleError) ... if (!returnedState || returnedState !== storedRequest.state) ... if (!code)"
+  acao: "valida fluxo pendente, erro do Google, state e authorization code antes de chamar loginWithGoogle"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_038
+  local:
+    tipo: "component"
+    nome: "src/components/pages/Auth/GoogleCallback.jsx"
+  condicao: "try completeGoogleAuthorization() ... catch error"
+  acao: "em sucesso atualiza AuthContext e navega para successPath; em erro exibe mensagem e mantém returnPath/fallbackPath"
+  deveria_estar_no_backend: false
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_039
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/Diacono/FormsCadastro3.jsx"
+  condicao: "api.post('/api/v1/register', dadosCadastro)"
+  acao: "finaliza cadastro com payload acumulado no CadastroContext e redireciona para /login após sucesso"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_040
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/FormEventos.jsx"
+  condicao: "if (modoEdicao) ... else"
+  acao: "decide entre editarEvento(idEvento, eventoPayload) e criarEvento(eventoPayload)"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_041
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/FormEventos.jsx"
+  condicao: "formData.recorrencia.tipoRecorrencia !== 'NAO_REPETE'"
+  acao: "abre modal de exclusão recorrente quando o evento possui recorrência; caso contrário abre exclusão simples"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_042
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/FormEventos.jsx"
+  condicao: "if (opcaoRecorrencia === 'unico') ... else"
+  acao: "decide entre deletarEventoUnico(idEvento) e deletarEventoMultiplos(idEvento)"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_043
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/ModalGerenciarEscala.jsx"
+  condicao: "if (!idExternoEscalaEvento) e if (!tamanhoEquipe || Number(tamanhoEquipe) < 1)"
+  acao: "bloqueia geração de escala aleatória sem escala identificada ou sem tamanho de equipe válido"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_044
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/ModalGerenciarEscala.jsx"
+  condicao: "if (Array.isArray(respostaTroca)) ... else"
+  acao: "ao trocar membro sorteado, substitui toda a lista quando a API retorna array ou troca apenas o membro atual quando retorna objeto"
+  deveria_estar_no_backend: false
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_045
+  local:
+    tipo: "component"
+    nome: "src/components/pages/ICF/Ministerios.jsx"
+  condicao: "switch (cargo)"
+  acao: "renderiza ListaMinisterios para GOVERNO, ListaMinisterioLider para LIDER_MINISTERIO e ListaMinisterioMembro para demais cargos"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_046
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/ModalMinisterio.jsx"
+  condicao: "if (tipo === 'editar') ... else"
+  acao: "decide entre atualizarMinisterio e cadastrarMinisterio, exibindo feedback conforme o modo do modal"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_047
+  local:
+    tipo: "component"
+    nome: "src/components/templates/ICF/ListaMinisterioLider.jsx"
+  condicao: "if (lista.length > 0) setMinisterioSelecionado(lista[0])"
+  acao: "seleciona automaticamente o primeiro ministério liderado para carregar membros"
+  deveria_estar_no_backend: false
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_048
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/LinhaMinisterioMembro.jsx"
+  condicao: "handleDelete -> removerMembroMinisterio({ idMembro, idMinisterio })"
+  acao: "remove membro do ministério e aciona recarga da lista via onRemovido após sucesso"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_049
+  local:
+    tipo: "component"
+    nome: "src/components/atoms/ICF/GraficoDistribuicaoMembros.jsx"
+  condicao: "setGenero([...]) e setFaixaEtaria([...])"
+  acao: "mapeia chaves feminino/masculino e criancas/adolescentes/jovens/adultos/idosos para dados percentuais do gráfico"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_050
+  local:
+    tipo: "component"
+    nome: "src/components/atoms/ICF/TabelaAniversariantesMembros.jsx"
+  condicao: "d.getMonth() === mesAtual"
+  acao: "filtra todos os membros para manter apenas aniversariantes do mês atual e ordena pelo dia do aniversário"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_051
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/FormMembro.jsx"
+  condicao: "if (erros.length > 0)"
+  acao: "bloqueia cadastro interno de membro quando validarCamposObrigatorios retorna erros"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_052
+  local:
+    tipo: "service"
+    nome: "src/services/membros.js:cadastrarMembro"
+  condicao: "(dados.ministerios || []).filter(...).map(...)"
+  acao: "converte ministérios selecionados para idExternoMinisterios e define cargo padrão como MEMBRO quando não informado"
+  deveria_estar_no_backend: true
+  impacto:
+    - "regra_negocio"
+
+- id: FRONT_RULE_053
+  local:
+    tipo: "component"
+    nome: "src/components/molecules/ICF/FormEditarMembro.jsx"
+  condicao: "JSON.stringify(ministeriosOriginais) !== JSON.stringify(ministeriosAtuais)"
+  acao: "inclui idExternoMinisterios no PATCH somente quando a lista de ministérios do membro foi alterada"
+  deveria_estar_no_backend: true
+  impacto:
+    - "ui"
+    - "regra_negocio"
+
+- id: FRONT_RULE_054
+  local:
+    tipo: "component"
+    nome: "src/components/pages/ICF/Escalas.jsx"
+  condicao: "if (isGoverno) ... else if (isLider) ... else"
+  acao: "carrega opções de filtro de ministério por cargo usando todos os ministérios, ministérios liderados ou ministérios do membro"
   deveria_estar_no_backend: true
   impacto:
     - "ui"

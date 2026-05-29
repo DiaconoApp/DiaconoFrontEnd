@@ -1,23 +1,27 @@
 - tipo: "duplicacao"
-  descricao: "Fluxo de autenticação com Google (extração de credential/access_token, tratamento de erro, chamada de loginWithGoogle, setUser e navegação) repetido em múltiplos pontos do app, com destinos distintos por tela."
+  descricao: "Início do fluxo de autenticação com Google está repetido em handlers locais, cada um chamando startGoogleAuthorization com successPath/errorPath hardcoded. A validação do callback, troca por JWT, setUser e navegação final ficam centralizados em googleAuth.js e GoogleCallback.jsx."
   locais:
     - tipo: "component"
-      nome: "Cadastro1"
-    - tipo: "component"
       nome: "FormsLogin"
+    - tipo: "component"
+      nome: "Cadastro1"
     - tipo: "component"
       nome: "FormsCadastro2"
     - tipo: "component"
       nome: "FormsCadastro3"
     - tipo: "component"
       nome: "FormsCadastro4"
+    - tipo: "service"
+      nome: "googleAuth"
+    - tipo: "component"
+      nome: "GoogleCallback"
   impacto:
     - "manutencao"
     - "bug"
     - "inconsistencia"
 
 - tipo: "duplicacao"
-  descricao: "Critérios de senha (mínimo de 8 caracteres, maiúscula, minúscula, número e caractere especial) aparecem em validatePassword, no componente ValidacaoSenha e na função local validarSenhaForte em FormsCadastro3, gerando mais de uma fonte para o mesmo requisito."
+  descricao: "Critérios de senha aparecem em validatePassword/useValidacaoCadastro e também no componente visual ValidacaoSenha. FormsCadastro3 renderiza ValidacaoSenha, mas no avanço valida apenas campos obrigatórios, email e confirmação de senha, deixando a força da senha sem uma única fonte efetiva de decisão."
   locais:
     - tipo: "utility"
       nome: "validatePassword"
@@ -33,8 +37,10 @@
     - "inconsistencia"
 
 - tipo: "regra_espalhada"
-  descricao: "Regras de autorização por cargo estão distribuídas entre o hook usePermission, a guarda ProtectedRoute e verificações diretas de cargo no Menu, Escalas, Ministerios e ModalVisualizarEvento, em vez de depender de uma única fonte de decisão."
+  descricao: "Regras de autorização por cargo estão distribuídas entre roles.js, usePermission, ProtectedRoute e verificações diretas de cargo em telas/modais. Menu usa usePermission para ocultar navegação, enquanto Escalas, Ministerios, ModalVisualizarEvento e Calendario consultam cargo diretamente."
   locais:
+    - tipo: "config"
+      nome: "roles"
     - tipo: "hook"
       nome: "usePermission"
     - tipo: "component"
@@ -47,6 +53,8 @@
       nome: "Ministerios"
     - tipo: "component"
       nome: "ModalVisualizarEvento"
+    - tipo: "component"
+      nome: "Calendario"
   impacto:
     - "manutencao"
     - "bug"
@@ -71,7 +79,7 @@
     - "inconsistencia"
 
 - tipo: "regra_espalhada"
-  descricao: "O estado de autenticação e sessão é gravado, lido e limpo em vários lugares: login.js salva nome/cargo/fk_igreja/idUsuario/token, AuthContext mantém cargo, provider/api lê e remove token, ProtectedRoute lê token e cargo, e Menu, Escalas, Ministerios, ModalVisualizarEvento, Configuracoes, FormEventos e FormMembro leem dados do localStorage diretamente."
+  descricao: "O estado de autenticação e sessão é gravado, lido e limpo em vários lugares: login.js salva nome/cargo/fk_igreja/idUsuario/token e executa logout com localStorage.clear, AuthContext mantém cargo, provider/api lê/remove token, ProtectedRoute lê token/cargo e limpa a sessão, e componentes/services leem dados do localStorage diretamente."
   locais:
     - tipo: "service"
       nome: "login"
@@ -90,11 +98,13 @@
     - tipo: "component"
       nome: "ModalVisualizarEvento"
     - tipo: "component"
-      nome: "Configuracoes"
-    - tipo: "component"
       nome: "FormEventos"
     - tipo: "component"
       nome: "FormMembro"
+    - tipo: "service"
+      nome: "eventos"
+    - tipo: "service"
+      nome: "perfil"
   impacto:
     - "manutencao"
     - "bug"
@@ -111,6 +121,54 @@
       nome: "FormsCadastro3"
     - tipo: "component"
       nome: "FormsCadastro4"
+  impacto:
+    - "manutencao"
+    - "bug"
+    - "inconsistencia"
+
+- tipo: "duplicacao"
+  descricao: "Busca e normalização de CEP aparecem em mais de um ponto: validationCEP em Utils é usada por useValidacaoCadastro, perfil.js implementa outra chamada direta ao ViaCEP, e ModalLocal1 faz nova chamada via axios com tratamento de erro próprio."
+  locais:
+    - tipo: "utility"
+      nome: "validationCEP"
+    - tipo: "hook"
+      nome: "useValidacaoCadastro"
+    - tipo: "service"
+      nome: "perfil"
+    - tipo: "component"
+      nome: "Perfil"
+    - tipo: "component"
+      nome: "ModalLocal1"
+    - tipo: "component"
+      nome: "FormsCadastro4"
+    - tipo: "component"
+      nome: "FormMembro"
+    - tipo: "component"
+      nome: "FormEditarMembro"
+  impacto:
+    - "manutencao"
+    - "bug"
+    - "inconsistencia"
+
+- tipo: "duplicacao"
+  descricao: "Formatação de endereço de evento está duplicada em Calendario e Escalas, incluindo normalização de texto, montagem de partes do endereço e fallback para apelido/sem local."
+  locais:
+    - tipo: "component"
+      nome: "Calendario"
+    - tipo: "component"
+      nome: "Escalas"
+  impacto:
+    - "manutencao"
+    - "bug"
+    - "inconsistencia"
+
+- tipo: "duplicacao"
+  descricao: "Formatação de cargo possui uma implementação utilitária em Utils.formatarCargo e uma implementação local em ListaMembros, com mapas não idênticos para os mesmos códigos de cargo."
+  locais:
+    - tipo: "utility"
+      nome: "formatarCargo"
+    - tipo: "component"
+      nome: "ListaMembros"
   impacto:
     - "manutencao"
     - "bug"

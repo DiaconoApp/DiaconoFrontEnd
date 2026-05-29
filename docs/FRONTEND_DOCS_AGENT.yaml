@@ -10,6 +10,7 @@ contexto_operacional:
 
 objetivo:
   descrever: "garantir consistencia entre codigo frontend e documentos em /docs"
+  modo_execucao: "revisao sequencial, um arquivo por vez"
 
 regras_globais:
   - "nao recriar documentos"
@@ -20,12 +21,21 @@ regras_globais:
   - "nao inferir comportamento sem evidencia"
   - "nao inventar fluxo de dados"
   - "realizar alteracoes minimas e precisas"
+  - "executar atualizacao de apenas um documento alvo por execucao"
+  - "registrar internamente evidencia objetiva para cada alteracao (arquivo, componente, hook ou funcao)"
+  - "quando uma mudanca impactar mais de um documento, atualizar somente o documento em foco e registrar pendencias dos demais em adhoc"
+  - "se houver necessidade de nova secao estrutural, nao criar; registrar pendencia em adhoc para revisao humana"
 
 documentos_alvo:
   - "/docs/FRONT_DATA_FLOW.md"
   - "/docs/FRONT_LOGICA_NEGOCIO.md"
   - "/docs/FRONT_ACOPLAMENTO_API.md"
   - "/docs/FRONT_DISPERSAO_LOGICA.md"
+
+documento_em_foco:
+  regra:
+    - "selecionar exatamente um item de documentos_alvo por execucao"
+    - "rejeitar execucao sem documento_em_foco definido"
 
 processo:
   - etapa: "analisar_codigo"
@@ -36,6 +46,10 @@ processo:
       - "inspecionar estado global"
       - "identificar fluxo de props"
       - "identificar chamadas reais de api"
+      - "inspecionar rotas e guards"
+      - "inspecionar context providers e stores"
+      - "inspecionar utilitarios, validacoes e mapeamentos de resposta"
+      - "inspecionar tratamento de erro e estados de carregamento"
 
   - etapa: "classificar_mudancas"
     acoes:
@@ -50,6 +64,7 @@ processo:
       - "se nova_regra_frontend entao atualizar FRONT_LOGICA_NEGOCIO.md"
       - "se alteracao_api entao atualizar FRONT_ACOPLAMENTO_API.md"
       - "se duplicacao_logica entao atualizar FRONT_DISPERSAO_LOGICA.md"
+      - "se uma alteracao afetar documentos adicionais alem do documento_em_foco, registrar pendencia em adhoc para ciclos seguintes"
 
   - etapa: "atualizar_documentos"
     acoes:
@@ -105,6 +120,10 @@ validacoes:
   - "confirmar fluxo real de dados"
   - "confirmar chamadas reais de api"
   - "rejeitar inferencias sem evidencia"
+  - "confirmar que cada alteracao possui evidencia minima (arquivo, componente, hook ou funcao)"
+  - "confirmar que somente o documento_em_foco foi alterado na execucao atual"
+  - "confirmar que impactos em outros documentos foram registrados em adhoc"
+  - "confirmar consistencia de nomenclatura entre documentos e codigo"
 
 restricoes:
   - "nao simplificar fluxo complexo"
@@ -112,8 +131,11 @@ restricoes:
   - "nao remover duplicacao sem validacao"
   - "nao generalizar descricao"
   - "nao alterar formato existente"
+  - "nao atualizar documento com base em suposicao sem referencia verificavel no codigo"
 
 resultado:
-  - "retornar apenas documentos atualizados"
+  - "retornar apenas o documento_em_foco atualizado"
   - "manter formato original"
   - "garantir consistencia com codigo"
+  - "manter rastreabilidade interna entre alteracao realizada e evidencia no codigo"
+  - "listar pendencias para proximos ciclos em adhoc quando houver impacto cruzado"

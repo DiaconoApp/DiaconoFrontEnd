@@ -17,6 +17,31 @@
 - endpoint: "/api/v1/auth/google"
   chamado_por:
     - tipo: "component"
+      nome: "src/components/pages/Auth/GoogleCallback.jsx"
+    - tipo: "service"
+      nome: "src/services/googleAuth.js:completeGoogleAuthorization"
+    - tipo: "service"
+      nome: "src/services/login.js:loginWithGoogle"
+  dependencias_diretas:
+    - "request_payload: authorizationCode, redirectUri e codeVerifier opcional"
+    - "estrutura_response: response.data.acessToken|response.data.accessToken"
+    - "status_http: 401/404/502 tratados com mensagens específicas; demais usam err.response?.data?.message"
+  transformacao_response:
+    - onde: "src/services/login.js:getGooglePayload"
+      tipo: "validação e montagem de authorizationCode, redirectUri e codeVerifier"
+    - onde: "src/services/googleAuth.js:completeGoogleAuthorization"
+      tipo: "validação de state/code antes de chamar loginWithGoogle"
+    - onde: "src/services/login.js:jwtDecode(token)"
+      tipo: "parsing JWT para payload.scope/nome/fk_igreja/sub"
+  tratamento_erro:
+    - onde: "src/services/login.js:getGoogleLoginErrorMessage"
+      tipo: "normalização de mensagens por status HTTP"
+    - onde: "src/services/googleAuth.js:completeGoogleAuthorization"
+      tipo: "limpa sessionStorage e propaga fallbackPath"
+
+- endpoint: "https://accounts.google.com/o/oauth2/v2/auth"
+  chamado_por:
+    - tipo: "component"
       nome: "src/components/molecules/Diacono/FormsLogin.jsx"
     - tipo: "component"
       nome: "src/components/pages/Diacono/Cadastro/Cadastro1.jsx"
@@ -27,18 +52,17 @@
     - tipo: "component"
       nome: "src/components/molecules/Diacono/FormsCadastro4.jsx"
   dependencias_diretas:
-    - "estrutura_response: response.data.acessToken|response.data.accessToken"
-    - "status_http: err.response?.status e err.response?.data?.message"
+    - "request_query: client_id, redirect_uri, response_type=code, scope, access_type=offline, prompt=consent, state"
+    - "request_query: code_challenge e code_challenge_method=S256 quando PKCE habilitado"
+    - "status_http: retorno ocorre por redirect para /auth/google/callback"
   transformacao_response:
-    - onde: "src/services/login.js:loginWithGoogle"
-      tipo: "normalização de credential/access_token/code para idToken"
-    - onde: "src/services/login.js:jwtDecode(token)"
-      tipo: "parsing JWT"
+    - onde: "src/services/googleAuth.js:startGoogleAuthorization"
+      tipo: "gera state/PKCE, persiste googleAuthRequest em sessionStorage e monta URLSearchParams"
   tratamento_erro:
-    - onde: "src/services/login.js:catch"
-      tipo: "erro propagado por throw new Error"
+    - onde: "src/services/googleAuth.js:startGoogleAuthorization"
+      tipo: "throw quando VITE_GOOGLE_CLIENT_ID não configurado"
 
-- endpoint: "/register"
+- endpoint: "/api/v1/register"
   chamado_por:
     - tipo: "component"
       nome: "src/components/pages/Diacono/Cadastro/Cadastro1.jsx"
@@ -46,6 +70,7 @@
       nome: "src/components/molecules/Diacono/FormsCadastro3.jsx"
   dependencias_diretas:
     - "estrutura_response: GET retorna lista de igrejas com idExterno/nome"
+    - "request_payload: POST envia dadosCadastro consolidado do CadastroContext"
     - "status_http: falha tratada apenas por catch genérico"
   transformacao_response:
     - onde: "src/components/pages/Diacono/Cadastro/Cadastro1.jsx"
@@ -61,11 +86,10 @@
     - tipo: "component"
       nome: "src/components/templates/ICF/Calendario.jsx"
     - tipo: "component"
-      nome: "src/components/pages/ICF/Escalas.jsx"
-    - tipo: "component"
       nome: "src/components/molecules/ICF/FormEventos.jsx"
   dependencias_diretas:
     - "estrutura_response: GET depende de res.eventosMes[] com idExterno/nome/dataHoraInicio/dataHoraFim"
+    - "request_payload: POST envia fkIgreja, fkOrganizador, fkMinisterios, recorrencia, endereco e custo"
     - "status_http: erros de GET não são normalizados em buscarEventos"
   transformacao_response:
     - onde: "src/components/templates/ICF/Calendario.jsx"
@@ -160,14 +184,14 @@
 
 - endpoint: "/api/v1/eventos-ministerios/evento-ministerio/{idMinisterio}?mes={mes}&ano={ano}"
   chamado_por:
-    - tipo: "component"
-      nome: "src/components/pages/ICF/Escalas.jsx"
+    - tipo: "service"
+      nome: "src/services/escalas.js:buscarEscalas"
   dependencias_diretas:
-    - "estrutura_response: usado por buscarEscalas com expectativa de resposta compatível com lista de escalas"
+    - "estrutura_response: buscarEscalas espera resposta compatível com lista de escalas"
     - "status_http: falha convertida para {content:[]}"
   transformacao_response:
     - onde: "src/services/escalas.js:buscarEscalas"
-      tipo: "switch de URL por presença de idMinisterio"
+      tipo: "switch de URL por presença de idMinisterio; função não é consumida por componente atualmente"
   tratamento_erro:
     - onde: "src/services/escalas.js:buscarEscalas"
       tipo: "catch retorna fallback {content:[]}"
@@ -180,6 +204,8 @@
     - "estrutura_response: array com idEvento/idExternoEscalaEvento/nomeReuniao/nomeMinisterio/membrosEscalados/membrosEscaladosConfirmados/status"
     - "status_http: falha convertida para []"
   transformacao_response:
+    - onde: "src/services/escalas.js:buscarEscalasLider"
+      tipo: "query manual com filtros condicionais e encodeURIComponent"
     - onde: "src/components/pages/ICF/Escalas.jsx:mapearEscalaLider"
       tipo: "mapping para contrato de CardEscala"
   tratamento_erro:
@@ -194,6 +220,8 @@
     - "estrutura_response: array com status/idEvento|idExternoEvento/idExternoEscalaMinisterio/nomeReuniao/nomeMinisterio"
     - "status_http: falha convertida para []"
   transformacao_response:
+    - onde: "src/services/escalas.js:buscarEscalasMembro"
+      tipo: "query manual com filtros condicionais e encodeURIComponent"
     - onde: "src/components/pages/ICF/Escalas.jsx:mapearEscalaMembro"
       tipo: "mapping com conversão de status para confirmado 1/0"
   tratamento_erro:
@@ -262,10 +290,13 @@
       nome: "src/components/molecules/ICF/ModalEscalarMinisterios.jsx"
   dependencias_diretas:
     - "estrutura_response: GET aceita array direto ou objeto com content"
+    - "request_payload: PATCH envia lista de ministérios selecionados sem transformação adicional"
     - "status_http: erro no PATCH aborta confirmação"
   transformacao_response:
     - onde: "src/services/escalas.js:buscarMinisteriosEvento"
       tipo: "normalização Array.isArray(res.data) ? res.data : res.data?.content || res.data || []"
+    - onde: "src/services/escalas.js:atualizarMinisteriosEvento"
+      tipo: "retorna res.data do PATCH"
   tratamento_erro:
     - onde: "src/services/escalas.js:buscarMinisteriosEvento"
       tipo: "catch retorna []"
@@ -278,6 +309,8 @@
       nome: "src/components/templates/ICF/ListaMembros.jsx"
     - tipo: "component"
       nome: "src/components/molecules/ICF/ModalMembroMinisterio.jsx"
+    - tipo: "component"
+      nome: "src/components/atoms/ICF/TabelaAniversariantesMembros.jsx"
   dependencias_diretas:
     - "estrutura_response: objeto paginado com content[] e totalPages"
     - "status_http: erro convertido para fallback {content:[],totalPages:1}"
@@ -426,7 +459,7 @@
       nome: "src/components/molecules/ICF/LinhaMinisterioMembro.jsx"
   dependencias_diretas:
     - "estrutura_response: retorno não utilizado"
-    - "status_http: falha exibida em AlertModal"
+    - "status_http: falha apenas logada no service; erro não é relançado"
   transformacao_response:
     - onde: "src/services/ministerios.js:removerMembroMinisterio"
       tipo: "sem transformação de resposta"
@@ -439,18 +472,15 @@
     - tipo: "component"
       nome: "src/components/molecules/ICF/ModalMinisterio.jsx"
   dependencias_diretas:
-    - "estrutura_response: POST espera criação com idLider/nome; PATCH espera idMinisterio e status em uppercase"
+    - "request_payload: POST envia {idLider,nome}"
+    - "estrutura_response: retorno da criação é propagado sem parsing"
     - "status_http: erro propagado ao modal"
   transformacao_response:
     - onde: "src/services/ministerios.js:cadastrarMinisterio"
       tipo: "payload manual {idLider,nome}"
-    - onde: "src/services/ministerios.js:atualizarMinisterio"
-      tipo: "payload manual com status.toUpperCase()"
   tratamento_erro:
     - onde: "src/services/ministerios.js:cadastrarMinisterio"
       tipo: "catch com throw"
-    - onde: "src/services/ministerios.js:atualizarMinisterio"
-      tipo: "throw em id ausente e em falha HTTP"
 
 - endpoint: "/api/v1/ministerios/governo/{idMinisterio}"
   chamado_por:
@@ -466,7 +496,7 @@
     - onde: "src/services/ministerios.js:atualizarMinisterio"
       tipo: "throw em id ausente e em falha HTTP"
 
-- endpoint: "/membros?page={page}&size=50&sort=nome"
+- endpoint: "/api/v1/membros?page={page}&size=50&sort=nome"
   chamado_por:
     - tipo: "component"
       nome: "src/components/molecules/ICF/ModalMinisterio.jsx"
@@ -523,25 +553,33 @@
       tipo: "catch com throw"
 
 - endpoint: "/api/v1/dashboards/membros/genero"
-  chamado_por: []
+  chamado_por:
+    - tipo: "component"
+      nome: "src/components/atoms/ICF/GraficoDistribuicaoMembros.jsx"
   dependencias_diretas:
-    - "estrutura_response: função getGeneroMembros depende de contrato de distribuição por gênero"
+    - "estrutura_response: objeto com feminino/masculino"
     - "status_http: erro propagado por throw"
   transformacao_response:
     - onde: "src/services/dashboards.js:getGeneroMembros"
       tipo: "sem parsing/manual mapping"
+    - onde: "src/components/atoms/ICF/GraficoDistribuicaoMembros.jsx"
+      tipo: "mapeia feminino/masculino para dados do gráfico de pizza"
   tratamento_erro:
     - onde: "src/services/dashboards.js:getGeneroMembros"
       tipo: "catch com throw"
 
 - endpoint: "/api/v1/dashboards/membros/faixa-etaria"
-  chamado_por: []
+  chamado_por:
+    - tipo: "component"
+      nome: "src/components/atoms/ICF/GraficoDistribuicaoMembros.jsx"
   dependencias_diretas:
-    - "estrutura_response: função getFaixaEtariaMembros depende de contrato de distribuição por faixa"
+    - "estrutura_response: objeto com criancas/adolescentes/jovens/adultos/idosos"
     - "status_http: erro propagado por throw"
   transformacao_response:
     - onde: "src/services/dashboards.js:getFaixaEtariaMembros"
       tipo: "sem parsing/manual mapping"
+    - onde: "src/components/atoms/ICF/GraficoDistribuicaoMembros.jsx"
+      tipo: "mapeia faixas etárias para dados do gráfico de pizza"
   tratamento_erro:
     - onde: "src/services/dashboards.js:getFaixaEtariaMembros"
       tipo: "catch com throw"
@@ -588,13 +626,13 @@
     - onde: "src/services/dashboards.js:getEvolucaoMinisterio"
       tipo: "catch com throw"
 
-- endpoint: "/perfil"
+- endpoint: "/api/v1/perfil"
   chamado_por:
     - tipo: "component"
       nome: "src/components/pages/ICF/Perfil.jsx"
   dependencias_diretas:
     - "estrutura_response: membro com campos simples e membroEnderecoDTO"
-    - "status_http: fallback interno para /perfil/{idUsuario} quando GET /perfil falha"
+    - "status_http: fallback interno para /api/v1/perfil/{idUsuario} quando GET /api/v1/perfil falha"
   transformacao_response:
     - onde: "src/components/pages/ICF/Perfil.jsx:montarPayloadAlterado"
       tipo: "diff entre estado original e edição para PATCH parcial"
@@ -602,12 +640,12 @@
     - onde: "src/services/perfil.js:buscarPerfilLogado"
       tipo: "nested try/catch com fallback de endpoint"
 
-- endpoint: "/perfil/{idUsuario}"
+- endpoint: "/api/v1/perfil/{idUsuario}"
   chamado_por:
     - tipo: "component"
       nome: "src/components/pages/ICF/Perfil.jsx"
   dependencias_diretas:
-    - "estrutura_response: mesmo contrato de /perfil"
+    - "estrutura_response: mesmo contrato de /api/v1/perfil"
     - "status_http: usado como fallback explícito"
   transformacao_response:
     - onde: "src/services/perfil.js:buscarPerfilLogado"
@@ -616,7 +654,7 @@
     - onde: "src/services/perfil.js:buscarPerfilLogado"
       tipo: "fallbackErr relançado"
 
-- endpoint: "/perfil (PATCH)"
+- endpoint: "/api/v1/perfil (PATCH)"
   chamado_por:
     - tipo: "component"
       nome: "src/components/pages/ICF/Perfil.jsx"
@@ -630,28 +668,44 @@
     - onde: "src/services/perfil.js:atualizarPerfilLogado"
       tipo: "catch com throw"
 
-- endpoint: "/igrejas/{fkIgreja}"
+- endpoint: "http://localhost:3000/locais"
   chamado_por:
     - tipo: "component"
-      nome: "src/components/pages/ICF/Configuracoes.jsx"
+      nome: "src/components/molecules/ICF/ModalLocal2.jsx"
   dependencias_diretas:
-    - "estrutura_response: GET depende de nome/cnpj/endereco/telefone"
-    - "status_http: GET engole erro; PUT apenas loga"
+    - "estrutura_response: array de locais com id/apelido/rua/numero/bairro/cidade"
+    - "status_http: erro apenas logado"
   transformacao_response:
-    - onde: "src/components/pages/ICF/Configuracoes.jsx:carregarDadosIgreja"
-      tipo: "normalização de campos com fallback para string vazia"
+    - onde: "src/components/molecules/ICF/ModalLocal2.jsx:carregarLocais"
+      tipo: "response.data -> estado locais"
   tratamento_erro:
-    - onde: "src/components/pages/ICF/Configuracoes.jsx:carregarDadosIgreja"
-      tipo: "catch silencioso"
-    - onde: "src/components/pages/ICF/Configuracoes.jsx:handleSalvarIgreja"
+    - onde: "src/components/molecules/ICF/ModalLocal2.jsx:carregarLocais"
+      tipo: "catch com console.error"
+
+- endpoint: "http://localhost:3000/locais/{id}"
+  chamado_por:
+    - tipo: "component"
+      nome: "src/components/molecules/ICF/ModalLocal2.jsx"
+  dependencias_diretas:
+    - "estrutura_response: retorno ignorado após DELETE"
+    - "status_http: erro apenas logado"
+  transformacao_response:
+    - onde: "src/components/molecules/ICF/ModalLocal2.jsx:handleDelete"
+      tipo: "recarrega locais após exclusão concluída"
+  tratamento_erro:
+    - onde: "src/components/molecules/ICF/ModalLocal2.jsx:handleDelete"
       tipo: "catch com console.error"
 
 - endpoint: "https://viacep.com.br/ws/{cep}/json/"
   chamado_por:
     - tipo: "hook"
       nome: "src/hooks/useValidacaoCadastro.js"
+    - tipo: "service"
+      nome: "src/services/perfil.js:buscarEnderecoPorCep"
     - tipo: "component"
       nome: "src/components/pages/ICF/Perfil.jsx"
+    - tipo: "component"
+      nome: "src/components/molecules/ICF/ModalLocal1.jsx"
   dependencias_diretas:
     - "estrutura_response: logradouro/bairro/localidade/uf e possível data.erro"
     - "status_http: falha retorna null"
@@ -660,11 +714,15 @@
       tipo: "mapping para {rua,bairro,cidade,uf}"
     - onde: "src/services/perfil.js:buscarEnderecoPorCep"
       tipo: "sanitização de cep e validação regex antes da chamada"
+    - onde: "src/components/molecules/ICF/ModalLocal1.jsx:buscarEnderecoPorCep"
+      tipo: "response.data -> rua/bairro/cidade/estado no formData"
   tratamento_erro:
     - onde: "src/utils/Utils.js:validationCEP"
       tipo: "catch retorna null"
     - onde: "src/services/perfil.js:buscarEnderecoPorCep"
       tipo: "catch retorna null"
+    - onde: "src/components/molecules/ICF/ModalLocal1.jsx:buscarEnderecoPorCep"
+      tipo: "catch exibe AlertModal de erro"
 
 - endpoint: "https://www.receitaws.com.br/v1/cnpj/{cnpj}"
   chamado_por:

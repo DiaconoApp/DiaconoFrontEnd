@@ -94,3 +94,10 @@ docker run -p 80:80 diacono-frontend:latest
 Se a meta for publicar no Docker Hub em vez de GHCR, o workflow precisa trocar o registry e usar secrets do Docker Hub (`DOCKERHUB_USERNAME` e `DOCKERHUB_TOKEN`).
 
 ## Como executar (em desenvolvimento...):
+
+## 📚 Documentação
+- [`docs/FRONTEND_DOCS_AGENT.yaml`](docs/FRONTEND_DOCS_AGENT.yaml): guia para atualização futura dos documentos do frontend.
+- [`docs/FRONT_ACOPLAMENTO_API.md`](docs/FRONT_ACOPLAMENTO_API.md): acoplamento do frontend com endpoints, contratos e serviços da API.
+- [`docs/FRONT_DATA_FLOW.md`](docs/FRONT_DATA_FLOW.md): fluxo de dados entre telas, contexto, serviços, estado local e API.
+- [`docs/FRONT_DISPERSAO_LOGICA.md`](docs/FRONT_DISPERSAO_LOGICA.md): dispersão de lógica entre componentes, hooks, serviços e rotas.
+- [`docs/FRONT_LOGICA_NEGOCIO.md`](docs/FRONT_LOGICA_NEGOCIO.md): regras de negócio implementadas no frontend.
